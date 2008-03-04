@@ -15,6 +15,7 @@ package net.bioclipse.moss.wizards;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import moss.Atoms;
 import moss.Bonds;
 import moss.Extension;
 import net.bioclipse.moss.InputMolecule;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
@@ -55,21 +57,35 @@ public class ParametersPage extends WizardPage {
 	private Text exSeed, exNode;
 	private IStructuredSelection selection;
 
-	private static final String[] ELEMENTS = { "*", "H", "He", "Li", "Be", "B",
-			"C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl",
-			"Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni",
-			"Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y",
-			"Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn",
-			"Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm",
-			"Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf",
-			"Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi",
-			"Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu",
-			"Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db",
-			"Sg", "Bh", "Hs", "Mt",
+	/* Since MoSS only support theses elements in different methods,
+	 * an array of elements is created so that bioclipse also can restrict 
+	 * atoms in different methods so errors can be set*/
+	private static final String[] ELEMENTS = { "H", "b", "B", "Br", "c", "C", "Cl", "n", "N", "o", "O", "F", "P", "p", "s", "S", "I" };
+	
+	// This is only the atom MoSS support for exclusion of nodes and seeds
+	
+	/*case 'b': a = Atoms.BORON      | Atoms.AROMATIC; break;
+	case 'B': c = this.read();
+	          if (c == 'r') {    a = Atoms.BROMINE;  break; }
+	          a = Atoms.BORON; this.unread(c);       break;
+	case 'c': a = Atoms.CARBON     | Atoms.AROMATIC; break;
+	case 'C': c = this.read();
+	          if (c == 'l') {    a = Atoms.CHLORINE; break; }
+	          a = Atoms.CARBON; this.unread(c);      break;
+	case 'n': a = Atoms.NITROGEN   | Atoms.AROMATIC; break;
+	case 'N': a = Atoms.NITROGEN;                    break;
+	case 'o': a = Atoms.OXYGEN     | Atoms.AROMATIC; break;
+	case 'O': a = Atoms.OXYGEN;                      break;
+	case 'F': a = Atoms.FLOURINE;                    break;
+	case 'p': a = Atoms.PHOSPHORUS | Atoms.AROMATIC; break;
+	case 'P': a = Atoms.PHOSPHORUS;                  break;
+	case 's': a = Atoms.SULFUR     | Atoms.AROMATIC; break;
+	case 'S': a = Atoms.SULFUR;                      break;
+	case 'I': a = Atoms.IODINE;                      break;
+	case 'H': a = Atoms.HYDROGEN;                    break;
+	*/
 
-	};
 
-	// final public static Pattern = Pattern.compile("^[a-zA-Z]")
 	/*------------------------------------------------------------------*/
 	/* constants: sizes and flags */
 	/*------------------------------------------------------------------*/
@@ -122,8 +138,6 @@ public class ParametersPage extends WizardPage {
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
 
-	ArrayList<String> errors = new ArrayList<String>();
-
 	/**
 	 * Create the wizard
 	 */
@@ -132,19 +146,15 @@ public class ParametersPage extends WizardPage {
 		setTitle("Moss Parameters");
 		setDescription("Please enter parameters for Moss");
 	}
-
-	private static boolean isElement(String s) {
+	/* Throws exception if atoms are not supported by ELEMENTS, restricted 
+	 * since MoSS restrict atom support in exclusions of nodes and seeds */
+	private static boolean isElement(String s) throws Exception{
 		for (String elem : ELEMENTS)
 			if (elem.equals(s))
 				return true;
 
-		return false;
+		throw new Exception();
 	}
-
-	//	public void selectionChanged( SelectionChangedEvent event ) {
-	//        selection = (IStructuredSelection) event.getSelection();
-	//       getWizard().getContainer().updateButtons();
-	//    }
 
 	/**
 	 * Create contents of the wizard
@@ -154,11 +164,12 @@ public class ParametersPage extends WizardPage {
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
+		
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
 		container.setLayout(gl);
-
-		// Set minimum support in focus part
+		
+		// Minimum support in focus part
 		new Label(container, SWT.NONE).setText("Minimum Support in focus:");
 
 		Text txtFocusSupport = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -193,8 +204,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-
-		// Set maximum support in complement part
+		// Maximum support in complement part
 		new Label(container, SWT.NONE)
 				.setText("Maximum support in complement:");
 		Text txtCompSupport = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -224,7 +234,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Set threshold for split into focus/complement part
+		// Threshold for split
 		new Label(container, SWT.NONE).setText("Threshold:");
 
 		Text thres = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -244,12 +254,10 @@ public class ParametersPage extends WizardPage {
 					String value = txt.getText();
 					try {
 						double d = Double.parseDouble(value);
-							setErrorMessage(null);
-							((MossWizard) getWizard()).getContainer()
+						setErrorMessage(null);
+						((MossWizard) getWizard()).getContainer()
 								.updateButtons();
-							
-					
-						
+
 						((MossWizard) getWizard()).getMossModel().setThreshold(
 								d);
 					} catch (NumberFormatException e1) {
@@ -261,7 +269,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// If one would like to invert split
+		// Invert split
 		final Button split = new Button(container, SWT.CHECK);
 		split.setText("Invert split");
 
@@ -281,7 +289,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Set minimal value of embedding
+		// Minimal value of embedding
 		labelMinEmb = new Label(container, SWT.SEARCH);
 		labelMinEmb.setText("Minimum embedding:");
 
@@ -306,12 +314,10 @@ public class ParametersPage extends WizardPage {
 				int selected = minEmb.getSelection();
 
 				((MossWizard) getWizard()).getMossModel().setMinEmbed(selected);
-				}
 			}
-		);
+		});
 
-		// Text and box to set whether to have maximum embedding 0 implies no
-		// limit
+		// Maximum value of embedding
 		labelMaxEmb = new Label(container, SWT.SEARCH);
 		labelMaxEmb.setText("Maximal embedding:");
 
@@ -336,11 +342,10 @@ public class ParametersPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				int selected = maxEmb.getSelection();
 				((MossWizard) getWizard()).getMossModel().setMaxEmbed(selected);
-				}
 			}
-		);
+		});
 
-		// Exclude atoms to be a part of the mining
+		// Exclude atoms 
 		labelexNode = new Label(container, SWT.NONE);
 		labelexNode.setText("Type of nodes to exclude:");
 
@@ -367,22 +372,31 @@ public class ParametersPage extends WizardPage {
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
-
-					try {
-
-						isElement(value);
+					
+					try{
+						setErrorMessage(null);
+						((MossWizard) getWizard()).getContainer().updateButtons();
+						for (int i = 0; i < value.length(); i++) {
+							String v = value.substring(i,i+1);
+							
+							String test =value.substring(i+1,i+2);
+							if (test.equals("r")){
+								v= value.substring(i,i+2);
+							}
+							isElement(v);
+							}
 						((MossWizard) getWizard()).getMossModel().setExNode(
 								value);
 					}
-
-					catch (Exception e1) {
-						setErrorMessage("Must be atoms");
+					
+					catch(Exception e1) {
+						setErrorMessage("Must be an atom that have support, see help");
+						((MossWizard) getWizard()).getContainer().updateButtons();
 						return;
 						}
-					}
 				}
 			}
-		);
+		});
 
 		// Exclude atoms to be set as seeds
 		labelexSeed = new Label(container, SWT.NONE);
@@ -405,21 +419,26 @@ public class ParametersPage extends WizardPage {
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
-					try {
+					
+					try{
+						setErrorMessage(null);
+						((MossWizard) getWizard()).getContainer().updateButtons();
+						for (int i = 0; i < value.length(); i++) {
+							String v = value.substring(i, i + 1);
+							isElement(v);
+							}
 						((MossWizard) getWizard()).getMossModel().setExSeed(
 								value);
-
-					} catch (NumberFormatException e1) {
-						setErrorMessage("Must be atoms");
-
+					}
+					catch(Exception e1) {
+						setErrorMessage("Must be an atom that have support, see help");
+						((MossWizard) getWizard()).getContainer().updateButtons();
 						return;
 						}
-					}
 				}
 			}
-		);
-		// Report closed structures by default, if checked unchecked ones are
-		// reported
+		});
+		// Closed structures reporting
 		final Button closed = new Button(container, SWT.CHECK);
 		closed.setText("Only report closed substructures");
 
@@ -428,8 +447,6 @@ public class ParametersPage extends WizardPage {
 		closed.setLayoutData(closedLData);
 		closed.setSelection(true);
 
-		// Gives a default value even though the box is not touched TODO: check
-		// if necessary?
 		((MossWizard) getWizard()).getModeTable().put("closed",
 				new Integer(DEFAULT));
 
@@ -444,23 +461,44 @@ public class ParametersPage extends WizardPage {
 				} else {
 					((MossWizard) getWizard()).getModeTable().put("closed",
 							new Integer(~CLOSED));
-					}
 				}
 			}
-		);
+		});
+		// Help button
+		final Button help4 = new Button(container, SWT.PUSH);
+		Font font4 = new Font(container.getDisplay(), "Helvetica", 10, SWT.BOLD); 
+		help4.setText("?");
+		help4.setFont(font4);
+		GridData help4Data = new GridData(GridData.HORIZONTAL_ALIGN_END| GridData.VERTICAL_ALIGN_END  );
+		help4Data.verticalSpan = 10;
+		help4Data.horizontalSpan = 65;
+		help4.setLayoutData(help4Data);
+		
+		help4.addSelectionListener(new SelectionAdapter() {
 
+			public void widgetSelected(SelectionEvent e) {
+				boolean selected = help4.getSelection();
+				if(selected == true){
+				//TODO link to help site for bioclipse
+				}
+				}	
+	});
 	}
-	// If error occurs next button is enable
+
+	/** If error occurs on the page next button will be disable will
+	 be restored when errors disappeared*/
 	public boolean canFlipToNextPage() {
 		if (getErrorMessage() != null)
 			return false;
 		return true;
 	}
-	// If error occurs the program will not be able to finish
+
+	/** If error occurs on the page the finish button will be disabled
+	 * will be restored when errors disappeared*/
 	public boolean isPageComplete() {
 		if (getErrorMessage() == null)
 			return true;
 		return false;
 	}
-	
+
 }

@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
  * All rights reserved. This program and the accompanying materials
@@ -49,7 +50,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * 
- * @author ola, Annzi
+ * @author Annzi
  * 
  */
 public class MossWizard extends Wizard {

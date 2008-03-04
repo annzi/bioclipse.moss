@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Ola Spjuth - initial API and implementation
+ *     Annzi
  *     
  ******************************************************************************/
 
@@ -24,9 +25,14 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -39,7 +45,7 @@ public class InputPage extends WizardPage {
 	private Table table;
 	private TableColumn column1, column2, column3;
 	private String[] colnames = { "id", "value", "description" };
-
+	private Image circle;
 	MossWizard wizard;
 
 	/**
@@ -114,6 +120,25 @@ public class InputPage extends WizardPage {
 		tableViewer.setInput(wizard.getMossModel());
 		tableViewer.setAllChecked(true);
 
+		final Button help = new Button(container, SWT.PUSH);
+//		circle = new Image(container.getDisplay(),"C:/Documents and Settings/Lenny/Skrivbord/Annzi/qmark.gif ");
+//		help.setImage(circle);
+		Font font = new Font(container.getDisplay(), "Helvetica", 10, SWT.BOLD); 
+		help.setText("?");
+		help.setFont(font);
+		GridData helpData = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
+//		helpData.verticalIndent = 50;
+		help.setLayoutData(helpData);
+		
+		help.addSelectionListener(new SelectionAdapter() {
+
+			public void widgetSelected(SelectionEvent e) {
+				boolean selected = help.getSelection();
+				if(selected == true){
+				//TODO link to help site for bioclipse
+				}
+				}	
+	});
 	}
 
 	class ViewContentProvider implements IStructuredContentProvider {
@@ -165,3 +190,4 @@ public class InputPage extends WizardPage {
 		}
 	}
 }
+
