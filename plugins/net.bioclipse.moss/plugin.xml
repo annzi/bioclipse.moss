@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            id="net.bioclipse.moss.contribution1">
+         <action
+               label="Moss"
+               icon="icons/sample.gif"
+               class="net.bioclipse.moss.popup.actions.RunMossAction"
+               menubarPath="additions"
+               id="net.bioclipse.moss.runMoss">
+         </action>
+      </objectContribution>
+   </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+
+</plugin>

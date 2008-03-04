@@ -1,0 +1,34 @@
+#!/bin/bash
+
+CLASSPATH="..:moss.jar"; export CLASSPATH
+
+java -Xmx800M moss.MoSS $* &
+
+#java -Xmx800M moss.Miner $*
+
+#java moss.Miner data/example1.smiles -jS -s50 -v
+#java moss.Miner data/example2.smiles -jS -s-2 -v
+#java moss.Miner data/noperfect.smiles -jN -s100 -v
+#java moss.Miner data/noperfect.smiles -jN -s50 -r5:6 -R -v
+#java moss.Miner data/chains.smiles -jN -C -s75 -v
+#java moss.Miner data/rings1.smiles -jN -s-1 -r5:6 -R +q -v
+#java moss.Miner data/rings2.smiles -jN -s-1 -r5:6 -R +q -v
+#java moss.Miner data/rings3.smiles -jN -s-1 -r5:6 -R +q -v
+#java moss.Miner data/atomprop.smiles -s-1 -v +c +a
+
+#java moss.Miner data/steroids.smiles -s100 -r5:6 -R -e -p
+#java moss.Miner data/steroids.smiles -s100 -r5:6 -R -e +p
+#java moss.Miner data/steroids.smiles -s100 -r5:6 -R +e -p
+#java moss.Miner data/steroids.smiles -s100 -r5:6 -R +e +p
+
+#java moss.Miner data/steroids.smiles -s100 -e -p -q
+#java moss.Miner data/steroids.smiles -s100 -e +p -q
+#java moss.Miner data/steroids.smiles -s100 +e -p -q
+#java moss.Miner data/steroids.smiles -s100 -e -p +q
+#java moss.Miner data/steroids.smiles -s100 +e -p +q
+#java moss.Miner data/steroids.smiles -s100 +e +p +q
+
+#java moss.Miner data/maxsrc.smiles -jN -s100 -e -p +q
+#java moss.Miner data/maxsrc.smiles -jN -s100 -e -p +q -g
+#java moss.Miner data/right.smiles  -jO -s100 -e -p +q
+#java moss.Miner data/right.smiles  -jO -s100 -e -p +q -g

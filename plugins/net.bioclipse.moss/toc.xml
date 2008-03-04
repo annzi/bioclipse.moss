@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="MOSS">
+  <topic label="About MOSS" href="doc/moss_about.html"/>
+  <topic label="Moss Plugin Usage" href="doc/mossUsage.html"/>
+</toc>
