@@ -464,25 +464,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Help button
-		final Button help4 = new Button(container, SWT.PUSH);
-		Font font4 = new Font(container.getDisplay(), "Helvetica", 10, SWT.BOLD); 
-		help4.setText("?");
-		help4.setFont(font4);
-		GridData help4Data = new GridData(GridData.HORIZONTAL_ALIGN_END| GridData.VERTICAL_ALIGN_END  );
-		help4Data.verticalSpan = 10;
-		help4Data.horizontalSpan = 65;
-		help4.setLayoutData(help4Data);
-		
-		help4.addSelectionListener(new SelectionAdapter() {
 
-			public void widgetSelected(SelectionEvent e) {
-				boolean selected = help4.getSelection();
-				if(selected == true){
-				//TODO link to help site for bioclipse
-				}
-				}	
-	});
 	}
 
 	/** If error occurs on the page next button will be disable will

@@ -1,12 +1,78 @@
 <html>
+<title>  Bioclipse - MoSS help </title>
 <head>
-  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/narrow_book.css" type="text/css">
+   <link rel="stylesheet" href="../../PRODUCT_PLUGIN/narrow_book.css" type="text/css">
 </head>
 <body>
-<h1>Usage of the MOSS plugin</h1>
-<p>
 
-TBC
+<font face="Verdana">
+<h1> Usage of the MoSS plugin </h1>
+
+
+<p> MoSS is a useful program when it comes to searching for frequent molecular 
+substructures and discriminative fragments in a set of molecules. </p>
+
+<p> <font size="4">First Page </font></p>
+<font size="2">
+<p>At the moment the program only support the notation language SMILES and a certain layout
+in the input file <U> Kommer länk </U>. <br>
+Directly when you open MoSS you are able to see your input in the format id,values and description.<br>
+It also gives you the opportunity to unselect molecules and of course reselect them. <br>
+If molecules are not completely shown the table can be resized. </p>
+<img src="inputpage.jpg">
+
+
+<p> <font size="4">Second Page </font></p>
+
+On this page you are able to start setting your preferences. <Br>
+
+<img src="page1real.jpg" align="left" vspace="10"> 
+<font size="1">Figure 2.
+Second page of MoSS with default values.</font>
+
+<p><B><U>Minimum Support </U</B>gives you the opportunity to specify what minimal support
+a substructure need to obtain to be reported. This is restricted to the focus part which
+means that they have to have a value(see input) that has to be less then its threshold.
+<br>
+<br><B><U> Maximal Support </U></B>if a complement part exist it can be restricted by be given a 
+maximum support. Only substructures that fulfill this support will be reported.</p>
+<p><B><U>Threshold and Invert Split </U></B> In the input file a value is to be set 
+<U>Länk till inputfile</U> and hold the information whether or not your data should 
+be divided into two parts, a focus and a complement part.<br>
+To be able to divide your data a threshold need to be set. Molecules that contains a 
+values less then your threshold is placed into focus part and molecules with a value
+greater than your threshold will be placed into the complement part.<br>
+By checking the <U>Invert Split</U> box the data is inverted. 
+</p>
+<p><B><U>Minumum and Maximal Embedding</U></B>
+By giving a minimal or maximal number of substructures one are able to restrict the size of
+substructures.<Br>
+<B>Important</B> if maximal size is set to 0 there is no restriction.<Br>
+<Br>
+<B><U>Type of nodes and seed types to exclude</U></B> if there are atoms one do not like to include in
+their mining add them in "Type of nodes to exclude" box. Same goes by seed excluding if there are atoms you do not want the minig
+to begin with type them in the "Seed types to exclude box"<Br> 
+Good to know:<Br>
+- atoms should be written in terms<Br> 
+- do not add any blank steps, commas or any other token(????stämmer???).<Br>
+Example 1.<Br>
+If you would like to exclude carbon, hydrogen and oxygen you write CHO.<Br><Br>
+By default hydrogen(H) is always excluded.<Br>
+<Br>
+<B><U> Closed substructures</U></B> the mining report <U>LÄNK closed substructures </U>
+to make an alteration uncheck the box and the result will report all substructures. 
+</p>
+
+
+<img src="page1.jpg">
+
+
+
+
+
+
+
+
 
 
 </body>

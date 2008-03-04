@@ -143,6 +143,9 @@ public class MossWizard extends Wizard {
 		page4 = new ParametersPage3();
 		addPage((IWizardPage) page4);
 	}
+	  public boolean isHelpAvailable() {
+	        return true;
+	    }
 	// To be able to show error if MoSS does not support the input file
 	public void showMessage(String title, String message) {
 		MessageDialog.openInformation(
@@ -150,6 +153,7 @@ public class MossWizard extends Wizard {
 				title,
 				message);
 	}
+		
 	// If there are something wrong in the boxes one should not be able to finsh
 	public boolean canFinish() {
 		// TODO Auto-generated method stub

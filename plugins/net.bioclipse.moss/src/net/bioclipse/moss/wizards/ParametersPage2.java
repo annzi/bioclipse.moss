@@ -512,26 +512,6 @@ public class ParametersPage2 extends WizardPage {
 				} 
 			}
 		});
-
-		final Button help4 = new Button(container, SWT.PUSH);
-		Font font4 = new Font(container.getDisplay(), "Helvetica", 10, SWT.BOLD); 
-		help4.setText("?");
-		help4.setFont(font4);
-		GridData help4Data = new GridData();
-		help4Data.verticalSpan = 2;
-		help4Data.horizontalSpan = 5;
-		help4.setLayoutData(help4Data);
-		
-		help4.addSelectionListener(new SelectionAdapter() {
-
-			public void widgetSelected(SelectionEvent e) {
-				boolean selected = help4.getSelection();
-				if(selected == true){
-					//????? PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "net.bioclipse.moss/doc");
-				//TODO link to help site for bioclipse
-				}
-				}	
-	});
 		
 	}
 }
