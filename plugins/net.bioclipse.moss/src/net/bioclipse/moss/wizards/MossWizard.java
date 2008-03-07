@@ -35,6 +35,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -143,24 +144,29 @@ public class MossWizard extends Wizard {
 		page4 = new ParametersPage3();
 		addPage((IWizardPage) page4);
 	}
+	//Help button will be shown in wizard since true 
 	  public boolean isHelpAvailable() {
 	        return true;
-	    }
+	  }
+	  protected void createButtonsForButtonBar(Composite parent) {
+		           final Button helpButton = new Button(parent, SWT.PUSH);
+		           helpButton.addSelectionListener(new SelectionAdapter() {
+
+		   			public void widgetSelected(SelectionEvent e) {
+		   				boolean selected = helpButton.getSelection();
+		   				if(selected == true){
+		   					System.out.println("vvvvvvvv");}
+		   				
+	  }});
+		           }
+		     
 	// To be able to show error if MoSS does not support the input file
 	public void showMessage(String title, String message) {
 		MessageDialog.openInformation(
 				getShell(),
 				title,
 				message);
-	}
-		
-	// If there are something wrong in the boxes one should not be able to finsh
-	public boolean canFinish() {
-		// TODO Auto-generated method stub
-		if (page2.isPageComplete() == false) return false;
-		return super.canFinish();
-	}
-	
+	}		
 	public boolean performFinish() {
 		// TODO Auto-generated method stub
 

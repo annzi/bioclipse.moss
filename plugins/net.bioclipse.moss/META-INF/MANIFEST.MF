@@ -5,6 +5,8 @@ Bundle-SymbolicName: net.bioclipse.moss;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: net.bioclipse.moss.Activator
 Require-Bundle: org.eclipse.ui,
+ org.eclipse.help.webapp,
+ org.eclipse.help.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  net.bioclipse.core,
