@@ -133,8 +133,14 @@ public class RunMossAction implements IObjectActionDelegate {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				// TODO Auto-generated method stub
+
+				monitor.beginTask("Calling Moss", 4);
+				
+				monitor.worked(2);
+				
 				MossTestRunner.runMoss(mossModel, outputFileName, outputFileNameId);
+
+				monitor.done();
 
 				Display.getDefault().asyncExec( new Runnable() {
 				    public void run() {
