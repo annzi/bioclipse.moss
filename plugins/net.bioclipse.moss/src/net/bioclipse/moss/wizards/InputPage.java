@@ -59,6 +59,10 @@ public class InputPage extends WizardPage {
 		wizard = (MossWizard) getWizard();
 
 	}
+	public void performHelp(){
+		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
+		  System.out.println("inputPage help");
+		}
 
 	/**
 	 * Create contents of the wizard

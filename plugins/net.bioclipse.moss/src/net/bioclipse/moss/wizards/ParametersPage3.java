@@ -26,6 +26,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.ui.PlatformUI;
 
 public class ParametersPage3 extends WizardPage {
 
@@ -52,6 +53,11 @@ public class ParametersPage3 extends WizardPage {
 		setDescription("Please enter parameters for Moss");
 	}
 
+	public void performHelp(){
+		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
+		  System.out.println("parameterspage3 help");
+		}
+	
 	/*------------------------------------------------------------------*/
 	/*  constants: sizes and flags                                      */
 	/*------------------------------------------------------------------*/

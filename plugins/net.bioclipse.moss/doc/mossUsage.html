@@ -30,47 +30,102 @@ On this page you are able to start setting your preferences. <Br>
 <font size="1">Figure 2.
 Second page of MoSS with default values.</font>
 
-<p><B><U>Minimum Support </U></B>gives you the opportunity to specify what minimal support
-a substructure need to obtain to be reported. This is restricted to the focus part which
+<p><B><U>Minimum Support </U></B>gives you the opportunity to specify what minimal support a <br> 
+substructure need to obtain to be reported. This is restricted to the focus part which <br>
 means that they have to have a value(see input) that has to be less then its threshold.
-<br>
-<br><B><U> Maximal Support </U></B>if a complement part exist it can be restricted by be given a 
-maximum support. Only substructures that fulfill this support will be reported.</p>
-<p><B><U>Threshold and Invert Split </U></B> In the input file a value is to be set 
-<U>Länk till inputfile</U> and hold the information whether or not your data should 
+</p>
+<br><B><U> Maximal Support </U></B>if a complement part exist it can be <br>
+restricted by be given a maximum support. Only substructures that fulfill <br>
+this support will be reported.</p>
+
+<p><B><U>Threshold and Invert Split </U></B> In the input file a value is to be set <U>Länk till inputfile</U> <br>
+and hold the information whether or not your data should <br>
 be divided into two parts, a focus and a complement part.<br>
-To be able to divide your data a threshold need to be set. Molecules that contains a 
-values less then your threshold is placed into focus part and molecules with a value
+To be able to divide your data a threshold need to be set. Molecules that contains a <br>
+values less then your threshold is placed into focus part and molecules with a value <br>
 greater than your threshold will be placed into the complement part.<br>
 By checking the <U>Invert Split</U> box the data is inverted. 
 </p>
+
 <p><B><U>Minumum and Maximal Embedding</U></B>
-By giving a minimal or maximal number of substructures one are able to restrict the size of
-substructures.<Br>
+By giving a minimal or maximal number of <br>
+substructures one are able to restrict the size of substructures.<br>
 <B>Important</B> if maximal size is set to 0 there is no restriction.<Br>
 <Br>
-<B><U>Type of nodes and seed types to exclude</U></B> if there are atoms one do not like to include in
-their mining add them in "Type of nodes to exclude" box. Same goes by seed excluding if there are atoms you do not want the minig
-to begin with type them in the "Seed types to exclude box"<Br> 
+
+<B><U>Type of nodes and seed types to exclude</U></B> if there are atoms one do not like to <br>
+include in their mining add them in "Type of nodes to exclude" box. Same goes by seed <br>
+excluding if there are atoms you do not want the mining to begin with type them in the <br>
+"Seed types to exclude box"<Br> 
 Good to know:<Br>
 - atoms should be written in terms<Br> 
 - do not add any blank steps, commas or any other token(????stämmer???).<Br>
 Example 1.<Br>
 If you would like to exclude carbon, hydrogen and oxygen you write CHO.<Br><Br>
 By default hydrogen(H) is always excluded.<Br>
-<Br>
-<B><U> Closed substructures</U></B> the mining report <U>LÄNK closed substructures </U>
-to make an alteration uncheck the box and the result will report all substructures. 
+
+<B><U>Set seed to begin from</U></B>
+TBC
+ 
+<B><U> Closed substructures</U></B> the mining report <U>LÄNK closed substructures </U> to make an <br> alteration uncheck the box and the result will report all substructures. 
 </p>
 
 
 <img src="page1.jpg">
 
 
+<p> <font size = "4">Third Page </font></p>
+
+<p><B>Matching of bonds and atom types</B></p>
+
+<p><B><U>How to treat aromatic bonds</U></B>
+As you might see this combo box is set to "aromatize bonds" which means that aromatic bonds are treated <br>
+as an extra type.<br>
+If you click on the box you will get two more alternatives "upgrade bonds" and "downgrade bonds". This means <br>
+that the aromatic bonds will be treated as equivalent to double bonds respectively single bonds.</p>
+
+<p><B><U>Ignore type of bond</U></B> and <B><U>Ignore type of atoms (chemical element)</U></B>
+By default bond/atom types are never ignored if you select "always" bond/atom types will always be ignored and "in rings"<br>
+means that bond/atom types will only be ignored in rings.
+</p>
+<p><B><U>Match charge of atoms</U></B> and <B><U>Match aromaticity of atoms</U></B>
+You might also want to match or ignore other features of atoms like their charge and aromaticity.<br>
+If the charge is matched then atoms with same element type but different charge are seen as different atoms.<br>
+But in order to be able to ignore the atom type or the bond type in rings, ring bonds must be distinguished <br>
+from other bonds therefore next checkbox with up coming comboboxes need to be set ("If to distinguish between bonds in rings ")</p>
+
+<p><B>Rings and Chains</B></p>
+
+<p><B><U>If to distinguish between bonds in rings</U></B>
 
 
+TBC
 
 
+<p><B><U>Convert from Kekulé representation to aromatic rings</U></B>
+Aromatic rings can be represented in two different ways either by Kekulé representation INSERT A PICTURE <br>
+where every other bond is represented as a single bond or a double bond or by actual aromatic bonds. It is <br>
+recommended to convert rings to aromatic rings since it is a hindrance when it comes to matching.  
+
+<p><B><U>Variable length in carbon chains</U></B>
+Finding variable length carbon chains can be useful if one is interested in considering substructures as equivalent that only differ
+in the length of carbon chains between their parts. 
+
+<p> <font size = "4">Fourth Page </font></p>
+
+<p><B>Prunings</B></p>
+
+<p><B><U>Perfect extension pruning</U></B>
+
+<p><B><U>Canonical form pruning</U></B>
+
+<p><B><U>Equivalent sibling pruning</U></B>
+
+<p><B>Memory</B></p>
+
+<p><B><U>Maximal embeddings</U></B>
+
+<p><B><U>Unembed sibling nodes</U></B>
 
 
 

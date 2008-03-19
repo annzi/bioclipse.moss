@@ -89,6 +89,11 @@ public class ParametersPage2 extends WizardPage {
 		setDescription("Please enter parameters for Moss");
 	}
 
+	public void performHelp(){
+		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
+		  System.out.println("parameterspage2 help");
+		}
+	
 	/**
 	 * Create contents of the wizard
 	 * 
@@ -461,7 +466,7 @@ public class ParametersPage2 extends WizardPage {
 		});
 		// Convert to aromatic rings 
 		final Button kekule = new Button(container, SWT.CHECK);
-		kekule.setText("Convert from Kekulé to aromatic bonds");
+		kekule.setText("Convert from Kekulé representation to aromatic bonds");
 		kekule.setSelection(true);
 
 		((MossWizard) getWizard()).getModeTable().put("kekule",

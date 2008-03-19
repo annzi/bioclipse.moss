@@ -7,7 +7,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.PlatformUI;
 
-
 import moss.Fragment;
 import moss.Graph;
 import moss.Miner;
@@ -19,9 +18,7 @@ public class MossTestRunner {
 
 		// Model to store our data
 		MossModel mossModel = new MossModel();
-
-		runMoss(mossModel, "");
-
+		runMoss(mossModel, "", "");
 	}
 
 	/**
@@ -32,10 +29,13 @@ public class MossTestRunner {
 	 * @return MossResult
 	 * @throws
 	 */
-	
-	public static MossModel runMoss(MossModel mossModel, String outputFileName) {
-		int g; // integer that decides group
-		Miner miner = new Miner(); // This is the class that does the mining
+
+	public static MossModel runMoss(MossModel mossModel, String outputFileName,
+			String outputFileNameId) {
+		// integer that decides group
+		int g;
+		// This is the class that does the mining
+		Miner miner = new Miner();
 
 		int type = Fragment.GRAPHS | Fragment.GREEDY;
 
@@ -70,7 +70,7 @@ public class MossTestRunner {
 
 		// Set seed
 		try {
-			miner.setSeed("", "smiles");
+			miner.setSeed(mossModel.getSeed(), "smiles");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,7 +123,7 @@ public class MossTestRunner {
 		miner.setLog(ps);
 		try {
 
-			miner.setOutput(outputFileName, "smiles");
+			miner.setOutput(outputFileName, "smiles", outputFileNameId);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

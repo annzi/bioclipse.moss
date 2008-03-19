@@ -1,6 +1,7 @@
 
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
+ * Copyright (c) 2008 The Bioclipse Project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +49,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -146,23 +148,11 @@ public class MossWizard extends Wizard {
 	}
 	//Help button will be shown in wizard since true 
 	  public boolean isHelpAvailable() {
-	        return true;
-	  }
-	  protected void createButtonsForButtonBar(Composite parent) {
-		           final Button helpButton = new Button(parent, SWT.PUSH);
-		           helpButton.addSelectionListener(new SelectionAdapter() {
-
-		   			public void widgetSelected(SelectionEvent e) {
-		   				boolean selected = helpButton.getSelection();
-		   				if(selected == true){
-		   					System.out.println("vvvvvvvv");}
-		   				
-	  }});
-		           }
-		     
+	        return true;}
+     
 	// To be able to show error if MoSS does not support the input file
 	public void showMessage(String title, String message) {
-		MessageDialog.openInformation(
+		MessageDialog.openWarning(
 				getShell(),
 				title,
 				message);
@@ -319,6 +309,7 @@ public class MossWizard extends Wizard {
 		System.out.println("closed: " + getMossModel().getClosed());
 		System.out.println("ExNode: " + getMossModel().getExNode());
 		System.out.println("ExSeed: " + getMossModel().getExSeed());
+		System.out.println("ExSeed: " + getMossModel().getSeed());
 		System.out.println("MaxEmb: " + getMossModel().getMaxEmbed());
 		System.out.println("MinEmb: " + getMossModel().getMinEmbed());
 		System.out.println("MBond: " + getMossModel().getMbond());
@@ -350,8 +341,12 @@ public class MossWizard extends Wizard {
 
 		String outputFileName = path + File.separator + "MossOutput.txt";
 		System.out.println("Output file name: " + outputFileName);
+		
 
-		MossTestRunner.runMoss(mossModel, outputFileName);
+		String outputFileNameId = path + File.separator + "MossOutputId.txt";
+		System.out.println("Id output file name: " + outputFileNameId);
+
+		MossTestRunner.runMoss(mossModel, outputFileName, outputFileNameId);
 
 		try {
 			parent.refreshLocal(IResource.DEPTH_ONE, null);

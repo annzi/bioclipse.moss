@@ -17,7 +17,7 @@ public class MossModel {
 	private double maximalsupport;
 	private double threshold;
 	private boolean split, closed;
-	private String ExNode, ExSeed;
+	private String exNode, exSeed, seed;
 	private int minEmbed, maxEmbed;
 	private double Limits;
 	private int mbond, mrgbd;
@@ -25,7 +25,7 @@ public class MossModel {
 	private int maxRing, minRing;
 	private int mode;
 	private int maxEmbMemory;
-
+	
 	public MossModel() {
 		super();
 		minimalSupport = 0.1;
@@ -33,8 +33,8 @@ public class MossModel {
 		threshold = 0.5;
 		split = false;
 		closed = true;
-		ExNode = "H";
-		ExSeed = "";
+		exNode = "H";
+		exSeed = "";
 		maxEmbed = 0;
 		minEmbed = 1;
 		maxRing = 0;
@@ -91,20 +91,20 @@ public class MossModel {
 	}
 
 	public String getExNode() {
-		return ExNode;
+		return exNode;
 	}
 
 	public void setExNode(String exnode) {
-		ExNode = exnode;
+		exNode = exnode;
 
 	}
 
 	public String getExSeed() {
-		return ExSeed;
+		return exSeed;
 	}
 
-	public void setExSeed(String exSeed) {
-		ExSeed = exSeed;
+	public void setExSeed(String exseed) {
+		exSeed = exseed;
 	}
 
 	public int getMaxEmbed() {
@@ -202,6 +202,14 @@ public class MossModel {
 
 	public void setMaxEmbMemory(int maxEmbMemory) {
 		this.maxEmbMemory = maxEmbMemory;
+	}
+
+	public String getSeed() {
+		return seed;
+	}
+
+	public void setSeed(String seed) {
+		this.seed = seed;
 	}
 
 }
