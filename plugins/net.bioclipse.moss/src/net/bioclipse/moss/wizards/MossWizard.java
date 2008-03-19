@@ -300,59 +300,10 @@ public class MossWizard extends Wizard {
 		// Set the total mode is set
 		mossModel.setMode(totMode);
 		
-		// Check if parameters are correct by printing them
-		System.out.println("MossModel:");
-		System.out.println("Max support: " + getMossModel().getMaximalsupport());
-		System.out.println("Min support: " + getMossModel().getMinimalSupport());
-		System.out.println("Threshold: " + getMossModel().getThreshold());
-		System.out.println("Invert split: " + getMossModel().getSplit());
-		System.out.println("closed: " + getMossModel().getClosed());
-		System.out.println("ExNode: " + getMossModel().getExNode());
-		System.out.println("ExSeed: " + getMossModel().getExSeed());
-		System.out.println("ExSeed: " + getMossModel().getSeed());
-		System.out.println("MaxEmb: " + getMossModel().getMaxEmbed());
-		System.out.println("MinEmb: " + getMossModel().getMinEmbed());
-		System.out.println("MBond: " + getMossModel().getMbond());
-		System.out.println("Mrgbd: " + getMossModel().getMrgbd());
-		System.out.println("Matom: " + getMossModel().getMatom());
-		System.out.println("Mrgat: " + getMossModel().getMrgat());
-		System.out.println("Max Ring: " + getMossModel().getMaxRing());
-		System.out.println("Min Ring: " + getMossModel().getMinRing());
-		System.out.println("Mode: " + getMossModel().getMode());
-		System.out.println("MaxEmbMemory: " + getMossModel().getMaxEmbMemory());
+		//Here we should end, and let action continue.
 		
 		
-		for (InputMolecule mol : getMossModel().getInputMolecules()) {
-			System.out.println("Molecule: " + mol.getId() + " include: "
-					+ mol.isChecked());
-		}
-
-		String path = "";
-		IResource parent = null;
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
-			Object obj = ssel.getFirstElement();
-			if (obj instanceof IResource) {
-				IResource res = (IResource) obj;
-				parent = res.getParent();
-				path = parent.getLocation().toOSString();
-			}
-		}
-
-		String outputFileName = path + File.separator + "MossOutput.txt";
-		System.out.println("Output file name: " + outputFileName);
 		
-
-		String outputFileNameId = path + File.separator + "MossOutputId.txt";
-		System.out.println("Id output file name: " + outputFileNameId);
-
-		MossTestRunner.runMoss(mossModel, outputFileName, outputFileNameId);
-
-		try {
-			parent.refreshLocal(IResource.DEPTH_ONE, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 
 		return true;
 	}

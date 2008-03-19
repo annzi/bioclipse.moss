@@ -2,6 +2,8 @@ package net.bioclipse.moss;
 
 import java.io.*;
 
+import net.bioclipse.core.Activator;
+
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
@@ -132,8 +134,10 @@ public class MossTestRunner {
 		// Run the mining and get statistics
 		miner.run();
 		miner.stats();
+		
+		net.bioclipse.ui.Activator.getDefault().CONSOLE.echo(bo.toString());
 
-		System.out.println("log:\n" + bo.toString());
+//		System.out.println("log:\n" + bo.toString());
 		try {
 			bo.close();
 		} catch (IOException e) {
