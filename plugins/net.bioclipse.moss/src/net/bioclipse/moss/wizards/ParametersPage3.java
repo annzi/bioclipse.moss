@@ -52,10 +52,10 @@ public class ParametersPage3 extends WizardPage {
 		setTitle("Moss Parameters");
 		setDescription("Please enter parameters for Moss");
 	}
-
+	// Display help when button pushed
 	public void performHelp(){
 		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
-		  System.out.println("parameterspage3 help");
+		
 		}
 	
 	/*------------------------------------------------------------------*/
@@ -291,34 +291,7 @@ public class ParametersPage3 extends WizardPage {
 		labelMiscellData.verticalIndent = 5;
 		labelMiscellData.horizontalSpan = 2;
 		labelMiscell.setLayoutData(labelMiscellData);
-		// If verbose output is to be displayed
-		final Button verbose = new Button(container, SWT.CHECK);
-		verbose.setText("Verbose output");
-
-		GridData verboseData = new GridData();
-		verboseData.verticalIndent = 5;
-		verboseData.horizontalSpan = 2;
 		
-		verbose.setLayoutData(verboseData);
-		// Default value
-		((MossWizard) getWizard()).getModeTable().put("verbose",
-				new Integer(DEFAULT));
-
-		verbose.addSelectionListener(new SelectionAdapter() {
-
-			public void widgetSelected(SelectionEvent e) {
-				boolean selected = verbose.getSelection();
-
-				if (selected == true) {
-					((MossWizard) getWizard()).getModeTable().put("verbose",
-							new Integer(VERBOSE));
-				} else {
-					((MossWizard) getWizard()).getModeTable().put("verbose",
-							new Integer(DEFAULT));
-				}
-			}
-		});
-
 		// If statistics is to be shown or not
 		final Button stats = new Button(container, SWT.CHECK);
 		stats.setText("Do not show statistics ");
@@ -345,6 +318,34 @@ public class ParametersPage3 extends WizardPage {
 			}});
 			
 	}
+
+//		// If verbose output is to be displayed
+//		final Button verbose = new Button(container, SWT.CHECK);
+//		verbose.setText("Verbose output");
+//
+//		GridData verboseData = new GridData();
+//		verboseData.verticalIndent = 5;
+//		verboseData.horizontalSpan = 2;
+//		
+//		verbose.setLayoutData(verboseData);
+//		// Default value
+//		((MossWizard) getWizard()).getModeTable().put("verbose",
+//				new Integer(DEFAULT));
+//
+//		verbose.addSelectionListener(new SelectionAdapter() {
+//
+//			public void widgetSelected(SelectionEvent e) {
+//				boolean selected = verbose.getSelection();
+//
+//				if (selected == true) {
+//					((MossWizard) getWizard()).getModeTable().put("verbose",
+//							new Integer(VERBOSE));
+//				} else {
+//					((MossWizard) getWizard()).getModeTable().put("verbose",
+//							new Integer(DEFAULT));
+//				}
+//			}
+//		});
 
 }
 

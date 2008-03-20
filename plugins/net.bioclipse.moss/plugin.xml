@@ -18,6 +18,8 @@
    </extension>
    
    <extension
+         id="preferenceCustomization"
+         name="preference.ini"
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"

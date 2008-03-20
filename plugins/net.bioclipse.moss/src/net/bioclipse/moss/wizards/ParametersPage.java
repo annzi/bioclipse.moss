@@ -12,14 +12,12 @@
 
 package net.bioclipse.moss.wizards;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import moss.Atoms;
 import moss.Bonds;
 import moss.Extension;
+import moss.Graph;
 import moss.SMILES;
 import net.bioclipse.moss.InputMolecule;
 
@@ -52,60 +50,22 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
 public class ParametersPage extends WizardPage {
 	private Label labelexNode, labelexSeed, labelMaxEmb, labelMinEmb;
 	private Text exSeed, exNode;
-	private IStructuredSelection selection;
 
-	/*------------------------------------------------------------------*/
-	/* constants: sizes and flags */
-	/*------------------------------------------------------------------*/
-	/** flag for extensions by single edges */
+	// Constants and flags. Imported directly from MOSS
+	// flag for extensions by single edges 
 	public static final int EDGEEXT = Extension.EDGE;
-	/** flag for extensions by rings */
-	public static final int RINGEXT = Extension.RING;
-	/** flag for extensions by chains */
-	public static final int CHAINEXT = Extension.CHAIN;
-	/** flag for extensions by equivalent variants of rings */
-	public static final int EQVARS = Extension.EQVARS;
-	/** flag for rightmost path extensions */
-	public static final int RIGHTEXT = 0x000010;
-	/** flag for restriction to closed fragments */
+	// flag for restriction to closed fragments 
 	public static final int CLOSED = 0x000020;
-	/** flag for filtering open rings */
-	public static final int CLOSERINGS = 0x000040;
-	/** flag for merging ring extensions with the same first edge */
-	public static final int MERGERINGS = 0x000080;
-	/** flag for full (unmerged) ring extensions */
-	private static final int FULLRINGS = 0x000100;
-	/** flag for pruning fragments with unclosable rings */
-	public static final int PR_UNCLOSE = 0x000200;
-	/** flag for partial perfect extension pruning */
-	public static final int PR_PARTIAL = 0x000400;
-	/** flag for full perfect extension pruning */
+	// flag for full perfect extension pruning 
 	public static final int PR_PERFECT = 0x000800;
-	/** flag for equivalent sibling extension pruning */
-	public static final int PR_EQUIV = 0x001000;
-	/** flag for canonical form pruning */
+	// flag for canonical form pruning 
 	public static final int PR_CANONIC = 0x002000;
-	/** flag for unembedding siblings of the current search tree nodes */
-	public static final int UNEMBED = 0x004000;
-	/** flag for normalized substructure output */
-	public static final int NORMFORM = 0x008000;
-	/** flag for verbose reporting */
-	public static final int VERBOSE = 0x010000;
-	/** flag for converting Kekulé; representations */
-	public static final int AROMATIZE = 0x020000;
-	/** flag for conversion to another description format */
-	public static final int TRANSFORM = 0x040000;
-	/** flag for conversion to logic representation */
-	public static final int LOGIC = 0x080000;
-	/** flag for no search statistics output */
-	public static final int NOSTATS = 0x100000;
-	/**
-	 * default search mode flags: edge extensions, canonical form and full
-	 * perfect extension pruning
-	 */
+	 // default search mode flags: edge extensions, canonical form and full
+	 //perfect extension pruning
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
 
+	
 	/**
 	 * Create the wizard
 	 * 
@@ -118,7 +78,7 @@ public class ParametersPage extends WizardPage {
 	}
 
 	/**
-	 * Create different methods on this page
+	 * Create different methods needed for this page
 	 */
 
 	// TODO Remove!!
@@ -133,7 +93,7 @@ public class ParametersPage extends WizardPage {
 			"Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa",
 			"U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No",
 			"Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "[", "]" };
-	private static final IAction IAction = null;
+
 
 	// TODO: Remove
 	private boolean isLowerCase(String s) {
@@ -161,41 +121,20 @@ public class ParametersPage extends WizardPage {
 	}
 
 	private HashMap<Text, String> errors = new HashMap<Text, String>();
-
+	
+	// Display help when button pushed
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
-//		showMessage("ggggrgrgrgrgrgr", "orjojergojeorgojge");
-		System.out.println("parameterspage1 help");
 	
 	}
-	public void showMessage(String title, String message) {
-		MessageDialog.openWarning(
-				getShell(),
-				title,
-				message);
-	}
+
 	// Update buttons if errors occurs/get removed
 	protected void check() {
-
-		String empty = null;
 		String errorLine = "";
 		// Return this
 		String totalErrors = "";
-		// Check if any textbox is empty. Not allowed in primary data objects
-		String emptyBoxes = "";
+		
 		setErrorMessage(null);
-
-		// for (Text txt: errors.keySet()){
-		// if (txt.getText().equals("")){
-		// emptyBoxes=emptyBoxes + textBox2MobyDataObject.get(txt).getName() +
-		// ", ";
-		// }
-		// }
-
-		// if (emptyBoxes.length()>1){
-		// empty="The following inputs cannot be empty: " + emptyBoxes;
-		// totalErrors = totalErrors + empty + "\n";
-		// }
 
 		// Check for errors
 		for (Text txt : errors.keySet()) {
@@ -436,44 +375,44 @@ public class ParametersPage extends WizardPage {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
 					try {
-						String test;
-						setErrorMessage(null);
-						((MossWizard) getWizard()).getContainer()
-								.updateButtons();
-
-						for (int i = 0; i < value.length(); i++) {
-							String v = value.substring(i, i + 1);
-							int a = i;
-							int d = i;
-							int val = value.length();
-							if (v.equals("[")) {
-								for (int k = 0; k < value.length(); k++) {
-									String b = "]";
-									String c = value
-											.substring(d + 1, a + k + 2);
-									d++;
-									i += 1;
-									if (b.equals(c)) {
-										v = value.substring(a, a + k + 2);
-
-										k = value.length();
-									}
-								}
-							}
-							if (value.length() > i + 1) {
-								test = value.substring(i + 1, i + 2);
-							}
-
-							else {
-								test = value.substring(i + 1, i + 1);
-							}
-
-							if (isLowerCase(test) == true) {
-								v = value.substring(i, i + 2);
-								i++;
-							}
-							isElement(v);
-						}
+//						String test;
+//						setErrorMessage(null);
+//						((MossWizard) getWizard()).getContainer()
+//								.updateButtons();
+//
+//						for (int i = 0; i < value.length(); i++) {
+//							String v = value.substring(i, i + 1);
+//							int a = i;
+//							int d = i;
+//							int val = value.length();
+//							if (v.equals("[")) {
+//								for (int k = 0; k < value.length(); k++) {
+//									String b = "]";
+//									String c = value
+//											.substring(d + 1, a + k + 2);
+//									d++;
+//									i += 1;
+//									if (b.equals(c)) {
+//										v = value.substring(a, a + k + 2);
+//
+//										k = value.length();
+//									}
+//								}
+//							}
+//							if (value.length() > i + 1) {
+//								test = value.substring(i + 1, i + 2);
+//							}
+//
+//							else {
+//								test = value.substring(i + 1, i + 1);
+//							}
+//
+//							if (isLowerCase(test) == true) {
+//								v = value.substring(i, i + 2);
+//								i++;
+//							}
+//							isElement(v);
+//						}
 						((MossWizard) getWizard()).getMossModel().setExNode(
 								value);
 					}
@@ -606,23 +545,4 @@ public class ParametersPage extends WizardPage {
 		});
 
 	}
-
-	/**
-	 * If error occurs on the page next button will be disable will be restored
-	 * when errors disappeared
-	 */
-	// public boolean canFlipToNextPage() {
-	// if (getErrorMessage() != null)
-	// return false;
-	// return true;
-	// }
-	/**
-	 * If error occurs on the page the finish button will be disabled will be
-	 * restored when errors disappeared
-	 */
-	// public boolean isPageComplete() {
-	//		if (getErrorMessage() == null)
-	//			return true;
-	//		return false;
-	//	}
 }

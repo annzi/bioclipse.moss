@@ -12,10 +12,12 @@
 package net.bioclipse.moss.popup.actions;
 
 import java.io.File;
+import java.util.HashMap;
 
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 import net.bioclipse.moss.MossTestRunner;
+import net.bioclipse.moss.wizards.InputPage;
 import net.bioclipse.moss.wizards.MossWizard;
 
 import org.eclipse.core.resources.IResource;
@@ -67,6 +69,8 @@ public class RunMossAction implements IObjectActionDelegate {
 		
 	    // Instantiate, initialize, and open the wizard
 	    MossWizard wizard = new MossWizard(selection);
+	    InputPage page = new InputPage();
+	    
 	    WizardDialog dialog = new WizardDialog(part.getSite().getShell(), wizard);
 	    dialog.create();
 	    int ret=dialog.open();		
@@ -76,7 +80,7 @@ public class RunMossAction implements IObjectActionDelegate {
 	    }
 	    
 	    //We pressed finish...
-	    
+	   
 	    final MossModel mossModel=wizard.getMossModel();
 	    
 		// Check if parameters are correct by printing them
@@ -99,8 +103,7 @@ public class RunMossAction implements IObjectActionDelegate {
 		System.out.println("Min Ring: " + mossModel.getMinRing());
 		System.out.println("Mode: " + mossModel.getMode());
 		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
-		
-		
+	
 		for (InputMolecule mol : mossModel.getInputMolecules()) {
 			System.out.println("Molecule: " + mol.getId() + " include: "
 					+ mol.isChecked());
@@ -117,11 +120,11 @@ public class RunMossAction implements IObjectActionDelegate {
 				path = parent.getLocation().toOSString();
 			}
 		}
-
+		
+		
 		final String outputFileName = path + File.separator + "MossOutput.txt";
 		System.out.println("Output file name: " + outputFileName);
 		
-
 		final String outputFileNameId = path + File.separator + "MossOutputId.txt";
 		System.out.println("Id output file name: " + outputFileNameId);
 

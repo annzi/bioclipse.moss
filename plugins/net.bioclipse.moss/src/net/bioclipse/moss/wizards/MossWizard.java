@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
  * Copyright (c) 2008 The Bioclipse Project and others.
@@ -18,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -66,7 +66,7 @@ public class MossWizard extends Wizard {
 
 	MossModel mossModel;
 	/*------------------------------------------------------------------*/
-	/*  constants: sizes and flags                                      */
+	/* constants: sizes and flags */
 	/*------------------------------------------------------------------*/
 	/** flag for extensions by single edges */
 	public static final int EDGEEXT = Extension.EDGE;
@@ -110,8 +110,10 @@ public class MossWizard extends Wizard {
 	public static final int LOGIC = 0x080000;
 	/** flag for no search statistics output */
 	public static final int NOSTATS = 0x100000;
-	/** default search mode flags: edge extensions,
-	 *  canonical form and full perfect extension pruning */
+	/**
+	 * default search mode flags: edge extensions, canonical form and full
+	 * perfect extension pruning
+	 */
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
 	// These tables are for storing data temporary and is written to mossModel
@@ -121,6 +123,7 @@ public class MossWizard extends Wizard {
 	Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> typeTable = new Hashtable<String, Integer>();
 
+	
 	// Constructor that stores the selection in navigator
 	public MossWizard(ISelection selection) {
 		this.selection = selection;
@@ -146,57 +149,61 @@ public class MossWizard extends Wizard {
 		page4 = new ParametersPage3();
 		addPage((IWizardPage) page4);
 	}
-	//Help button will be shown in wizard since true 
-	  public boolean isHelpAvailable() {
-	        return true;}
-     
+
+	// Help button will be shown in wizard since true
+	public boolean isHelpAvailable() {
+		return true;
+	}
+
 	// To be able to show error if MoSS does not support the input file
 	public void showMessage(String title, String message) {
-		MessageDialog.openWarning(
-				getShell(),
-				title,
-				message);
-	}		
+		MessageDialog.openWarning(getShell(), title, message);
+	}
+
 	public boolean performFinish() {
 		// TODO Auto-generated method stub
 
-		/* Wrap up everything and finalize choices in MossModel
-		 Get values from has tables and perform setMbond, setMrgbd, setMatom, setMrgat and setMode*/
+		/*
+		 * Wrap up everything and finalize choices in MossModel Get values from
+		 * has tables and perform setMbond, setMrgbd, setMatom, setMrgat and
+		 * setMode
+		 */
 
 		System.out.println("the table for bonds " + bondsTable);
 
-		// Get the values for bond and mrgbd 
+		// Get the values for bond and mrgbd
 		Integer b1 = (Integer) bondsTable.get("mbond1");
 		Integer b2 = (Integer) bondsTable.get("mbond2");
 		Integer mb1 = (Integer) bondsTable.get("mrgbd1");
 		Integer mb2 = (Integer) bondsTable.get("mrgbd2");
-
+		
 		// Initialize B and Mb with default values
 		int B = Bonds.BONDMASK;
 		int Mb = Bonds.BONDMASK;
-					
-		// Select whether to upgrade or down grade, if b1=Bonds.BONMASK nothing needs to be done
-		if (b1 == Bonds.UPGRADE){
+
+		// Select whether to upgrade or down grade, if b1=Bonds.BONMASK nothing
+		// needs to be done
+		if (b1 == Bonds.UPGRADE) {
 			B &= b1;
 			Mb &= mb1;
 		}
-		if(b1 == Bonds.DOWNGRADE){
+		if (b1 == Bonds.DOWNGRADE) {
 			B &= b1;
 			Mb &= mb1;
 		}
 		// Select whether to ignore bonds or not
-		if(b2 == Bonds.SAMETYPE && mb2 == Bonds.SAMETYPE ){
+		if (b2 == Bonds.SAMETYPE && mb2 == Bonds.SAMETYPE) {
 			B &= b2;
 			Mb &= mb2;
+		} else {
+			Mb &= mb2;
 		}
-		else{Mb &=mb2;}
-		
+
 		System.out.println(bondsTable.values());
-		
-		
+
 		System.out.println("the table for atoms " + atomsTable);
-	
-		//Get values from hash table
+
+		// Get values from hash table
 		Integer a1 = (Integer) atomsTable.get("matom1");
 		Integer a2 = (Integer) atomsTable.get("matom2");
 		Integer a3 = (Integer) atomsTable.get("matom3");
@@ -205,25 +212,28 @@ public class MossWizard extends Wizard {
 		// Initialize with default settings
 		int A = Atoms.ELEMMASK;
 		int Ma = Atoms.ELEMMASK;
-	
+
 		// Case: if to always ignore atom types
-		if (a1 == ~Atoms.ELEMMASK && ma == ~Atoms.ELEMMASK){
+		if (a1 == ~Atoms.ELEMMASK && ma == ~Atoms.ELEMMASK) {
 			A &= a1;
 			Ma &= ma;
-			}
+		}
 		// Case: if to always ignore atom types in rings
-		else{Ma &= ma;}	
-		
+		else {
+			Ma &= ma;
+		}
+
 		// Case: if to match charge of atoms, by default one ignore matching
-		if(a2 != Atoms.ELEMMASK){
+		if (a2 != Atoms.ELEMMASK) {
 			A |= a2;
 		}
 		// Case: if to match aromaticity of atoms, by default one do not
-		if(a3 != Atoms.ELEMMASK){
-		A |= a3;
+		if (a3 != Atoms.ELEMMASK) {
+			A |= a3;
 		}
 
-		// Get all the current values in mode hash table, done in alphabetic order
+		// Get all the current values in mode hash table, done in alphabetic
+		// order
 		System.out.println("the table for mode " + modeTable);
 		Integer canonic = (Integer) modeTable.get("canonPruning");
 		Integer chain = (Integer) modeTable.get("chain");
@@ -233,23 +243,23 @@ public class MossWizard extends Wizard {
 		Integer extension2 = (Integer) modeTable.get("ext2");
 		Integer extension3 = (Integer) modeTable.get("ext3");
 		Integer extension4 = (Integer) modeTable.get("ext4");
-		Integer extprune1 =(Integer) modeTable.get("extPruning1");
-		Integer extprune2 =(Integer) modeTable.get("extPruning2");
+		Integer extprune1 = (Integer) modeTable.get("extPruning1");
+		Integer extprune2 = (Integer) modeTable.get("extPruning2");
 		Integer kekule = (Integer) modeTable.get("kekule");
 		Integer stats = (Integer) modeTable.get("stats");
-		Integer verbose = (Integer) modeTable.get("verbose");
 		Integer unembedSibling = (Integer) modeTable.get("unembSibling");
 
-		// To be able to collect current values, if a default value is set that value won't be 	necessary to count 
+		// To be able to collect current values, if a default value is set that
+		// value won't be necessary to count
 		int totMode = DEFAULT;
 
-		if(canonic != DEFAULT ){
-			totMode &=canonic;
+		if (canonic != DEFAULT) {
+			totMode &= canonic;
 		}
 		if (closed != DEFAULT) {
 			totMode &= closed;
 		}
-		if (chain == CHAINEXT){
+		if (chain == CHAINEXT) {
 			totMode |= chain;
 		}
 		if (kekule != DEFAULT) {
@@ -258,39 +268,41 @@ public class MossWizard extends Wizard {
 		if (stats != DEFAULT) {
 			totMode |= stats;
 		}
-		if (verbose != DEFAULT) {
-			totMode |= verbose;
-		}
+		// if (verbose != DEFAULT) {
+		// totMode |= verbose;
+		// }
 
 		// Pruning parameters working??
-		if(equiv == PR_EQUIV){
-			totMode |=equiv;
+		if (equiv == PR_EQUIV) {
+			totMode |= equiv;
 		}
 
-		if(extprune1 == PR_PERFECT){
+		if (extprune1 == PR_PERFECT) {
 			totMode |= extprune1;
 			totMode &= extprune2;
 		}
-		if(extprune1 == PR_PARTIAL){
+		if (extprune1 == PR_PARTIAL) {
 			totMode |= extprune1;
 			totMode &= extprune2;
 		}
 
-		// could be ?? or write actual values TODO: check what's best values or parameters
-		if(extension1 == RINGEXT){
+		// could be ?? or write actual values TODO: check what's best values or
+		// parameters
+		if (extension1 == RINGEXT) {
 			totMode |= extension1;
 		}
 		if (extension1 == MERGERINGS) {
-			totMode |= extension2| extension1 | extension3 | extension4;
+			totMode |= extension2 | extension1 | extension3 | extension4;
 		}
 		if (extension1 == CLOSERINGS) {
-			totMode  |= extension1 | extension2; 
+			totMode |= extension1 | extension2;
 		}
-		if (unembedSibling == UNEMBED){
+		if (unembedSibling == UNEMBED) {
 			totMode |= unembedSibling;
 		}
+
 		
-		// Set the hash table parameters in to mossModel	
+		// Set the hash table parameters in to mossModel
 		// Set Mbond and Mrgbd in mossModel
 		mossModel.setMbond(B);
 		mossModel.setMrgbd(Mb);
@@ -300,10 +312,7 @@ public class MossWizard extends Wizard {
 		// Set the total mode is set
 		mossModel.setMode(totMode);
 		
-		//Here we should end, and let action continue.
-		
-		
-		
+		// Action continues
 
 		return true;
 	}
@@ -368,7 +377,9 @@ public class MossWizard extends Wizard {
 					}
 				} catch (Exception e) {
 					System.out.println("Not a correct input");
-				showMessage("Error"," MoSS does not support this input file");
+					showMessage("Error",
+							" MoSS does not support this input file");
+					mossModel.addMolecule(null);
 				}
 
 			}
@@ -408,5 +419,10 @@ public class MossWizard extends Wizard {
 
 	public void setModeTable(Hashtable<String, Integer> modeTable) {
 		this.modeTable = modeTable;
+	}
+
+	public HashMap<String, String> getTyTable() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

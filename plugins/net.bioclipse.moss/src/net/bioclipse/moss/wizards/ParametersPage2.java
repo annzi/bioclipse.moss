@@ -88,7 +88,7 @@ public class ParametersPage2 extends WizardPage {
 		setTitle("Moss Parameters");
 		setDescription("Please enter parameters for Moss");
 	}
-
+	// Display help when button pushed
 	public void performHelp(){
 		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 		  System.out.println("parameterspage2 help");

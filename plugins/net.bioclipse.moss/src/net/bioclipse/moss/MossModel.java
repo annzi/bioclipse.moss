@@ -25,7 +25,7 @@ public class MossModel {
 	private int maxRing, minRing;
 	private int mode;
 	private int maxEmbMemory;
-	
+
 	public MossModel() {
 		super();
 		minimalSupport = 0.1;
