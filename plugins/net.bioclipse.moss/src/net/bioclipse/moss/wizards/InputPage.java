@@ -15,6 +15,7 @@ package net.bioclipse.moss.wizards;
 
 import java.util.HashMap;
 
+import moss.Bonds;
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 
@@ -65,10 +66,6 @@ public class InputPage extends WizardPage {
 	// Display help when button pushed
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
-	}
-	public HashMap<String, String> fil = new HashMap<String, String>();
-	public HashMap<String, String> getFil() {
-		return fil;
 	}	
 	/**
 	 * Create contents of the wizard
@@ -142,7 +139,7 @@ public class InputPage extends WizardPage {
 		txtoutputFile.setLayoutData(outputFileData);
 		
 		Button browse = new Button(container, SWT.PUSH);
-		browse.setText("Browse");
+		browse.setText("Browse...");
 		
 		GridData browseData = new GridData();
 		browse.setLayoutData(browseData);
@@ -151,12 +148,13 @@ public class InputPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog dial = new FileDialog(getShell());
 				dial.setFilterPath(txtoutputFile.getText());
-				dial.setText("Browser");
+				dial.setText("MoSS file directory");
 				String dir = dial.open();
 				if (dir != null) {
 					txtoutputFile.setText(dir);
 				}
-				fil.put("output", dir);
+				
+				((MossWizard) getWizard()).getFileTable().put("output", dir);
 			}
 
 		});
@@ -174,21 +172,21 @@ public class InputPage extends WizardPage {
 		txtIdOutputFile.setLayoutData(idOutputFileData);
 		
 		Button browseId = new Button(container, SWT.PUSH);
-		browseId.setText("Browse");
+		browseId.setText("Browse...");
 		
 		GridData browseIdData = new GridData();
 		browseId.setLayoutData(browseIdData);
 	
 		browseId.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				FileDialog dial = new FileDialog(getShell());
-				dial.setFilterPath(txtoutputFile.getText());
-				dial.setText("Browser");
-				String dir = dial.open();
-				if (dir != null) {
-					txtoutputFile.setText(dir);
+				FileDialog dialId = new FileDialog(getShell());
+				dialId.setFilterPath(txtIdOutputFile.getText());
+				dialId.setText("MoSS file directory");
+				String dirId = dialId.open();
+				if (dirId != null) {
+					txtIdOutputFile.setText(dirId);
 				}
-				fil.put("output", dir);
+				((MossWizard) getWizard()).getFileTable().put("outputId", dirId);
 			}
 
 		});

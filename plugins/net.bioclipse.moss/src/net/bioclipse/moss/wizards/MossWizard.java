@@ -122,7 +122,7 @@ public class MossWizard extends Wizard {
 	Hashtable<String, Integer> atomsTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> typeTable = new Hashtable<String, Integer>();
-
+	Hashtable<String, String> fileTable = new Hashtable<String, String>();
 	
 	// Constructor that stores the selection in navigator
 	public MossWizard(ISelection selection) {
@@ -301,6 +301,10 @@ public class MossWizard extends Wizard {
 			totMode |= unembedSibling;
 		}
 
+		String file = fileTable.get("output");
+		String fileId = fileTable.get("outputId");
+		mossModel.setTest(file);
+		mossModel.setTestId(fileId);
 		
 		// Set the hash table parameters in to mossModel
 		// Set Mbond and Mrgbd in mossModel
@@ -424,5 +428,13 @@ public class MossWizard extends Wizard {
 	public HashMap<String, String> getTyTable() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Hashtable<String, String> getFileTable() {
+		return fileTable;
+	}
+
+	public void setFileTable(Hashtable<String, String> fileTable) {
+		this.fileTable = fileTable;
 	}
 }

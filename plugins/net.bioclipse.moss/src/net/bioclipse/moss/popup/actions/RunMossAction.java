@@ -11,8 +11,9 @@
  ******************************************************************************/
 package net.bioclipse.moss.popup.actions;
 
+
 import java.io.File;
-import java.util.HashMap;
+
 
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
@@ -36,7 +37,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * 
- * @author ola
+ * @author Annzi, ola
  *
  */
 public class RunMossAction implements IObjectActionDelegate {
@@ -69,13 +70,11 @@ public class RunMossAction implements IObjectActionDelegate {
 		
 	    // Instantiate, initialize, and open the wizard
 	    MossWizard wizard = new MossWizard(selection);
-	    InputPage page = new InputPage();
 	    
 	    WizardDialog dialog = new WizardDialog(part.getSite().getShell(), wizard);
 	    dialog.create();
 	    int ret=dialog.open();		
 	    if (ret!=0){
-	    	//Cancel, kan vara 1 också, osäker
 	    	return;
 	    }
 	    
@@ -84,7 +83,7 @@ public class RunMossAction implements IObjectActionDelegate {
 	    final MossModel mossModel=wizard.getMossModel();
 	    
 		// Check if parameters are correct by printing them
-		System.out.println("MossModel:");
+		
 		System.out.println("Max support: " + mossModel.getMaximalsupport());
 		System.out.println("Min support: " + mossModel.getMinimalSupport());
 		System.out.println("Threshold: " + mossModel.getThreshold());
@@ -103,31 +102,55 @@ public class RunMossAction implements IObjectActionDelegate {
 		System.out.println("Min Ring: " + mossModel.getMinRing());
 		System.out.println("Mode: " + mossModel.getMode());
 		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
+		System.out.println("test" + mossModel.getTest());
 	
 		for (InputMolecule mol : mossModel.getInputMolecules()) {
 			System.out.println("Molecule: " + mol.getId() + " include: "
 					+ mol.isChecked());
 		}
 
-		String path = "";
+		String patha = "";
 		parent = null;
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			Object obj = ssel.getFirstElement();
+			
 			if (obj instanceof IResource) {
 				IResource res = (IResource) obj;
 				parent = res.getParent();
-				path = parent.getLocation().toOSString();
+				patha = parent.getLocation().toOSString();
 			}
 		}
 		
+		// Gives a default outputFile directory but if a path is given
+		// output will be printed there instead.
+		String fileName, fileNameId;
+		String path = mossModel.getTest();
+		String pathId = mossModel.getTestId();
 		
-		final String outputFileName = path + File.separator + "MossOutput.txt";
-		System.out.println("Output file name: " + outputFileName);
-		
-		final String outputFileNameId = path + File.separator + "MossOutputId.txt";
-		System.out.println("Id output file name: " + outputFileNameId);
-
+		// Finding path for outputFileName
+		if (path != null){
+		fileName = path; //+ File.separator + "MossOutput.txt";
+		System.out.println("Output file name: " + fileName);
+		}
+		else{
+		fileName = patha + File.separator + "MossOutput.txt";
+		System.out.println("Output file name: " + fileName);
+				
+		}
+		// Finding path for outputFileNameId
+		if(pathId != null){
+		fileNameId = pathId; 
+		System.out.println("Id output file name: " + fileNameId);
+		}
+		else{
+		fileNameId = patha + File.separator + "MossOutputId.txt";
+		System.out.println("Id output file name: " + fileNameId);
+			
+		}
+		// Set the final outputFileName(Id) paths 
+		final String outputFileName = fileName;
+		final String outputFileNameId = fileNameId;
 		
 		//We now have all info we need. Start Moss in a new Job
 		//TODO

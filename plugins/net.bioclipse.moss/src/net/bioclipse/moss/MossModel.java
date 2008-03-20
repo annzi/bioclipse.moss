@@ -25,6 +25,15 @@ public class MossModel {
 	private int maxRing, minRing;
 	private int mode;
 	private int maxEmbMemory;
+	private String test, testId;
+
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(String test) {
+		this.test = test;
+	}
 
 	public MossModel() {
 		super();
@@ -210,6 +219,14 @@ public class MossModel {
 
 	public void setSeed(String seed) {
 		this.seed = seed;
+	}
+
+	public String getTestId() {
+		return testId;
+	}
+
+	public void setTestId(String testId) {
+		this.testId = testId;
 	}
 
 }
