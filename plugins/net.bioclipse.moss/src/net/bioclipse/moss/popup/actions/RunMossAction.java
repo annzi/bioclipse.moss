@@ -11,9 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.moss.popup.actions;
 
-
 import java.io.File;
-
 
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
@@ -45,7 +43,7 @@ public class RunMossAction implements IObjectActionDelegate {
 	private IWorkbenchPart part;
 	private ISelection selection;
 	private IResource parent;
-	
+
 	/**
 	 * Constructor for Action1.
 	 */
@@ -57,33 +55,33 @@ public class RunMossAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		part=targetPart;
+		part = targetPart;
 	}
 
-	
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		
+
 		//Check what the selection is and extract input molecules
-		
-	    // Instantiate, initialize, and open the wizard
-	    MossWizard wizard = new MossWizard(selection);
-	    
-	    WizardDialog dialog = new WizardDialog(part.getSite().getShell(), wizard);
-	    dialog.create();
-	    int ret=dialog.open();		
-	    if (ret!=0){
-	    	return;
-	    }
-	    
-	    //We pressed finish...
-	   
-	    final MossModel mossModel=wizard.getMossModel();
-	    
+
+		// Instantiate, initialize, and open the wizard
+		MossWizard wizard = new MossWizard(selection);
+
+		WizardDialog dialog = new WizardDialog(part.getSite().getShell(),
+				wizard);
+		dialog.create();
+		int ret = dialog.open();
+		if (ret != 0) {
+			return;
+		}
+
+		//We pressed finish...
+
+		final MossModel mossModel = wizard.getMossModel();
+
 		// Check if parameters are correct by printing them
-		
+
 		System.out.println("Max support: " + mossModel.getMaximalsupport());
 		System.out.println("Min support: " + mossModel.getMinimalSupport());
 		System.out.println("Threshold: " + mossModel.getThreshold());
@@ -103,7 +101,7 @@ public class RunMossAction implements IObjectActionDelegate {
 		System.out.println("Mode: " + mossModel.getMode());
 		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
 		System.out.println("test" + mossModel.getTest());
-	
+
 		for (InputMolecule mol : mossModel.getInputMolecules()) {
 			System.out.println("Molecule: " + mol.getId() + " include: "
 					+ mol.isChecked());
@@ -114,90 +112,78 @@ public class RunMossAction implements IObjectActionDelegate {
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			Object obj = ssel.getFirstElement();
-			
+
 			if (obj instanceof IResource) {
 				IResource res = (IResource) obj;
 				parent = res.getParent();
 				patha = parent.getLocation().toOSString();
 			}
 		}
-		
+
 		// Gives a default outputFile directory but if a path is given
 		// output will be printed there instead.
 		String fileName, fileNameId;
 		String path = mossModel.getTest();
 		String pathId = mossModel.getTestId();
-		
+
 		// Finding path for outputFileName
-		if (path != null){
-		fileName = path; //+ File.separator + "MossOutput.txt";
-		System.out.println("Output file name: " + fileName);
-		}
-		else{
-		fileName = patha + File.separator + "MossOutput.txt";
-		System.out.println("Output file name: " + fileName);
-				
+		if (path != null) {
+			fileName = path; 
+		} else {
+			fileName = patha + File.separator + "MossOutput.txt";
 		}
 		// Finding path for outputFileNameId
-		if(pathId != null){
-		fileNameId = pathId; 
-		System.out.println("Id output file name: " + fileNameId);
-		}
-		else{
-		fileNameId = patha + File.separator + "MossOutputId.txt";
-		System.out.println("Id output file name: " + fileNameId);
-			
+		if (pathId != null) {
+			fileNameId = pathId;
+		} else {
+			fileNameId = patha + File.separator + "MossOutputId.txt";
 		}
 		// Set the final outputFileName(Id) paths 
 		final String outputFileName = fileName;
 		final String outputFileNameId = fileNameId;
-		
+
 		//We now have all info we need. Start Moss in a new Job
 		//TODO
-		
-		Job job=new Job("Moss"){
+
+		Job job = new Job("Moss") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
 				monitor.beginTask("Calling Moss", 4);
-				
+
 				monitor.worked(2);
-				
-				MossTestRunner.runMoss(mossModel, outputFileName, outputFileNameId);
+
+				MossTestRunner.runMoss(mossModel, outputFileName,
+						outputFileNameId);
 
 				monitor.done();
 
-				Display.getDefault().asyncExec( new Runnable() {
-				    public void run() {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
 						try {
 							parent.refreshLocal(IResource.DEPTH_ONE, null);
 						} catch (CoreException e) {
 							e.printStackTrace();
 						}
-//				        viewer.refresh(refreshFrom.getParent (), false);
-				    }
-				} );
-				
+						//				        viewer.refresh(refreshFrom.getParent (), false);
+					}
+				});
 
 				return Status.OK_STATUS;
 			}
 		};
-		
+
 		job.setUser(true);
 		job.schedule();
 
-		
-
-	    
-		
 	}
 
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection=selection;
+		this.selection = selection;
 	}
 
 }

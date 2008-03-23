@@ -4,4 +4,5 @@
 <toc label="MOSS">
   <topic label="About MOSS" href="doc/moss_about.html"/>
   <topic label="Moss Plugin Usage" href="doc/mossUsage.html"/>
+   <topic label="How to read input and output files" href="doc/readFiles.html"/>
 </toc>

@@ -60,7 +60,7 @@ public class InputPage extends WizardPage {
 	public InputPage() {
 		super("Moss Input");
 		setTitle("Moss input");
-		setDescription("Please select and review molecules for Moss");
+		setDescription("Please select and review molecules and directories(optional) for Moss  ");
 	}
 
 	// Display help when button pushed
@@ -160,7 +160,7 @@ public class InputPage extends WizardPage {
 		});
 		// Label for finding idoutput directory
 		Label labelId = new Label(container,SWT.NONE);
-		labelId.setText("Directory for output file");
+		labelId.setText("Directory for identifier output file");
 		GridData labelIdData = new GridData();
 		labelIdData.horizontalSpan=2;
 		labelId.setLayoutData(labelIdData);
