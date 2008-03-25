@@ -12,13 +12,18 @@
 
 package net.bioclipse.moss.wizards;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 
+import moss.SMILES;
+import moss.Notation;
 import moss.Atoms;
+import moss.MoleculeNtn;
+
 import moss.Bonds;
 import moss.Extension;
 import moss.Graph;
-import moss.SMILES;
 import net.bioclipse.moss.InputMolecule;
 
 import org.eclipse.core.resources.IFile;
@@ -52,20 +57,21 @@ public class ParametersPage extends WizardPage {
 	private Text exSeed, exNode;
 
 	// Constants and flags. Imported directly from MOSS
-	// flag for extensions by single edges 
+	// flag for extensions by single edges
 	public static final int EDGEEXT = Extension.EDGE;
-	// flag for restriction to closed fragments 
+	// flag for restriction to closed fragments
 	public static final int CLOSED = 0x000020;
-	// flag for full perfect extension pruning 
+	// flag for full perfect extension pruning
 	public static final int PR_PERFECT = 0x000800;
-	// flag for canonical form pruning 
+	// flag for canonical form pruning
 	public static final int PR_CANONIC = 0x002000;
-	 // default search mode flags: edge extensions, canonical form and full
-	 //perfect extension pruning
+	// default search mode flags: edge extensions, canonical form and full
+	// perfect extension pruning
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
 
-	
+	private HashMap<Text, String> errors = new HashMap<Text, String>();
+
 	/**
 	 * Create the wizard
 	 * 
@@ -81,52 +87,8 @@ public class ParametersPage extends WizardPage {
 	 * Create different methods needed for this page
 	 */
 
-	// TODO Remove!!
-	protected static final String[] ELEMENTS = { "*", "H", "[He]", "[Li]",
-			"[Be]", "B", "C", "N", "O", "[F]", "Ne", "Na", "Mg", "Al", "Si",
-			"P", "S", "Cl", "Ar", "[K]", "Ca", "Sc", "Ti", "V", "Cr", "Mn",
-			"Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
-			"Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag",
-			"Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce",
-			"Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
-			"Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg",
-			"Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa",
-			"U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No",
-			"Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "[", "]" };
-
-
-	// TODO: Remove
-	private boolean isLowerCase(String s) {
-		String[] lower = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
-				"k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
-				"w", "x", "y", "z" };
-		for (int i = 0; i <= 25; i++) {
-			if (s.equals(lower[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/*
-	 * Throws exception if atoms are not supported by ELEMENTS, restricted since
-	 * MoSS restrict atom support in exclusions of nodes and seeds
-	 */
-	private static boolean isElement(String s) throws Exception {
-		for (String elem : ELEMENTS)
-			if (elem.equals(s))
-				return true;
-
-		throw new Exception();
-	}
-
-	private HashMap<Text, String> errors = new HashMap<Text, String>();
-	
-//	Composite top = new Composite(,SWT.NONE);
-	// Display help when button pushed
 	public void performHelp() {
-		PlatformUI.getWorkbench().getHelpSystem().displayHelp("net.bioclipse.moss.message");
-	
+		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 	}
 
 	// Update buttons if errors occurs/get removed
@@ -134,7 +96,7 @@ public class ParametersPage extends WizardPage {
 		String errorLine = "";
 		// Return this
 		String totalErrors = "";
-		
+
 		setErrorMessage(null);
 
 		// Check for errors
@@ -371,59 +333,29 @@ public class ParametersPage extends WizardPage {
 		exNode.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-
+				((MossWizard) getWizard()).getContainer().updateButtons();
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
-					try {
-//						String test;
-//						setErrorMessage(null);
-//						((MossWizard) getWizard()).getContainer()
-//								.updateButtons();
-//
-//						for (int i = 0; i < value.length(); i++) {
-//							String v = value.substring(i, i + 1);
-//							int a = i;
-//							int d = i;
-//							int val = value.length();
-//							if (v.equals("[")) {
-//								for (int k = 0; k < value.length(); k++) {
-//									String b = "]";
-//									String c = value
-//											.substring(d + 1, a + k + 2);
-//									d++;
-//									i += 1;
-//									if (b.equals(c)) {
-//										v = value.substring(a, a + k + 2);
-//
-//										k = value.length();
-//									}
-//								}
-//							}
-//							if (value.length() > i + 1) {
-//								test = value.substring(i + 1, i + 2);
-//							}
-//
-//							else {
-//								test = value.substring(i + 1, i + 1);
-//							}
-//
-//							if (isLowerCase(test) == true) {
-//								v = value.substring(i, i + 2);
-//								i++;
-//							}
-//							isElement(v);
-//						}
-						((MossWizard) getWizard()).getMossModel().setExNode(
-								value);
-					}
 
-					catch (Exception e1) {
-						setErrorMessage("Must be an atom that have support, see help");
+					try {
+						errors.put(txt, null);
 						((MossWizard) getWizard()).getContainer()
 								.updateButtons();
+
+						Notation ntn = new SMILES();
+						ntn.parse(new StringReader(value));
+
+						((MossWizard) getWizard()).getMossModel()
+								.setExSeed(value);
+					} catch (Exception e1) {
+						errors
+								.put(txt,
+										"Must be an atom that have support, see help");
+						check();
 						return;
 					}
+					check();
 				}
 			}
 		});
@@ -445,41 +377,28 @@ public class ParametersPage extends WizardPage {
 		exSeed.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-
+				((MossWizard) getWizard()).getContainer().updateButtons();
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
 
 					try {
-						String test;
-						setErrorMessage(null);
+						errors.put(txt, null);
 						((MossWizard) getWizard()).getContainer()
 								.updateButtons();
 
-						for (int i = 0; i < value.length(); i++) {
-							String v = value.substring(i, i + 1);
-
-							if (value.length() > i + 1) {
-								test = value.substring(i + 1, i + 2);
-							} else {
-								test = value.substring(i + 1, i + 1);
-							}
-
-							if (isLowerCase(test) == true) {
-								v = value.substring(i, i + 2);
-								i++;
-							}
-							isElement(v);
-						}
+						Notation ntn = new SMILES();
+						ntn.parse(new StringReader(value));
 
 						((MossWizard) getWizard()).getMossModel().setExSeed(
 								value);
 					} catch (Exception e1) {
-						setErrorMessage("Must be an atom that have support, see help");
-						((MossWizard) getWizard()).getContainer()
-								.updateButtons();
+						errors.put(txt,
+								"Must be an atom that have support, see help");
+						check();
 						return;
 					}
+					check();
 				}
 			}
 		});
@@ -500,23 +419,31 @@ public class ParametersPage extends WizardPage {
 		seed.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
+					((MossWizard) getWizard()).getContainer().updateButtons();
+					if (e.getSource() instanceof Text) {
+						Text txt = (Text) e.getSource();
+						String value = txt.getText();
 
-				if (e.getSource() instanceof Text) {
-					Text txt = (Text) e.getSource();
-					String value = txt.getText();
+						try {
+							errors.put(txt, null);
+							((MossWizard) getWizard()).getContainer()
+									.updateButtons();
 
-					try {
+							Notation ntn = new SMILES();
+							ntn.parse(new StringReader(value));
 
-						((MossWizard) getWizard()).getMossModel()
-								.setSeed(value);
-					} catch (Exception e1) {
-						setErrorMessage("Must be an atom that have support, see help");
-						((MossWizard) getWizard()).getContainer()
-								.updateButtons();
-						return;
+							((MossWizard) getWizard()).getMossModel()
+									.setExSeed(value);
+						} catch (Exception e1) {
+							errors
+									.put(txt,
+											"Must be an atom that have support, see help");
+							check();
+							return;
+						}
+						check();
 					}
 				}
-			}
 		});
 		// Closed structures reporting
 		final Button closed = new Button(container, SWT.CHECK);

@@ -35,7 +35,9 @@ import net.bioclipse.moss.popup.actions.RunMossAction;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,7 +58,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Annzi
  * 
  */
-public class MossWizard extends Wizard {
+public class MossWizard extends Wizard implements IAdaptable {
 
 	ISelection selection;
 	InputPage page1;
@@ -437,4 +439,14 @@ public class MossWizard extends Wizard {
 	public void setFileTable(Hashtable<String, String> fileTable) {
 		this.fileTable = fileTable;
 	}
+
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (adapter.equals(IContextProvider.class)) {
+			return new MossContextProvider();
+		}
+		return null;
+	}
+	
+	
 }
