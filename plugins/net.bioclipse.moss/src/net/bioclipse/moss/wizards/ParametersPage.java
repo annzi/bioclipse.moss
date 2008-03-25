@@ -122,9 +122,10 @@ public class ParametersPage extends WizardPage {
 
 	private HashMap<Text, String> errors = new HashMap<Text, String>();
 	
+//	Composite top = new Composite(,SWT.NONE);
 	// Display help when button pushed
 	public void performHelp() {
-		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
+		PlatformUI.getWorkbench().getHelpSystem().displayHelp("net.bioclipse.moss.message");
 	
 	}
 

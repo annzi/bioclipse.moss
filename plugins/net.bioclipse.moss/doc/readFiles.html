@@ -1,0 +1,96 @@
+<html>
+<title>  Bioclipse - MoSS help </title>
+<head>
+   <link rel="stylesheet" href="../../PRODUCT_PLUGIN/narrow_book.css" type="text/css">
+</head>
+<body>
+
+<font face="Verdana">
+<h1> How to read input and output file </h1>
+ <p><a href="#in">Input file</a><br>
+ <a href="#out">Output file</a><br>
+ <a href="#id">Identifier output file</a></p>
+
+<a name="in"></a><p><B><font size="4">Input file </font></B></p>
+<p>An input file has to be some kind of text file for example .txt, .doc, ....
+For MoSS to accept your inputs this file have to look a certain way it has <br>
+it has to be divided into an identification part, a value part and a <br>
+description of molecule part.
+</p>
+
+<p><B>Identification </B><br>
+In this section you give all your input molecules an id <br>
+it could be a character, a number or why not a name.<br>
+The given identity is used in your idoutput file see  <a href="#id">Identifier output file</a>.
+</p>
+<p><B>Value</B><br>
+When you have a search where input data needs to be split into a focus and a complement part <br>
+this value is necessary. To be able to split the data into two parts a threshold <a href="readFiles.html">How to understand an input and output file</a>
+is set by default 0.5. If a value is greater then the value of threshold it is placed in the complement part<br>
+and if the value is less than the value of threshold it is put in the focus part.</p>
+
+<p><B>Description</B><br>
+Here is the part where input molecules are described. Since MoSS only support <br>
+SMILES as a notation language your description needs to be written in this language. </p>
+
+<p>Between the different parts you put a comma ",".</p>
+
+<p><a name="ex1"></a> <B>Example 1 </B> - how an input file could look like:</p>
+
+<p>id, value, description<br>
+a,0,CCS(O)(O)N<br>
+name,0,CCS(O)(C)N<br>
+1,0,CS(O)(C)N<br>
+2,0,CCS(=N)N<br>
+e,0,CS(=N)N<br>
+f,0,CS(=N)O</p>
+
+<p>
+
+<p><a name="out"></a><B><font size="4">Output file </font></B></p>
+
+An output file will not only hold your mining result molecules but also other<br>
+features such as the number of nodes and frequency in percentage. To be more specific <br>
+the features displayed in the file are <I>"id","description","nodes","edges","s_abs","s_rel","c_abs","c_rel"</I>.</p>
+
+<p><I>"<U>id</U>" -</I> To be able to separate the different results they are marked by an id number. <br>
+<I>"<U>description</U>" -</I> Returns a certain substructure that fulfill the search criteria written in SMILES. <br>  
+<I>"<U>nodes</U>" -</I> Gives the number of nodes(atoms) encountered in the substructure.<br>
+<I>"<U>edges</U>" -</I> Gives the number of edges(bonds) encountered in the substructure.<br>
+<I>"<U>s_abs</U>" -</I> Absolute support of the substructure in the focus part<br>
+<dd><dd>			also known as the number of molecules in the focus part that contain this substructure.<br>
+<I>"<U>s_rel</U>" -</I> Relative support of the substructure in the focus part<br>
+<dd><dd>  			 the percentage of molecules in the focus part that contain this substructure.<br>
+<I>"<U>c_abs</U>" -</I> Absolute support of the substructure in the complement part<br>
+<dd><dd>	 		also known as the number of molecules in the complement part that contain this<br>
+<dd><dd>			substructure.<br>
+<I>"<U>c_rel</U>" -</I> Relative support of the substructure in the complement part<br>
+<dd><dd>	 		the percentage of molecules in the complement part that contain this substructure.</p>
+
+<p><B>Example 2</B> - how an output file could look like bases on <a href="#ex1">Example 1</a>.</p>
+
+<p>id,description,nodes,edges,s_abs,s_rel,c_abs,c_rel<br>
+1,O-S(-N)-C,4,3,3,50.0,0,0.0<br>
+2,O-S-C,3,2,4,66.666664,0,0.0<br>
+3,S(-N)-C-C,4,3,3,50.0,0,0.0<br>
+4,S(-N)-C,3,2,5,83.333336,0,0.0<br>
+5,S(-C)=N,3,2,3,50.0,0,0.0<br>
+6,S-C,2,1,6,100.0,0,0.0<br>
+7,N,1,0,6,100.0,0,0.0</p>
+
+<p><a name="id"></a> <B><font size="4">Identifier output file </font></B></p>
+
+<p><B>Example 3</B> - how an identifier output could look like based on <a href="#ex1">Example 1</a>.</p>
+
+<p>id:list<br>
+1:a,name,1<br>
+2:a,name,1,f<br>
+3:a,name,2<br>
+4:a,name,1,2,e<br>
+5:2,e,f<br>
+6:a,name,1,2,e,f<br>
+7:a,name,1,2,e,f</p>
+
+
+</body>
+</html>

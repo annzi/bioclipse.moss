@@ -8,7 +8,7 @@ import moss.Bonds;
 
 /**
  * This is a model class that contains all information about a MOSS run
- * @author Annzi
+ * @author Annsofie AnderssonS
  *
  */
 public class MossModel {
@@ -27,14 +27,7 @@ public class MossModel {
 	private int maxEmbMemory;
 	private String test, testId;
 
-	public String getTest() {
-		return test;
-	}
-
-	public void setTest(String test) {
-		this.test = test;
-	}
-
+	// Initializing parameters
 	public MossModel() {
 		super();
 		minimalSupport = 0.1;
@@ -51,6 +44,7 @@ public class MossModel {
 		maxEmbMemory = 0;
 	}
 
+	// Array list for storing input molecules
 	ArrayList<InputMolecule> inputMolecules;
 
 	public ArrayList<InputMolecule> getInputMolecules() {
@@ -63,6 +57,7 @@ public class MossModel {
 		inputMolecules.add(mol);
 	}
 
+	// Getters and setters for all parameters
 	public void setInputMolecules(ArrayList<InputMolecule> inputMolecules) {
 		this.inputMolecules = inputMolecules;
 	}
@@ -219,6 +214,14 @@ public class MossModel {
 
 	public void setSeed(String seed) {
 		this.seed = seed;
+	}
+
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(String test) {
+		this.test = test;
 	}
 
 	public String getTestId() {

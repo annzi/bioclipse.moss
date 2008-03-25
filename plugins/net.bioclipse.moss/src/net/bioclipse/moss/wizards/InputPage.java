@@ -13,9 +13,6 @@
 
 package net.bioclipse.moss.wizards;
 
-import java.util.HashMap;
-
-import moss.Bonds;
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 
@@ -28,19 +25,15 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -66,14 +59,15 @@ public class InputPage extends WizardPage {
 	// Display help when button pushed
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
-	}	
+	}
+
 	/**
 	 * Create contents of the wizard
 	 * 
 	 * @param parent
 	 */
 	public void createControl(final Composite parent) {
-	
+
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
 		GridLayout gl = new GridLayout();
@@ -124,26 +118,26 @@ public class InputPage extends WizardPage {
 		tableViewer.setLabelProvider(new ViewLabelProvider());
 		tableViewer.setInput(((MossWizard) getWizard()).getMossModel());
 		tableViewer.setAllChecked(true);
-		
+
 		// Label for finding output directory
-		Label label = new Label(container,SWT.NONE);
+		Label label = new Label(container, SWT.NONE);
 		label.setText("Directory for output file");
 		GridData labelData = new GridData();
-		labelData.horizontalSpan=2;
+		labelData.horizontalSpan = 2;
 		label.setLayoutData(labelData);
-		
+
 		final Text txtoutputFile = new Text(container, SWT.BORDER);
 		txtoutputFile.setText("MossOutput.txt");
 		GridData outputFileData = new GridData(GridData.FILL_HORIZONTAL);
 		outputFileData.verticalAlignment = 2;
 		txtoutputFile.setLayoutData(outputFileData);
-		
+
 		Button browse = new Button(container, SWT.PUSH);
 		browse.setText("Browse...");
-		
+
 		GridData browseData = new GridData();
 		browse.setLayoutData(browseData);
-	
+
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog dial = new FileDialog(getShell());
@@ -153,30 +147,30 @@ public class InputPage extends WizardPage {
 				if (dir != null) {
 					txtoutputFile.setText(dir);
 				}
-				
+
 				((MossWizard) getWizard()).getFileTable().put("output", dir);
 			}
 
 		});
 		// Label for finding idoutput directory
-		Label labelId = new Label(container,SWT.NONE);
+		Label labelId = new Label(container, SWT.NONE);
 		labelId.setText("Directory for identifier output file");
 		GridData labelIdData = new GridData();
-		labelIdData.horizontalSpan=2;
+		labelIdData.horizontalSpan = 2;
 		labelId.setLayoutData(labelIdData);
-		
+
 		final Text txtIdOutputFile = new Text(container, SWT.BORDER);
 		txtIdOutputFile.setText("MossOutputId.txt");
 		GridData idOutputFileData = new GridData(GridData.FILL_HORIZONTAL);
 		idOutputFileData.verticalAlignment = 2;
 		txtIdOutputFile.setLayoutData(idOutputFileData);
-		
+
 		Button browseId = new Button(container, SWT.PUSH);
 		browseId.setText("Browse...");
-		
+
 		GridData browseIdData = new GridData();
 		browseId.setLayoutData(browseIdData);
-	
+
 		browseId.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog dialId = new FileDialog(getShell());
@@ -186,11 +180,12 @@ public class InputPage extends WizardPage {
 				if (dirId != null) {
 					txtIdOutputFile.setText(dirId);
 				}
-				((MossWizard) getWizard()).getFileTable().put("outputId", dirId);
+				((MossWizard) getWizard()).getFileTable()
+						.put("outputId", dirId);
 			}
 
 		});
-		
+
 	}
 
 	class ViewContentProvider implements IStructuredContentProvider {

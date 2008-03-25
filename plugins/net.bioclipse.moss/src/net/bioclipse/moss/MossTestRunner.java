@@ -1,5 +1,12 @@
 package net.bioclipse.moss;
 
+/**
+ * Base class that runs Moss
+ * 
+ * @author Annsofie Andersson
+ * 
+ */
+
 import java.io.*;
 
 import net.bioclipse.core.Activator;
@@ -27,8 +34,9 @@ public class MossTestRunner {
 	 * This method runs MOSS on a MossModel
 	 * 
 	 * @param mossModel
-	 * @param outputFileName
-	 * @return MossResult
+	 * @param outputFileName,
+	 *            outputFileNameId
+	 * @return
 	 * @throws
 	 */
 
@@ -44,15 +52,10 @@ public class MossTestRunner {
 		/*
 		 * Settings for parameters TODO: check if it works correctly!!
 		 * 
-		 * Set threshold and whether or not to split into focus/complement
-		 * Set up minimum and maximum support
-		 * Set the search mode 
-		 * Set support type and limits
-		 * Set sizes 
-		 * Set minimal and maximal ring sizes 
-		 * Settings for bonds and atoms 
-		 * Set maximum number of embedding, 0 --> no restriction
-		 * 
+		 * Set threshold and whether or not to split into focus/complement Set
+		 * up minimum and maximum support Set the search mode Set support type
+		 * and limits Set sizes Set minimal and maximal ring sizes Settings for
+		 * bonds and atoms Set maximum number of embedding
 		 */
 		boolean invert = mossModel.getSplit();
 		if (invert == false)
@@ -83,7 +86,6 @@ public class MossTestRunner {
 			miner.setExcluded(mossModel.getExNode(), mossModel.getExSeed(),
 					"smiles");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -119,10 +121,11 @@ public class MossTestRunner {
 			}
 
 		}
-
+		// Set logging
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(bo);
 		miner.setLog(ps);
+		// Tries to set output files by using a method from Moss
 		try {
 
 			miner.setOutput(outputFileName, "smiles", outputFileNameId);
@@ -134,10 +137,10 @@ public class MossTestRunner {
 		// Run the mining and get statistics
 		miner.run();
 		miner.stats();
-		
+
 		net.bioclipse.ui.Activator.getDefault().CONSOLE.echo(bo.toString());
 
-//		System.out.println("log:\n" + bo.toString());
+		// System.out.println("log:\n" + bo.toString());
 		try {
 			bo.close();
 		} catch (IOException e) {

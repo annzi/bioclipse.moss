@@ -23,7 +23,7 @@ substructures and discriminative fragments in a set of molecules. </p>
 <font size="1">Figure 1.
 First page of MoSS where you can handle your data and file directories. </font>
 <p>At the moment the program only support the notation language SMILES and a certain layout
-in the input file <a href="readFiles.html">How to understand an input and output file</a>. <br>
+in the input file see <a href="readFiles.html">How to read an input and output file</a>. <br>
 Directly when you open MoSS you are able to see your input in the format id,values and description.<br>
 It also gives you the opportunity to unselect molecules and of course reselect them. <br>
 If molecules are not completely shown the table can be resized. </p>
@@ -43,29 +43,29 @@ be displayed in Bioclipse. Same goes for identifier output file.</p>
 Second page of MoSS where you are able to set different parameters shown with default values.</font>
 
 <p><B><U>Minimum Support </U></B>gives you the opportunity to specify what minimal support a <br> 
-substructure need to obtain to be reported. This is restricted to the focus part which 
-means that they have to have a value(see input) that has to be less then its threshold.</p>
+substructure need to obtain to be reported. Minimum support is set for the focus part therefore
+the value of the input file need to have a value see  <a href="readFiles.html#in"> Input file</a>
+less then its <a href="#thres">threshold</a>.</p>
 
-<p><br><B><U> Maximal Support </U></B>if a complement part exist it can be <br>
+<p><B><U> Maximal Support </U></B>if a complement part exist it can be <br>
 restricted by be given a maximum support. Only substructures that fulfill <br>
 this support will be reported.</p>
 
-<p><B><U>Threshold and Invert Split </U></B> In the input file a value is to be set <U>Länk till inputfile</U> <br>
-and hold the information whether or not your data should <br>
-be divided into two parts, a focus and a complement part.<br>
+<p><a name="thres"></a><B><U>Threshold and Invert Split </U></B> In the <a href="readFiles.html#in"> input file</a> 
+a value is to be set and hold the information whether or not your data should <br>
+be divided into two parts a focus and a complement part.<br>
 To be able to divide your data a threshold need to be set. Molecules that contains a <br>
 values less then your threshold is placed into focus part and molecules with a value <br>
 greater than your threshold will be placed into the complement part.<br>
-By checking the <U>Invert Split</U> box the data is inverted. 
+By checking the <U>invert Split</U> box the data is inverted. 
 </p>
 
-<p><B><U>Minumum and Maximal Embedding</U></B>
+<p><B><U>Minimum and Maximal Embedding</U></B>
 By giving a minimal or maximal number of <br>
-substructures one are able to restrict the size of substructures.<br>
-<B>Important</B> if maximal size is set to 0 there is no restriction.<Br>
-<Br>
+substructures you are able to restrict the size of substructures.<br>
+<B>Important</B> if maximal size is set to 0 there is no restriction.</p>
 
-<B><U>Type of nodes and seed types to exclude</U></B> if there are atoms one do not like to <br>
+<p><B><U>Type of nodes and seed types to exclude</U></B> if there are atoms one do not like to <br>
 include in their mining add them in "Type of nodes to exclude" box. Same goes by seed <br>
 excluding if there are atoms you do not want the mining to begin with type them in the <br>
 "Seed types to exclude box"<Br> 
@@ -74,23 +74,24 @@ Good to know:<Br>
 - do not add any blank steps, commas or any other token(????stämmer???).<Br>
 Example 1.<Br>
 If you would like to exclude carbon, hydrogen and oxygen you write CHO.<Br><Br>
-By default hydrogen(H) is always excluded.<Br>
+By default hydrogen(H) is always excluded.</p>
 
-<B><U>Set seed to begin from</U></B>
+<p><B><U>Set seed to begin from</U></B>
 TBC
  
 <B><U> Closed substructures</U></B> the mining report <U>LÄNK closed substructures </U> to make an <br> alteration uncheck the box and the result will report all substructures. 
 </p>
 
 
-<p> <a name="three"></a> <font size = "4">Third Page </font></p>
+<p><a name="three"></a> <font size = "4">Third Page </font></p>
 
 <img src="images/parametersPage2.jpg"><br>
-
+<font size="1">Figure 3.
+Third page of MoSS default values are shown. </font>
 <p><B>Matching of bonds and atom types</B></p>
 
 <p><B><U>How to treat aromatic bonds</U></B>
-As you might see this combo box is set to "aromatize bonds" which means that aromatic bonds are treated <br>
+As you might see this combobox is set to "aromatize bonds" which means that aromatic bonds are treated <br>
 as an extra type.<br>
 If you click on the box you will get two more alternatives "upgrade bonds" and "downgrade bonds". This means <br>
 that the aromatic bonds will be treated as equivalent to double bonds respectively single bonds.</p>
@@ -124,9 +125,10 @@ in the length of carbon chains between their parts.
 
 <p> <a name="four"></a> <font size = "4">Fourth Page </font></p>
 
-<img src="images/parametersPage2.jpg"><br>
-
-<p><B>Prunings</B></p>
+<img src="images/parametersPage3.jpg"><br>
+<font size="1">Figure 4.
+Fourth page of MoSS where pruning and memory settings can be modified. </font>
+<p><B>Pruning</B></p>
 
 <p><B><U>Perfect extension pruning</U></B>
 
@@ -136,7 +138,7 @@ in the length of carbon chains between their parts.
 
 <p><B>Memory</B></p>
 
-<p><B><U>Maximal embeddings</U></B>
+<p><B><U>Maximal embedding</U></B>
 Default value is 0 which indicates that there are not a limit for maximal embedding.<br>
 This setting help you save memory by restriction of the maximal number of embeddings kept per graph or molecule.</p>
 
