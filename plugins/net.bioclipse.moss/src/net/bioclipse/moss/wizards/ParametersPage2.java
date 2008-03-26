@@ -89,6 +89,7 @@ public class ParametersPage2 extends WizardPage {
 		setDescription("Please enter parameters for Moss");
 	}
 	// Display help when button pushed
+	// TODO: Individualize help- should be able to open help for this page
 	public void performHelp(){
 		  PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 		  System.out.println("parameterspage2 help");
@@ -184,8 +185,7 @@ public class ParametersPage2 extends WizardPage {
 				String selected = bond.getItem(bond.getSelectionIndex());
 
 				// "never" is a default setting but if it is selected after an
-				// other parameter is selected it has to be set again TODO:
-				// check whether BONDMASK is a correct setting
+				// other parameter is selected it has to be set again 
 				if (selected.equals(bond.getItem(0))) {
 					((MossWizard) getWizard()).getBondsTable().put("mbond2",
 							new Integer(Bonds.BONDMASK));
@@ -457,7 +457,7 @@ public class ParametersPage2 extends WizardPage {
 					
 					((MossWizard) getWizard()).getModeTable().put("ext1",
 							new Integer(DEFAULT));
-					((MossWizard) getWizard()).getMossModel().setMaxRing(0);// TODO fix null value or something like that
+					((MossWizard) getWizard()).getMossModel().setMaxRing(0);// TODO fix null value or something like that if 0 does not work
 					((MossWizard) getWizard()).getMossModel().setMinRing(0);
 
 				}

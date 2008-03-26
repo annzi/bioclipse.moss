@@ -12,26 +12,13 @@
 
 package net.bioclipse.moss.wizards;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
 import moss.SMILES;
 import moss.Notation;
-import moss.Atoms;
-import moss.MoleculeNtn;
-
-import moss.Bonds;
 import moss.Extension;
-import moss.Graph;
-import net.bioclipse.moss.InputMolecule;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -39,18 +26,14 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
+
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
-
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
 
 public class ParametersPage extends WizardPage {
 	private Label labelexNode, labelexSeed, labelMaxEmb, labelMinEmb;
@@ -76,7 +59,6 @@ public class ParametersPage extends WizardPage {
 	 * Create the wizard
 	 * 
 	 */
-
 	public ParametersPage() {
 		super("Moss Parameters");
 		setTitle("Moss Parameters");
@@ -86,7 +68,8 @@ public class ParametersPage extends WizardPage {
 	/**
 	 * Create different methods needed for this page
 	 */
-
+	// Display help when button pushed
+	// TODO: Individualize help- should be able to open help for this page
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 	}
@@ -105,11 +88,9 @@ public class ParametersPage extends WizardPage {
 				errorLine = errorLine + errors.get(txt);
 			}
 		}
-
 		if (errorLine.length() > 1) {
 			totalErrors = totalErrors + errorLine + "\n";
 		}
-
 		if (totalErrors.compareTo("") == 0) {
 			setErrorMessage(null);
 			setPageComplete(true);
@@ -117,7 +98,6 @@ public class ParametersPage extends WizardPage {
 			setErrorMessage(errorLine);
 			setPageComplete(false);
 		}
-
 		((MossWizard) getWizard()).getContainer().updateButtons();
 	}
 
@@ -134,7 +114,7 @@ public class ParametersPage extends WizardPage {
 		gl.numColumns = 2;
 		container.setLayout(gl);
 
-		// Minimum support in focus part
+		// Set the parameter "Minimum support in focus" 
 		new Label(container, SWT.NONE).setText("Minimum Support in focus:");
 
 		Text txtFocusSupport = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -169,7 +149,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Maximum support in complement part
+		// Set the parameter for "Maximum support in complement"
 		new Label(container, SWT.NONE)
 				.setText("Maximum support in complement:");
 		Text txtCompSupport = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -201,7 +181,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Threshold for split
+		// Set "Threshold" for split
 		new Label(container, SWT.NONE).setText("Threshold:");
 
 		Text thres = new Text(container, SWT.RIGHT | SWT.BORDER);
@@ -234,7 +214,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Invert split
+		// Set "Invert split"
 		final Button split = new Button(container, SWT.CHECK);
 		split.setText("Invert split");
 
@@ -254,7 +234,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Minimal value of embedding
+		// Set the value of "Minimal value of embedding"
 		labelMinEmb = new Label(container, SWT.SEARCH);
 		labelMinEmb.setText("Minimum embedding:");
 
@@ -282,7 +262,7 @@ public class ParametersPage extends WizardPage {
 			}
 		});
 
-		// Maximum value of embedding
+		// Set the value of "Maximum value of embedding"
 		labelMaxEmb = new Label(container, SWT.SEARCH);
 		labelMaxEmb.setText("Maximal embedding:");
 
@@ -310,7 +290,7 @@ public class ParametersPage extends WizardPage {
 			}
 		});
 
-		// Exclude atoms
+		// Exclude atoms and molecules from the mining
 		labelexNode = new Label(container, SWT.NONE);
 		labelexNode.setText("Type of nodes to exclude:");
 
@@ -345,12 +325,11 @@ public class ParametersPage extends WizardPage {
 						Notation ntn = new SMILES();
 						ntn.parse(new StringReader(value));
 
-						((MossWizard) getWizard()).getMossModel()
-								.setExNode(value);
+						((MossWizard) getWizard()).getMossModel().setExNode(
+								value);
 					} catch (Exception e1) {
-						errors
-								.put(txt,
-										"Must be an atom that have support, see help");
+						errors.put(txt,
+								"Must be an atom that have support, see help");
 						check();
 						return;
 					}
@@ -359,7 +338,7 @@ public class ParametersPage extends WizardPage {
 			}
 		});
 
-		// Exclude atoms to be set as seeds
+		// Exclude atoms and molecules to be set as seeds
 		labelexSeed = new Label(container, SWT.NONE);
 		labelexSeed.setText("Seed types to exclude:");
 
@@ -401,7 +380,7 @@ public class ParametersPage extends WizardPage {
 				}
 			}
 		});
-		// Set certain molecule/atom as seed
+		// Set certain atom or molecule as seed
 		Label labelSeed = new Label(container, SWT.NONE);
 		labelSeed.setText("Set seed to begin from:");
 
@@ -418,31 +397,30 @@ public class ParametersPage extends WizardPage {
 		seed.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-					((MossWizard) getWizard()).getContainer().updateButtons();
-					if (e.getSource() instanceof Text) {
-						Text txt = (Text) e.getSource();
-						String value = txt.getText();
+				((MossWizard) getWizard()).getContainer().updateButtons();
+				if (e.getSource() instanceof Text) {
+					Text txt = (Text) e.getSource();
+					String value = txt.getText();
 
-						try {
-							errors.put(txt, null);
-							((MossWizard) getWizard()).getContainer()
-									.updateButtons();
+					try {
+						errors.put(txt, null);
+						((MossWizard) getWizard()).getContainer()
+								.updateButtons();
 
-							Notation ntn = new SMILES();
-							ntn.parse(new StringReader(value));
+						Notation ntn = new SMILES();
+						ntn.parse(new StringReader(value));
 
-							((MossWizard) getWizard()).getMossModel()
-									.setSeed(value);
-						} catch (Exception e1) {
-							errors
-									.put(txt,
-											"Must be an atom that have support, see help");
-							check();
-							return;
-						}
+						((MossWizard) getWizard()).getMossModel()
+								.setSeed(value);
+					} catch (Exception e1) {
+						errors.put(txt,
+								"Must be an atom that have support, see help");
 						check();
+						return;
 					}
+					check();
 				}
+			}
 		});
 		// Closed structures reporting
 		final Button closed = new Button(container, SWT.CHECK);

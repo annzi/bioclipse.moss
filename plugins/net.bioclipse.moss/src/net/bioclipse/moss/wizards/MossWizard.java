@@ -16,6 +16,7 @@ package net.bioclipse.moss.wizards;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -24,6 +25,8 @@ import java.util.Iterator;
 import moss.Atoms;
 import moss.Bonds;
 import moss.Extension;
+import moss.Notation;
+import moss.SMILES;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.moss.InputMolecule;
@@ -55,7 +58,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * 
- * @author Annzi
+ * @author Annsofie Andersson
  * 
  */
 public class MossWizard extends Wizard implements IAdaptable {
@@ -67,9 +70,8 @@ public class MossWizard extends Wizard implements IAdaptable {
 	ParametersPage3 page4;
 
 	MossModel mossModel;
-	/*------------------------------------------------------------------*/
-	/* constants: sizes and flags */
-	/*------------------------------------------------------------------*/
+	
+	// Taken directly from the original MoSS
 	/** flag for extensions by single edges */
 	public static final int EDGEEXT = Extension.EDGE;
 	/** flag for extensions by rings */
@@ -118,8 +120,8 @@ public class MossWizard extends Wizard implements IAdaptable {
 	 */
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
-	// These tables are for storing data temporary and is written to mossModel
-	// on performFinish()
+	
+	// These tables are for storing temporary data that gets collected and set to mossModel
 	Hashtable<String, Integer> bondsTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> atomsTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
@@ -152,7 +154,7 @@ public class MossWizard extends Wizard implements IAdaptable {
 		addPage((IWizardPage) page4);
 	}
 
-	// Help button will be shown in wizard since true
+	// Help button will be shown on all pages
 	public boolean isHelpAvailable() {
 		return true;
 	}
@@ -359,7 +361,6 @@ public class MossWizard extends Wizard implements IAdaptable {
 
 				// Read file line by line as
 				// Typical line: a,0,CCCO
-				// TODO!!
 				String line;
 				try {
 					BufferedReader bufferedReader = new BufferedReader(
@@ -375,16 +376,19 @@ public class MossWizard extends Wizard implements IAdaptable {
 						String id = parts[0];
 						float value = Float.parseFloat(parts[1]);
 						String description = parts[2];
-
+						
+						// Checks the molecules if they are written in SMILES and if they are correctly written
+						Notation ntn = new SMILES();
+						ntn.parse(new StringReader(description));
+						
 						// Add molecules to mossModel
 						InputMolecule imol = new InputMolecule(id, value,
 								description);
 						mossModel.addMolecule(imol);
 					}
 				} catch (Exception e) {
-					System.out.println("Not a correct input");
 					showMessage("Error",
-							" MoSS does not support this input file");
+							" MoSS does not support this input file \n" + e);
 					mossModel.addMolecule(null);
 				}
 

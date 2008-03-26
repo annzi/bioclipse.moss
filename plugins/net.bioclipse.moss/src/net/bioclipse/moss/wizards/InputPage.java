@@ -13,18 +13,27 @@
 
 package net.bioclipse.moss.wizards;
 
+import java.io.File;
+
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -32,16 +41,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 public class InputPage extends WizardPage {
-
+	private IWorkbenchPart part;
 	private CheckboxTableViewer tableViewer;
 	private Table table;
 	private TableColumn column1, column2, column3;
@@ -57,6 +68,7 @@ public class InputPage extends WizardPage {
 	}
 
 	// Display help when button pushed
+	// TODO: Individualize help- should be able to open help for this page
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 	}
@@ -128,6 +140,8 @@ public class InputPage extends WizardPage {
 
 		final Text txtoutputFile = new Text(container, SWT.BORDER);
 		txtoutputFile.setText("MossOutput.txt");
+		
+		
 		GridData outputFileData = new GridData(GridData.FILL_HORIZONTAL);
 		outputFileData.verticalAlignment = 2;
 		txtoutputFile.setLayoutData(outputFileData);
@@ -141,18 +155,21 @@ public class InputPage extends WizardPage {
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog dial = new FileDialog(getShell());
-				dial.setFilterPath(txtoutputFile.getText());
+				dial.setFilterPath(Platform.getLocation().toOSString());
+				//dial.setFilterPath(txtoutputFile.getText());
 				dial.setText("MoSS file directory");
-				String dir = dial.open();
+					String dir = dial.open();
 				if (dir != null) {
 					txtoutputFile.setText(dir);
 				}
+				else{
+					return; }
 
 				((MossWizard) getWizard()).getFileTable().put("output", dir);
 			}
 
 		});
-		// Label for finding idoutput directory
+		// Label for finding identifier(id) output directory
 		Label labelId = new Label(container, SWT.NONE);
 		labelId.setText("Directory for identifier output file");
 		GridData labelIdData = new GridData();
@@ -170,16 +187,24 @@ public class InputPage extends WizardPage {
 
 		GridData browseIdData = new GridData();
 		browseId.setLayoutData(browseIdData);
-
+		final IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 		browseId.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				
+//				
+//				ResourceSelectionDialog  dialId = new ResourceSelectionDialog(getShell(), root,null );
+//				dialId.open();
+//				dialId.
+//				dialId.setInitialSelections(selectedResources);
 				FileDialog dialId = new FileDialog(getShell());
-				dialId.setFilterPath(txtIdOutputFile.getText());
+				dialId.setFilterPath(Platform.getLocation().toOSString());
+				//dialId.setFilterPath(txtIdOutputFile.getText());
 				dialId.setText("MoSS file directory");
 				String dirId = dialId.open();
 				if (dirId != null) {
 					txtIdOutputFile.setText(dirId);
-				}
+				}else{
+					return; }
 				((MossWizard) getWizard()).getFileTable()
 						.put("outputId", dirId);
 			}
@@ -222,7 +247,7 @@ public class InputPage extends WizardPage {
 				return String.valueOf(mol.getValue());
 			if (index == 2)
 				return mol.getDescription();
-
+			
 			return "??";
 		}
 

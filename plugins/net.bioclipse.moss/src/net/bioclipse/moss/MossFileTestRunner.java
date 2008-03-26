@@ -37,9 +37,9 @@ public class MossFileTestRunner {
 		}
 				
 		//Settings for different modes,atoms and bonds
-			int mode = (Miner.DEFAULT | Miner.AROMATIZE);
-		    int atom  = Atoms.ELEMMASK;
-		    int mrgat = Atoms.ELEMMASK; 
+//			int mode = (Miner.DEFAULT | Miner.AROMATIZE);
+//		    int atom  = Atoms.ELEMMASK;
+//		    int mrgat = Atoms.ELEMMASK; 
 //	anv ej längre	    int bond  = Bonds.BONDMASK;
 //	anv ej längre	    int mrgbd = Bonds.BONDMASK;
 		    int type = Fragment.GRAPHS | Fragment.GREEDY;
@@ -51,25 +51,25 @@ public class MossFileTestRunner {
 		if (invert== false)g=0; 
 		else g=1;
 		miner.setGrouping(mossModel.getThreshold(),invert);	 
-		miner.setLimits(mossModel.getMinimalSupport(),mossModel.getMaximalsupport()); // 0.01* if not converted correct set up minimum and maximum support 
-		miner.setMode(mode); 		     					   		// set the search mode 
-	    miner.setType(type);							      		// set support type and limits 
-	    miner.setSizes(mossModel.getMinEmbed(),mossModel.getMaxEmbed()); 								   		// set sizes, masks etc.
-	    miner.setRingSizes(mossModel.getMinRing(),mossModel.getMaxRing());									// set minimal and maximal ring sizes 
-	    miner.setMasks(atom, mossModel.getMbond(), mrgat, mossModel.getMrgbd());					// settings for bonds and atoms
-	    miner.setMaxEmbs(mossModel.getMaxEmbed());   									    // set maximum number of embedding, 0 --> no restriction 
-	    try {														// set seed
-			miner.setSeed("", "smiles" );
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} 						   
-		try {														// set seed and excluded types 
-			miner.setExcluded(mossModel.getExNode(),mossModel.getExSeed(), "smiles");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+//		miner.setLimits(mossModel.getMinimalSupport(),mossModel.getMaximalsupport()); // 0.01* if not converted correct set up minimum and maximum support 
+//		miner.setMode(mossModel.getMode()); 		     					   		// set the search mode 
+//	    miner.setType(type);							      		// set support type and limits 
+//	    miner.setSizes(mossModel.getMinEmbed(),mossModel.getMaxEmbed()); 								   		// set sizes, masks etc.
+//	    miner.setRingSizes(mossModel.getMinRing(),mossModel.getMaxRing());									// set minimal and maximal ring sizes 
+//	    miner.setMasks(mossModel.getMatom(), mossModel.getMbond(), mossModel.getMrgat(), mossModel.getMrgbd());					// settings for bonds and atoms
+//	    miner.setMaxEmbs(mossModel.getMaxEmbed());   									    // set maximum number of embedding, 0 --> no restriction 
+//	    try {														// set seed
+//			miner.setSeed("", "smiles" );
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		} 						   
+//		try {														// set seed and excluded types 
+//			miner.setExcluded(mossModel.getExNode(),mossModel.getExSeed(), "smiles");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
 		
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(bo);
@@ -82,8 +82,8 @@ public class MossFileTestRunner {
 		}
 
 		//Run the mining and get statistics
-		miner.run();             
-		miner.stats();    		  
+		//miner.run();             
+//		miner.stats();    		  
 
 	System.out.println("log:\n" + bo.toString());
 	try {

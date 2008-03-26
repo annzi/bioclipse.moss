@@ -16,7 +16,6 @@ import java.io.File;
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 import net.bioclipse.moss.MossTestRunner;
-import net.bioclipse.moss.wizards.InputPage;
 import net.bioclipse.moss.wizards.MossWizard;
 
 import org.eclipse.core.resources.IResource;
@@ -35,7 +34,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * 
- * @author Annzi, ola
+ * @author Annsofie Andersson, Ola Spjuth
  *
  */
 public class RunMossAction implements IObjectActionDelegate {
@@ -81,7 +80,7 @@ public class RunMossAction implements IObjectActionDelegate {
 		final MossModel mossModel = wizard.getMossModel();
 
 		// Check if parameters are correct by printing them
-
+		// TODO: Remove syso only checks if e given parameter is correctly checked
 		System.out.println("Max support: " + mossModel.getMaximalsupport());
 		System.out.println("Min support: " + mossModel.getMinimalSupport());
 		System.out.println("Threshold: " + mossModel.getThreshold());
@@ -101,13 +100,13 @@ public class RunMossAction implements IObjectActionDelegate {
 		System.out.println("Mode: " + mossModel.getMode());
 		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
 		System.out.println("test" + mossModel.getTest());
-
+		//TODO: Remove
 		for (InputMolecule mol : mossModel.getInputMolecules()) {
 			System.out.println("Molecule: " + mol.getId() + " include: "
 					+ mol.isChecked());
 		}
 
-		String patha = "";
+		String path2 = "";
 		parent = null;
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -116,34 +115,41 @@ public class RunMossAction implements IObjectActionDelegate {
 			if (obj instanceof IResource) {
 				IResource res = (IResource) obj;
 				parent = res.getParent();
-				patha = parent.getLocation().toOSString();
+				path2 = parent.getLocation().toOSString();
 			}
 		}
 
 		// Gives a default outputFile directory but if a path is given
 		// output will be printed there instead.
 		String fileName, fileNameId;
-		String path = mossModel.getTest();
+		String path1 = mossModel.getTest();
 		String pathId = mossModel.getTestId();
 
 		// Finding path for outputFileName
-		if (path != null) {
-			fileName = path; 
+		if (path1 != null) {
+			fileName = path1; 
 		} else {
-			fileName = patha + File.separator + "MossOutput.txt";
+			fileName = path2 + File.separator + "MossOutput.txt";
+//			// if filename already exists
+//			File f = new File(fileName);
+//			if (f.exists()){
+//				int i = 2;
+//				fileName = path2 + File.separator + "MossOutput" + i++ + ".txt";	
+//			}
 		}
 		// Finding path for outputFileNameId
 		if (pathId != null) {
 			fileNameId = pathId;
+
 		} else {
-			fileNameId = patha + File.separator + "MossOutputId.txt";
+			fileNameId = path2 + File.separator + "MossOutputId.txt";
 		}
+	
 		// Set the final outputFileName(Id) paths 
 		final String outputFileName = fileName;
 		final String outputFileNameId = fileNameId;
 
 		//We now have all info we need. Start Moss in a new Job
-		//TODO
 
 		Job job = new Job("Moss") {
 
@@ -156,7 +162,7 @@ public class RunMossAction implements IObjectActionDelegate {
 
 				MossTestRunner.runMoss(mossModel, outputFileName,
 						outputFileNameId);
-
+				
 				monitor.done();
 
 				Display.getDefault().asyncExec(new Runnable() {

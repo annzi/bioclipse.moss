@@ -9,13 +9,6 @@ package net.bioclipse.moss;
 
 import java.io.*;
 
-import net.bioclipse.core.Activator;
-
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.ui.PlatformUI;
-
 import moss.Fragment;
 import moss.Graph;
 import moss.Miner;
@@ -42,16 +35,12 @@ public class MossTestRunner {
 
 	public static MossModel runMoss(MossModel mossModel, String outputFileName,
 			String outputFileNameId) {
-		// integer that decides group
+		// integer that decides group since Moss made their group private
 		int g;
 		// This is the class that does the mining
 		Miner miner = new Miner();
 
-		int type = Fragment.GRAPHS | Fragment.GREEDY;
-
 		/*
-		 * Settings for parameters TODO: check if it works correctly!!
-		 * 
 		 * Set threshold and whether or not to split into focus/complement Set
 		 * up minimum and maximum support Set the search mode Set support type
 		 * and limits Set sizes Set minimal and maximal ring sizes Settings for
@@ -66,18 +55,20 @@ public class MossTestRunner {
 		miner.setLimits(mossModel.getMinimalSupport(), mossModel
 				.getMaximalsupport());
 		miner.setMode(mossModel.getMode());
-		miner.setType(type);
 		miner.setSizes(mossModel.getMinEmbed(), mossModel.getMaxEmbed());
 		miner.setRingSizes(mossModel.getMinRing(), mossModel.getMaxRing());
 		miner.setMasks(mossModel.getMatom(), mossModel.getMbond(), mossModel
 				.getMrgat(), mossModel.getMrgbd());
 		miner.setMaxEmbs(mossModel.getMaxEmbMemory());
 
+		// TODO: Let type be a changeable parameter
+		int type = Fragment.GRAPHS | Fragment.GREEDY;
+		miner.setType(type);
+
 		// Set seed
 		try {
 			miner.setSeed(mossModel.getSeed(), "smiles");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -107,11 +98,10 @@ public class MossTestRunner {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				// TODO:not finished, can not have 1-0:0 since they are not
-				// constants
+
+				// Since Moss group is private we go around it with initiating g
 				int grp = (mol.getValue() > mossModel.getThreshold()) ? 1 - g
 						: g;
-
 				NamedGraph ngraph = new NamedGraph(graph, mol.getId(), mol
 						.getValue(), grp);
 				miner.addGraph(ngraph);
@@ -127,7 +117,6 @@ public class MossTestRunner {
 		miner.setLog(ps);
 		// Tries to set output files by using a method from Moss
 		try {
-
 			miner.setOutput(outputFileName, "smiles", outputFileNameId);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -140,7 +129,6 @@ public class MossTestRunner {
 
 		net.bioclipse.ui.Activator.getDefault().CONSOLE.echo(bo.toString());
 
-		// System.out.println("log:\n" + bo.toString());
 		try {
 			bo.close();
 		} catch (IOException e) {
