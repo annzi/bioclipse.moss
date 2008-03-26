@@ -342,12 +342,11 @@ public class ParametersPage extends WizardPage {
 						errors.put(txt, null);
 						((MossWizard) getWizard()).getContainer()
 								.updateButtons();
-
 						Notation ntn = new SMILES();
 						ntn.parse(new StringReader(value));
 
 						((MossWizard) getWizard()).getMossModel()
-								.setExSeed(value);
+								.setExNode(value);
 					} catch (Exception e1) {
 						errors
 								.put(txt,
@@ -433,7 +432,7 @@ public class ParametersPage extends WizardPage {
 							ntn.parse(new StringReader(value));
 
 							((MossWizard) getWizard()).getMossModel()
-									.setExSeed(value);
+									.setSeed(value);
 						} catch (Exception e1) {
 							errors
 									.put(txt,
