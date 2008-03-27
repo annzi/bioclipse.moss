@@ -25,7 +25,7 @@ public class MossModel {
 	private int maxRing, minRing;
 	private int mode;
 	private int maxEmbMemory;
-	private String test, testId;
+	private String test, testId, namefile, namefileId;
 
 	// Initializing parameters
 	public MossModel() {
@@ -230,6 +230,22 @@ public class MossModel {
 
 	public void setTestId(String testId) {
 		this.testId = testId;
+	}
+
+	public String getNamefile() {
+		return namefile;
+	}
+
+	public void setNamefile(String namefile) {
+		this.namefile = namefile;
+	}
+
+	public String getNamefileId() {
+		return namefileId;
+	}
+
+	public void setNamefileId(String namefileId) {
+		this.namefileId = namefileId;
 	}
 
 }

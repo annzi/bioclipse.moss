@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * 
  * @author Annsofie Andersson, Ola Spjuth
- *
+ * 
  */
 public class RunMossAction implements IObjectActionDelegate {
 
@@ -62,49 +62,53 @@ public class RunMossAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 
-		//Check what the selection is and extract input molecules
+		// Check what the selection is and extract input molecules
 
 		// Instantiate, initialize, and open the wizard
+
 		MossWizard wizard = new MossWizard(selection);
 
 		WizardDialog dialog = new WizardDialog(part.getSite().getShell(),
 				wizard);
+
 		dialog.create();
+
 		int ret = dialog.open();
+
 		if (ret != 0) {
 			return;
 		}
 
-		//We pressed finish...
-
+		// We pressed finish...
 		final MossModel mossModel = wizard.getMossModel();
-
-		// Check if parameters are correct by printing them
-		// TODO: Remove syso only checks if e given parameter is correctly checked
-		System.out.println("Max support: " + mossModel.getMaximalsupport());
-		System.out.println("Min support: " + mossModel.getMinimalSupport());
-		System.out.println("Threshold: " + mossModel.getThreshold());
-		System.out.println("Invert split: " + mossModel.getSplit());
-		System.out.println("closed: " + mossModel.getClosed());
-		System.out.println("ExNode: " + mossModel.getExNode());
-		System.out.println("ExSeed: " + mossModel.getExSeed());
-		System.out.println("ExSeed: " + mossModel.getSeed());
-		System.out.println("MaxEmb: " + mossModel.getMaxEmbed());
-		System.out.println("MinEmb: " + mossModel.getMinEmbed());
-		System.out.println("MBond: " + mossModel.getMbond());
-		System.out.println("Mrgbd: " + mossModel.getMrgbd());
-		System.out.println("Matom: " + mossModel.getMatom());
-		System.out.println("Mrgat: " + mossModel.getMrgat());
-		System.out.println("Max Ring: " + mossModel.getMaxRing());
-		System.out.println("Min Ring: " + mossModel.getMinRing());
-		System.out.println("Mode: " + mossModel.getMode());
-		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
-		System.out.println("test" + mossModel.getTest());
-		//TODO: Remove
-		for (InputMolecule mol : mossModel.getInputMolecules()) {
-			System.out.println("Molecule: " + mol.getId() + " include: "
-					+ mol.isChecked());
-		}
+//
+//		// Check if parameters are correct by printing them
+//		// TODO: Remove syso only checks if e given parameter is correctly
+//		// checked
+//		System.out.println("Max support: " + mossModel.getMaximalsupport());
+//		System.out.println("Min support: " + mossModel.getMinimalSupport());
+//		System.out.println("Threshold: " + mossModel.getThreshold());
+//		System.out.println("Invert split: " + mossModel.getSplit());
+//		System.out.println("closed: " + mossModel.getClosed());
+//		System.out.println("ExNode: " + mossModel.getExNode());
+//		System.out.println("ExSeed: " + mossModel.getExSeed());
+//		System.out.println("ExSeed: " + mossModel.getSeed());
+//		System.out.println("MaxEmb: " + mossModel.getMaxEmbed());
+//		System.out.println("MinEmb: " + mossModel.getMinEmbed());
+//		System.out.println("MBond: " + mossModel.getMbond());
+//		System.out.println("Mrgbd: " + mossModel.getMrgbd());
+//		System.out.println("Matom: " + mossModel.getMatom());
+//		System.out.println("Mrgat: " + mossModel.getMrgat());
+//		System.out.println("Max Ring: " + mossModel.getMaxRing());
+//		System.out.println("Min Ring: " + mossModel.getMinRing());
+//		System.out.println("Mode: " + mossModel.getMode());
+//		System.out.println("MaxEmbMemory: " + mossModel.getMaxEmbMemory());
+//		System.out.println("test" + mossModel.getTest());
+//		// TODO: Remove
+//		for (InputMolecule mol : mossModel.getInputMolecules()) {
+//			System.out.println("Molecule: " + mol.getId() + " include: "
+//					+ mol.isChecked());
+//		}
 
 		String path2 = "";
 		parent = null;
@@ -124,32 +128,39 @@ public class RunMossAction implements IObjectActionDelegate {
 		String fileName, fileNameId;
 		String path1 = mossModel.getTest();
 		String pathId = mossModel.getTestId();
-
+		String namefile = mossModel.getNamefile();
+		String namefileid = mossModel.getNamefileId();
+		
 		// Finding path for outputFileName
 		if (path1 != null) {
-			fileName = path1; 
+			fileName = path1;
+		} else if (namefile != null) {
+			fileName = path2 + File.separator + namefile;
 		} else {
 			fileName = path2 + File.separator + "MossOutput.txt";
-//			// if filename already exists
-//			File f = new File(fileName);
-//			if (f.exists()){
-//				int i = 2;
-//				fileName = path2 + File.separator + "MossOutput" + i++ + ".txt";	
-//			}
 		}
 		// Finding path for outputFileNameId
-		if (pathId != null) {
+		if (path1 != null) {
 			fileNameId = pathId;
-
+		} else if (namefile != null) {
+			fileNameId = path2 + File.separator + namefileid;
 		} else {
 			fileNameId = path2 + File.separator + "MossOutputId.txt";
 		}
-	
-		// Set the final outputFileName(Id) paths 
+
+		
+		//		if (pathId != null) {
+//			fileNameId = pathId;
+//
+//		} else {
+//			fileNameId = path2 + File.separator + "MossOutputId.txt";
+//		}
+
+		// Set the final outputFileName(Id) paths
 		final String outputFileName = fileName;
 		final String outputFileNameId = fileNameId;
 
-		//We now have all info we need. Start Moss in a new Job
+		// We now have all info we need. Start Moss in a new Job
 
 		Job job = new Job("Moss") {
 
@@ -162,7 +173,7 @@ public class RunMossAction implements IObjectActionDelegate {
 
 				MossTestRunner.runMoss(mossModel, outputFileName,
 						outputFileNameId);
-				
+
 				monitor.done();
 
 				Display.getDefault().asyncExec(new Runnable() {
@@ -172,7 +183,7 @@ public class RunMossAction implements IObjectActionDelegate {
 						} catch (CoreException e) {
 							e.printStackTrace();
 						}
-						//				        viewer.refresh(refreshFrom.getParent (), false);
+						// viewer.refresh(refreshFrom.getParent (), false);
 					}
 				});
 

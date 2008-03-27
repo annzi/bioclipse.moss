@@ -13,6 +13,7 @@
 
 package net.bioclipse.moss.wizards;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -173,8 +174,6 @@ public class MossWizard extends Wizard implements IAdaptable {
 		 * setMode
 		 */
 
-		System.out.println("the table for bonds " + bondsTable);
-
 		// Get the values for bond and mrgbd
 		Integer b1 = (Integer) bondsTable.get("mbond1");
 		Integer b2 = (Integer) bondsTable.get("mbond2");
@@ -202,10 +201,9 @@ public class MossWizard extends Wizard implements IAdaptable {
 		} else {
 			Mb &= mb2;
 		}
-
-		System.out.println(bondsTable.values());
-
-		System.out.println("the table for atoms " + atomsTable);
+		// If  you like to check the value of flags for atomsTable and bondsTable unmark
+//		System.out.println("the table for bonds " + bondsTable);
+//		System.out.println("the table for atoms " + atomsTable);
 
 		// Get values from hash table
 		Integer a1 = (Integer) atomsTable.get("matom1");
@@ -236,9 +234,12 @@ public class MossWizard extends Wizard implements IAdaptable {
 			A |= a3;
 		}
 
+		
+		// Íf you like to check the initiail value of modesTable unmark
+//		System.out.println("the table for mode " + modeTable);
+		
 		// Get all the current values in mode hash table, done in alphabetic
 		// order
-		System.out.println("the table for mode " + modeTable);
 		Integer canonic = (Integer) modeTable.get("canonPruning");
 		Integer chain = (Integer) modeTable.get("chain");
 		Integer closed = (Integer) modeTable.get("closed");
@@ -304,11 +305,16 @@ public class MossWizard extends Wizard implements IAdaptable {
 		if (unembedSibling == UNEMBED) {
 			totMode |= unembedSibling;
 		}
-
+		// Get file paths or name for file
 		String file = fileTable.get("output");
+		String nameFile = fileTable.get("outputName");
 		String fileId = fileTable.get("outputId");
+		String nameFileId = fileTable.get("outputNameId");
+		// Set paths and value to mossModel
 		mossModel.setTest(file);
+		mossModel.setNamefile(nameFile);
 		mossModel.setTestId(fileId);
+		mossModel.setNamefileId(nameFileId);
 		
 		// Set the hash table parameters in to mossModel
 		// Set Mbond and Mrgbd in mossModel
@@ -356,8 +362,9 @@ public class MossWizard extends Wizard implements IAdaptable {
 				IFile file = (IFile) obj;
 
 				IPath path = file.getLocation();
-
-				System.out.println("Reading file: " + path.toOSString());
+				
+				// If you like to check path of input file
+//				System.out.println("Reading file: " + path.toOSString());
 
 				// Read file line by line as
 				// Typical line: a,0,CCCO
@@ -365,12 +372,11 @@ public class MossWizard extends Wizard implements IAdaptable {
 				try {
 					BufferedReader bufferedReader = new BufferedReader(
 							new FileReader(path.toOSString()));
-					// Read line by line
+					// Read line by line				
 					while ((line = bufferedReader.readLine()) != null) {
-
 						// Split each line by comma to look like
 						String[] parts = line.split(",");
-
+						
 						// We require the following form: ID, VALUE, DESCRIPTION
 						// (SMILES)
 						String id = parts[0];
@@ -384,20 +390,16 @@ public class MossWizard extends Wizard implements IAdaptable {
 						// Add molecules to mossModel
 						InputMolecule imol = new InputMolecule(id, value,
 								description);
+						
 						mossModel.addMolecule(imol);
 					}
 				} catch (Exception e) {
-					showMessage("Error",
-							" MoSS does not support this input file \n" + e);
-					mossModel.addMolecule(null);
+					showMessage("MoSS Error",
+							" MoSS does not support this input file and will not display a correct file. \n The table " +
+							" will display correct lines till the wrong input occurred. \n \n " + e );
 				}
 
 			}
-
-			System.out.println("We have read: "
-					+ mossModel.getInputMolecules().size()
-					+ " entries from file");
-
 			if (obj instanceof IMolecule) {
 				// TODO: implement this in the future maybe
 				return;

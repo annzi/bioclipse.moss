@@ -85,9 +85,10 @@ public class MossTestRunner {
 
 			InputMolecule mol = mossModel.getInputMolecules().get(i);
 			if (mol.isChecked()) {
-
-				System.out.println(">> Molecule. id: " + mol.getId() + " ) "
-						+ mol.getDescription());
+				
+				// If you like to check which molecules that has been encountered use this print
+//				System.out.println(">> Molecule. id: " + mol.getId() + " ) "
+//						+ mol.getDescription());
 				SMILES smiles = new SMILES();
 				StringReader reader = new StringReader(mol.getDescription());
 
@@ -105,9 +106,10 @@ public class MossTestRunner {
 				NamedGraph ngraph = new NamedGraph(graph, mol.getId(), mol
 						.getValue(), grp);
 				miner.addGraph(ngraph);
-				System.out.println("group" + grp + " false=0,true=1 " + g);
-				System.out.println("   Added " + mol.getId() + " with graph: "
-						+ ngraph.toString() + "\n");
+				//If you like to check which molecules that has been encountered use this print
+//				System.out.println("group" + grp + " false=0,true=1 " + g);
+//				System.out.println("   Added " + mol.getId() + " with graph: "
+//						+ ngraph.toString() + "\n");
 			}
 
 		}
