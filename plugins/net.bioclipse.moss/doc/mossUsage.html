@@ -13,10 +13,35 @@
 substructures and discriminative fragments in a set of molecules. </p>
 
 <p> A small guide about the different pages of MoSS.<br>
+<a href="#zero">Get started</a><br>
 <a href="#one">First Page</a><br>
 <a href="#two">Second Page</a><br>
 <a href="#three">Third Page</a><br>
 <a href="#four">Fourth Page</a></p>
+
+<p> <a name="zero"></a> <font size="4">Get started </font></p>
+
+<p> After you opened Bioclipse create a new folder File --> New and a window will open then open General and choose
+Folder. There are other ways to create a folder for example press right button on your mouse choose New --> Folder.<br>
+Then you create needed files in that folder by right pressing and choose New--> File. <br>
+Name your file and end it with .txt or .smiles it has to be a text file for MoSS to work.
+Then you add your <a href="readFiles.html#in">input </a> data. Now you are ready to run MoSS this is done 
+by right pressing and choosing MoSS. If any errors exist in your input file you will be warned. When pressing ok
+on that dialog MoSS wizard will open and add all correct molecules until the error occurred and so you
+will know on which row to look at in your input file. </p>
+
+<p> You are able to press finish at any time as long as all settings are correct. You are also able
+to move back and forward in the wizard and already made settings will be saved but unfortunately 
+when ever the wizard closes these settings will be lost. Hopefully an option on whether or not you
+would like to save setting will be implemented in the future!</p>
+
+<p> Output files will by default be named "MossOutput.txt" and "MossOutputid.txt" and will be displayed in the folder
+you ran your search in. You are able to change the name of the files by writing something else directly in the window,
+or maybe you have existing files that you would like to overwrite then either write or browse their directories. <br>
+If you browse a file in an other folder existing in Bioclipse they will be written there.<br>
+Notice!<br>
+If you choose a file outside your workspace they will not show in Bioclipse.<br>
+
 
 <p> <a name="one"></a> <font size="4">First Page </font></p>
 <img src="images/inputp copy.jpg"><br>
@@ -134,11 +159,14 @@ in the length of carbon chains between their parts.
 Fourth page of MoSS where pruning and memory settings can be modified. </font>
 <p><B>Pruning</B></p>
 
-<p><B><U>Perfect extension pruning</U></B>
+<p>Pruning only works in the searching performance and will not affect your result. By using pruning you <br>
+are able to minimize memory space. Since the process time increases using pruning you should be sure <br>
+on what you are doing specially if you have a large set of data. I recommend a visit to <a href="http://www.borgelt.net//doc/moss/moss.html">
+Christian Borgelts hompage</a><br>
+if you like to know more about pruning.</p>
 
-<p><B><U>Canonical form pruning</U></B>
-
-<p><B><U>Equivalent sibling pruning</U></B>
+<p>Anyhow there are three different pruning types to work with: <br>
+<B><U>Perfect extension pruning</U></B>, <B><U>Canonical form pruning</U></B> and <B><U>Equivalent sibling pruning</U></B></p>
 
 <p><B>Memory</B></p>
 
@@ -148,10 +176,10 @@ This setting help you save memory by restriction of the maximal number of embedd
 
 <p><B><U>Unembed sibling nodes</U></B>
 Also a function that helps you save memory by removing embeddings of siblings of the current search tree node.<br> 
-This is possible since the mining mainly consists of depth-first searches.
+This is possible since the mining mainly consists of depth-first searches.</p>
 
-Notice!
-Processing time could increase when using these functions!
+<p>Notice!<br>
+Processing time could increase when using these functions!</p>
 
 </body>
 </html>

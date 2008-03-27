@@ -12,40 +12,39 @@
  <a href="#id">Identifier output file</a></p>
 
 <a name="in"></a><p><B><font size="4">Input file </font></B></p>
-<p>An input file has to be some kind of text file for example .txt, .doc, ....
-For MoSS to accept your inputs this file have to look a certain way it has <br>
+<p>An input file has to be some kind of text file .txt, .smiles.
+For MoSS to accept your inputs this file have to look a certain way and <br>
 it has to be divided into an identification part, a value part and a <br>
 description of molecule part.
 </p>
 
-<p><B>Identification </B><br>
+<p><B>Identification part</B><br>
 In this section you give all your input molecules an id <br>
 it could be a character, a number or why not a name.<br>
-The given identity is used in your idoutput file see  <a href="#id">Identifier output file</a>.
-</p>
-<p><B>Value</B><br>
+The given identity is used in your idoutput file see  <a href="#id">Identifier output file</a>.<br>
+The easiest would be to id them by letters a,b,c,d etc.</p>
+
+<p><B>Value part</B><br>
 When you have a search where input data needs to be split into a focus and a complement part <br>
 this value is necessary. To be able to split the data into two parts a threshold <a href="readFiles.html">How to understand an input and output file</a>
 is set by default 0.5. If a value is greater then the value of threshold it is placed in the complement part<br>
 and if the value is less than the value of threshold it is put in the focus part.</p>
 
-<p><B>Description</B><br>
+<p><B>Description part</B><br>
 Here is the part where input molecules are described. Since MoSS only support <br>
 SMILES as a notation language your description needs to be written in this language. </p>
 
-<p>Between the different parts you put a comma ",".</p>
+<p>Between the different parts you put a comma "," do not use blanks.</p>
 
 <p><a name="ex1"></a> <B>Example 1 </B> - how an input file could look like:</p>
 
-<p>id, value, description<br>
+<p>
 a,0,CCS(O)(O)N<br>
 name,0,CCS(O)(C)N<br>
 1,0,CS(O)(C)N<br>
 2,0,CCS(=N)N<br>
 e,0,CS(=N)N<br>
 f,0,CS(=N)O</p>
-
-<p>
 
 <p><a name="out"></a><B><font size="4">Output file </font></B></p>
 
@@ -80,6 +79,10 @@ the features displayed in the file are <I>"id","description","nodes","edges","s_
 
 <p><a name="id"></a> <B><font size="4">Identifier output file </font></B></p>
 
+<p> An identifier output file gives a specification of the molecules the substructure is contained in.<br>
+First row in Example 3 "1:a,name,1",<br>
+would mean that molecules with id a, name and 1 contains the substructure 1 which can be seen in the
+output file.</p>
 <p><B>Example 3</B> - how an identifier output could look like based on <a href="#ex1">Example 1</a>.</p>
 
 <p>id:list<br>
