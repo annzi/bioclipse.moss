@@ -114,7 +114,7 @@ public class ParametersPage extends WizardPage {
 		gl.numColumns = 2;
 		container.setLayout(gl);
 
-		// Set the parameter "Minimum support in focus" 
+		// Set the parameter "Minimum support in focus"
 		new Label(container, SWT.NONE).setText("Minimum Support in focus:");
 
 		Text txtFocusSupport = new Text(container, SWT.RIGHT | SWT.BORDER);

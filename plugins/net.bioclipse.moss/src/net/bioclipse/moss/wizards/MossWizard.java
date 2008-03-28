@@ -13,12 +13,11 @@
 
 package net.bioclipse.moss.wizards;
 
-
 import java.io.BufferedReader;
-import java.io.File;
+
 import java.io.FileReader;
 import java.io.StringReader;
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -28,36 +27,23 @@ import moss.Bonds;
 import moss.Extension;
 import moss.Notation;
 import moss.SMILES;
+
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.moss.InputMolecule;
-import net.bioclipse.moss.MossFileTestRunner;
 import net.bioclipse.moss.MossModel;
-import net.bioclipse.moss.MossTestRunner;
-import net.bioclipse.moss.popup.actions.RunMossAction;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.help.IContextProvider;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
-/**
+/** Class for creating wizard and performFinish()
  * 
  * @author Annsofie Andersson
  * 
@@ -71,8 +57,9 @@ public class MossWizard extends Wizard implements IAdaptable {
 	ParametersPage3 page4;
 
 	MossModel mossModel;
-	
-	// Taken directly from the original MoSS
+
+	// Taken directly from the original MoSS nothing is modified not even
+	// comments
 	/** flag for extensions by single edges */
 	public static final int EDGEEXT = Extension.EDGE;
 	/** flag for extensions by rings */
@@ -121,14 +108,15 @@ public class MossWizard extends Wizard implements IAdaptable {
 	 */
 	public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
 			| PR_PERFECT;
-	
-	// These tables are for storing temporary data that gets collected and set to mossModel
+
+	// These tables are for storing temporary data that gets collected and set
+	// to mossModel
 	Hashtable<String, Integer> bondsTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> atomsTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
 	Hashtable<String, Integer> typeTable = new Hashtable<String, Integer>();
 	Hashtable<String, String> fileTable = new Hashtable<String, String>();
-	
+
 	// Constructor that stores the selection in navigator
 	public MossWizard(ISelection selection) {
 		this.selection = selection;
@@ -166,7 +154,6 @@ public class MossWizard extends Wizard implements IAdaptable {
 	}
 
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
 
 		/*
 		 * Wrap up everything and finalize choices in MossModel Get values from
@@ -174,12 +161,16 @@ public class MossWizard extends Wizard implements IAdaptable {
 		 * setMode
 		 */
 
-		// Get the values for bond and mrgbd
+		/*
+		 * Get the values for bond and mrgbd from bondsTable and collect the
+		 * parameters to one variable each and then set its value to mossModel
+		 */
+
 		Integer b1 = (Integer) bondsTable.get("mbond1");
 		Integer b2 = (Integer) bondsTable.get("mbond2");
 		Integer mb1 = (Integer) bondsTable.get("mrgbd1");
 		Integer mb2 = (Integer) bondsTable.get("mrgbd2");
-		
+
 		// Initialize B and Mb with default values
 		int B = Bonds.BONDMASK;
 		int Mb = Bonds.BONDMASK;
@@ -201,9 +192,15 @@ public class MossWizard extends Wizard implements IAdaptable {
 		} else {
 			Mb &= mb2;
 		}
-		// If  you like to check the value of flags for atomsTable and bondsTable unmark
-//		System.out.println("the table for bonds " + bondsTable);
-//		System.out.println("the table for atoms " + atomsTable);
+		// If you like to check the value of flags for atomsTable and bondsTable
+		// unmark
+		// System.out.println("the table for bonds " + bondsTable);
+		// System.out.println("the table for atoms " + atomsTable);
+
+		/*
+		 * Get the values for bond and mrgat from atomsTable and collect the
+		 * parameters to one variable each and then set its value to mossModel
+		 */
 
 		// Get values from hash table
 		Integer a1 = (Integer) atomsTable.get("matom1");
@@ -234,10 +231,14 @@ public class MossWizard extends Wizard implements IAdaptable {
 			A |= a3;
 		}
 
-		
 		// Íf you like to check the initiail value of modesTable unmark
-//		System.out.println("the table for mode " + modeTable);
-		
+		// System.out.println("the table for mode " + modeTable);
+
+		/*
+		 * Get the values for mode from modeTable and collect the parameters to
+		 * one variable and then set its value to mossModel
+		 */
+
 		// Get all the current values in mode hash table, done in alphabetic
 		// order
 		Integer canonic = (Integer) modeTable.get("canonPruning");
@@ -273,15 +274,17 @@ public class MossWizard extends Wizard implements IAdaptable {
 		if (stats != DEFAULT) {
 			totMode |= stats;
 		}
+		// Removed since this options seems unnecessary to have, can easily be
+		// added again its wizard
+		// code is on parametersPage3
 		// if (verbose != DEFAULT) {
 		// totMode |= verbose;
 		// }
 
-		// Pruning parameters working??
+		// Pruning parameters
 		if (equiv == PR_EQUIV) {
 			totMode |= equiv;
 		}
-
 		if (extprune1 == PR_PERFECT) {
 			totMode |= extprune1;
 			totMode &= extprune2;
@@ -290,9 +293,7 @@ public class MossWizard extends Wizard implements IAdaptable {
 			totMode |= extprune1;
 			totMode &= extprune2;
 		}
-
-		// could be ?? or write actual values TODO: check what's best values or
-		// parameters
+		// TODO: write which parameters this is
 		if (extension1 == RINGEXT) {
 			totMode |= extension1;
 		}
@@ -310,34 +311,21 @@ public class MossWizard extends Wizard implements IAdaptable {
 		String nameFile = fileTable.get("outputName");
 		String fileId = fileTable.get("outputId");
 		String nameFileId = fileTable.get("outputNameId");
-		// Set paths and value to mossModel
-		mossModel.setTest(file);
-		mossModel.setNamefile(nameFile);
-		mossModel.setTestId(fileId);
-		mossModel.setNamefileId(nameFileId);
-		
-		// Set the hash table parameters in to mossModel
-		// Set Mbond and Mrgbd in mossModel
+
+		/* Adding values of variables to mossModel */
 		mossModel.setMbond(B);
 		mossModel.setMrgbd(Mb);
-		// Set the total value of matom and mrgat
 		mossModel.setMatom(A);
 		mossModel.setMrgat(Ma);
-		// Set the total mode is set
 		mossModel.setMode(totMode);
-		
+		mossModel.setPath(file);
+		mossModel.setNamefile(nameFile);
+		mossModel.setPathId(fileId);
+		mossModel.setNamefileId(nameFileId);
+
 		// Action continues
 
 		return true;
-	}
-
-	public MossModel getMossModel() {
-		return mossModel;
-	}
-
-	public void setMossModel(MossModel mossModel) {
-		this.mossModel = mossModel;
-
 	}
 
 	/**
@@ -362,9 +350,9 @@ public class MossWizard extends Wizard implements IAdaptable {
 				IFile file = (IFile) obj;
 
 				IPath path = file.getLocation();
-				
+
 				// If you like to check path of input file
-//				System.out.println("Reading file: " + path.toOSString());
+				// System.out.println("Reading file: " + path.toOSString());
 
 				// Read file line by line as
 				// Typical line: a,0,CCCO
@@ -372,31 +360,34 @@ public class MossWizard extends Wizard implements IAdaptable {
 				try {
 					BufferedReader bufferedReader = new BufferedReader(
 							new FileReader(path.toOSString()));
-					// Read line by line				
+					// Read line by line
 					while ((line = bufferedReader.readLine()) != null) {
 						// Split each line by comma to look like
 						String[] parts = line.split(",");
-						
+
 						// We require the following form: ID, VALUE, DESCRIPTION
 						// (SMILES)
 						String id = parts[0];
 						float value = Float.parseFloat(parts[1]);
 						String description = parts[2];
-						
-						// Checks the molecules if they are written in SMILES and if they are correctly written
+
+						// Checks the molecules if they are written in SMILES
+						// and if they are correctly written
 						Notation ntn = new SMILES();
 						ntn.parse(new StringReader(description));
-						
+
 						// Add molecules to mossModel
 						InputMolecule imol = new InputMolecule(id, value,
 								description);
-						
+
 						mossModel.addMolecule(imol);
 					}
 				} catch (Exception e) {
-					showMessage("MoSS Error",
-							" MoSS does not support this input file and will not display a correct file. \n The table " +
-							" will display correct lines till the wrong input occurred. \n \n " + e );
+					showMessage(
+							"MoSS Error",
+							" MoSS does not support this input file and will not display a correct file. \n The table "
+									+ " will display correct lines till the wrong input occurred. \n \n "
+									+ e);
 				}
 
 			}
@@ -407,6 +398,16 @@ public class MossWizard extends Wizard implements IAdaptable {
 
 		}
 
+	}
+
+	/** Create generators for getters and setters */
+
+	public MossModel getMossModel() {
+		return mossModel;
+	}
+
+	public void setMossModel(MossModel mossModel) {
+		this.mossModel = mossModel;
 	}
 
 	public Hashtable<String, Integer> getBondsTable() {
@@ -453,6 +454,5 @@ public class MossWizard extends Wizard implements IAdaptable {
 		}
 		return null;
 	}
-	
-	
+
 }

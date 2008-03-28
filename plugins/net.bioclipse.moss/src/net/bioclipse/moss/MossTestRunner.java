@@ -1,7 +1,7 @@
 package net.bioclipse.moss;
 
 /**
- * Base class that runs Moss
+ * Base class that runs MoSS
  * 
  * @author Annsofie Andersson
  * 
@@ -24,7 +24,7 @@ public class MossTestRunner {
 	}
 
 	/**
-	 * This method runs MOSS on a MossModel
+	 * This method runs MoSS on a MossModel
 	 * 
 	 * @param mossModel
 	 * @param outputFileName,
@@ -35,22 +35,29 @@ public class MossTestRunner {
 
 	public static MossModel runMoss(MossModel mossModel, String outputFileName,
 			String outputFileNameId) {
-		// integer that decides group since Moss made their group private
+		// Integer that decides group since MoSS made their group accessibility
+		// private
 		int g;
-		// This is the class that does the mining
+		// This is the class (in original MoSS)that does the mining
 		Miner miner = new Miner();
 
 		/*
-		 * Set threshold and whether or not to split into focus/complement Set
-		 * up minimum and maximum support Set the search mode Set support type
-		 * and limits Set sizes Set minimal and maximal ring sizes Settings for
-		 * bonds and atoms Set maximum number of embedding
+		 * Creates setters that set the different parameters to miner
+		 * 
+		 * Set threshold and whether or not to split into focus/complement. Set
+		 * up minimum and maximum support Set the search mode Set support type(
+		 * TODO: make types changeable has default settings) Set limits, sizes,
+		 * minimal and maximal ring sizes Set bond and atom types Set maximum
+		 * number of embedding
 		 */
+
+		// Settings for split
 		boolean invert = mossModel.getSplit();
 		if (invert == false)
 			g = 0;
 		else
 			g = 1;
+
 		miner.setGrouping(mossModel.getThreshold(), invert);
 		miner.setLimits(mossModel.getMinimalSupport(), mossModel
 				.getMaximalsupport());
@@ -65,14 +72,11 @@ public class MossTestRunner {
 		int type = Fragment.GRAPHS | Fragment.GREEDY;
 		miner.setType(type);
 
-		// Set seed
 		try {
 			miner.setSeed(mossModel.getSeed(), "smiles");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// Set seed and excluded types
 		try {
 			miner.setExcluded(mossModel.getExNode(), mossModel.getExSeed(),
 					"smiles");
@@ -85,10 +89,11 @@ public class MossTestRunner {
 
 			InputMolecule mol = mossModel.getInputMolecules().get(i);
 			if (mol.isChecked()) {
-				
-				// If you like to check which molecules that has been encountered use this print
-//				System.out.println(">> Molecule. id: " + mol.getId() + " ) "
-//						+ mol.getDescription());
+
+				// If you like to check which molecules that has been
+				// encountered use this print
+				// System.out.println(">> Molecule. id: " + mol.getId() + " ) "
+				// + mol.getDescription());
 				SMILES smiles = new SMILES();
 				StringReader reader = new StringReader(mol.getDescription());
 
@@ -106,10 +111,11 @@ public class MossTestRunner {
 				NamedGraph ngraph = new NamedGraph(graph, mol.getId(), mol
 						.getValue(), grp);
 				miner.addGraph(ngraph);
-				//If you like to check which molecules that has been encountered use this print
-//				System.out.println("group" + grp + " false=0,true=1 " + g);
-//				System.out.println("   Added " + mol.getId() + " with graph: "
-//						+ ngraph.toString() + "\n");
+				// If you like to check which molecules that has been
+				// encountered use this print
+				// System.out.println("group" + grp + " false=0,true=1 " + g);
+				// System.out.println(" Added " + mol.getId() + " with graph: "
+				// + ngraph.toString() + "\n");
 			}
 
 		}

@@ -13,8 +13,8 @@ public class InputMolecule {
 	private String description;
 	private boolean checked;
 
-	// Defines the input molecule by identity (a,b,c..etc) a associated value
-	// and a molecule written in SMILES
+	/** Constructir, defines the input molecule by identity (a,b,c..etc) a associated value
+	 and a molecule written in SMILES*/
 	public InputMolecule(String id, float value, String description) {
 		super();
 		this.id = id;
@@ -23,7 +23,8 @@ public class InputMolecule {
 		checked = true;
 	}
 
-	// Getters and setters for the attributes of Input molecule
+	/* Getters and setters for the attributes of Input molecule*/
+
 	public String getId() {
 		return id;
 	}

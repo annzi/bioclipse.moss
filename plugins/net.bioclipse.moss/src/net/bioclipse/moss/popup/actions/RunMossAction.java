@@ -126,8 +126,8 @@ public class RunMossAction implements IObjectActionDelegate {
 		// Gives a default outputFile directory but if a path is given
 		// output will be printed there instead.
 		String fileName, fileNameId;
-		String path1 = mossModel.getTest();
-		String pathId = mossModel.getTestId();
+		String path1 = mossModel.getPath();
+		String pathId = mossModel.getPathId();
 		String namefile = mossModel.getNamefile();
 		String namefileid = mossModel.getNamefileId();
 		

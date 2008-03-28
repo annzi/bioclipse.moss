@@ -1,15 +1,12 @@
 package net.bioclipse.moss;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-
-import moss.Bonds;
 
 /**
  * This is a model class that contains all information about a MOSS run
- * @author Annsofie AnderssonS
- *
+ * 
+ * @author Annsofie Andersson
+ * 
  */
 public class MossModel {
 
@@ -25,7 +22,9 @@ public class MossModel {
 	private int maxRing, minRing;
 	private int mode;
 	private int maxEmbMemory;
-	private String test, testId, namefile, namefileId;
+	private String path, pathId, namefile, namefileId;
+
+	private ArrayList<InputMolecule> inputMolecules;
 
 	// Initializing parameters
 	public MossModel() {
@@ -44,20 +43,19 @@ public class MossModel {
 		maxEmbMemory = 0;
 	}
 
-	// Array list for storing input molecules
-	ArrayList<InputMolecule> inputMolecules;
-
-	public ArrayList<InputMolecule> getInputMolecules() {
-		return inputMolecules;
-	}
-
+	// Method for adding molecules to array list InputMolecule
 	public void addMolecule(InputMolecule mol) {
 		if (inputMolecules == null)
 			inputMolecules = new ArrayList<InputMolecule>();
 		inputMolecules.add(mol);
 	}
 
-	// Getters and setters for all parameters
+	/* Generating getters and setters for all parameters*/
+
+	public ArrayList<InputMolecule> getInputMolecules() {
+		return inputMolecules;
+	}
+
 	public void setInputMolecules(ArrayList<InputMolecule> inputMolecules) {
 		this.inputMolecules = inputMolecules;
 	}
@@ -216,20 +214,20 @@ public class MossModel {
 		this.seed = seed;
 	}
 
-	public String getTest() {
-		return test;
+	public String getPath() {
+		return path;
 	}
 
-	public void setTest(String test) {
-		this.test = test;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
-	public String getTestId() {
-		return testId;
+	public String getPathId() {
+		return pathId;
 	}
 
-	public void setTestId(String testId) {
-		this.testId = testId;
+	public void setPathId(String pathId) {
+		this.pathId = pathId;
 	}
 
 	public String getNamefile() {

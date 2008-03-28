@@ -13,21 +13,14 @@
 
 package net.bioclipse.moss.wizards;
 
-import java.io.File;
-
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -42,7 +35,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -52,6 +44,13 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * A class for the first page in wizard, sets its contents and collects input
+ * file and displays it
+ * 
+ * @author Annsofie Andersson
+ * 
+ */
 public class InputPage extends WizardPage {
 	private IWorkbenchPart part;
 	private CheckboxTableViewer tableViewer;
@@ -73,22 +72,44 @@ public class InputPage extends WizardPage {
 	public void performHelp() {
 		PlatformUI.getWorkbench().getHelpSystem().displayHelp();
 	}
+
 	/**
 	 * Create contents of the wizard
 	 * 
 	 * @param parent
 	 */
 	public void createControl(final Composite parent) {
-		
+
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
-		container.setLayout(gl);		
+		container.setLayout(gl);
+
 		// Created table and a viewer so input file can be displayed
 		table = new Table(container, SWT.CHECK);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		GridData tableData = new GridData();
+		tableData.horizontalAlignment = GridData.FILL;
+		tableData.verticalAlignment = GridData.FILL;
+		tableData.grabExcessHorizontalSpace = true;
+		tableData.grabExcessVerticalSpace = true;
+		tableData.widthHint = 300;
+		tableData.heightHint = 200;
+		tableData.horizontalSpan = 2;
+		table.setLayoutData(tableData);
+
 		tableViewer = new CheckboxTableViewer(table);
-		
+		tableViewer.setContentProvider(new ViewContentProvider());
+		tableViewer.setLabelProvider(new ViewLabelProvider());
+		try {
+			tableViewer.setInput(((MossWizard) getWizard()).getMossModel());
+		} catch (Exception e) {
+			return;
+		}
+		tableViewer.setAllChecked(true);
 		// A molecule can get unselected this method checks whether or not the
 		// molecule is to be treated or not
 		tableViewer.addCheckStateListener(new ICheckStateListener() {
@@ -101,19 +122,6 @@ public class InputPage extends WizardPage {
 				}
 			}
 		});
-
-		GridData da = new GridData();
-		da.horizontalAlignment = GridData.FILL;
-		da.verticalAlignment = GridData.FILL;
-		da.grabExcessHorizontalSpace = true;
-		da.grabExcessVerticalSpace = true;
-		da.widthHint = 300;
-		da.heightHint = 200;
-		da.horizontalSpan = 2;
-		table.setLayoutData(da);
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
 		// Add columns to table id, value, and description(in SMILES)
 		column1 = new TableColumn(table, SWT.NONE);
 		column1.setText(colnames[0]);
@@ -124,26 +132,18 @@ public class InputPage extends WizardPage {
 		column3 = new TableColumn(table, SWT.NONE);
 		column3.setText(colnames[2]);
 		column3.setWidth(1000);
-		
-		tableViewer.setContentProvider(new ViewContentProvider());
-		tableViewer.setLabelProvider(new ViewLabelProvider());
-		try{
-			tableViewer.setInput(((MossWizard) getWizard()).getMossModel());}
-			catch(Exception e){
-				return;
-			}
-		tableViewer.setAllChecked(true);
 
-		// Label for finding output directory
+		// Output directory settings
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Workspace directory for output file");
+
 		GridData labelData = new GridData();
 		labelData.horizontalSpan = 2;
 		label.setLayoutData(labelData);
 
 		final Text txtoutputFile = new Text(container, SWT.BORDER);
 		txtoutputFile.setText("MossOutput.txt");
-		
+
 		txtoutputFile.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -151,10 +151,12 @@ public class InputPage extends WizardPage {
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
-					((MossWizard) getWizard()).getFileTable()
-					.put("outputName", value);
-				}}});
-					
+					((MossWizard) getWizard()).getFileTable().put("outputName",
+							value);
+				}
+			}
+		});
+
 		GridData outputFileData = new GridData(GridData.FILL_HORIZONTAL);
 		outputFileData.verticalAlignment = 2;
 		txtoutputFile.setLayoutData(outputFileData);
@@ -169,20 +171,20 @@ public class InputPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog dial = new FileDialog(getShell());
 				dial.setFilterPath(Platform.getLocation().toOSString());
-				//dial.setFilterPath(txtoutputFile.getText());
+				// dial.setFilterPath(txtoutputFile.getText());
 				dial.setText("MoSS file directory");
-					String dir = dial.open();
+				String dir = dial.open();
 				if (dir != null) {
 					txtoutputFile.setText(dir);
+				} else {
+					return;
 				}
-				else{
-					return; }
 
 				((MossWizard) getWizard()).getFileTable().put("output", dir);
 			}
 
 		});
-		// Label for finding identifier(id) output directory
+		// Identifier(id) output directory settings
 		Label labelId = new Label(container, SWT.NONE);
 		labelId.setText("Workspace directory for identifier output file");
 		GridData labelIdData = new GridData();
@@ -191,7 +193,7 @@ public class InputPage extends WizardPage {
 
 		final Text txtIdOutputFile = new Text(container, SWT.BORDER);
 		txtIdOutputFile.setText("MossOutputId.txt");
-		
+
 		txtIdOutputFile.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -199,10 +201,12 @@ public class InputPage extends WizardPage {
 				if (e.getSource() instanceof Text) {
 					Text txt = (Text) e.getSource();
 					String value = txt.getText();
-					((MossWizard) getWizard()).getFileTable()
-					.put("outputNameId", value);
-				}}});
-					
+					((MossWizard) getWizard()).getFileTable().put(
+							"outputNameId", value);
+				}
+			}
+		});
+
 		GridData idOutputFileData = new GridData(GridData.FILL_HORIZONTAL);
 		idOutputFileData.verticalAlignment = 2;
 		txtIdOutputFile.setLayoutData(idOutputFileData);
@@ -212,24 +216,26 @@ public class InputPage extends WizardPage {
 
 		GridData browseIdData = new GridData();
 		browseId.setLayoutData(browseIdData);
-//		final IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
-		
+		// final IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
+
 		browseId.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {	
-//				ResourceSelectionDialog  dialId = new ResourceSelectionDialog(getShell(), root,null );
-//				dialId.open();
-//				dialId.
-//				dialId.setInitialSelections(selectedResources);
-//				dialId.setFilterPath(txtIdOutputFile.getText());
+			public void widgetSelected(SelectionEvent e) {
+				// ResourceSelectionDialog dialId = new
+				// ResourceSelectionDialog(getShell(), root,null );
+				// dialId.open();
+				// dialId.
+				// dialId.setInitialSelections(selectedResources);
+				// dialId.setFilterPath(txtIdOutputFile.getText());
 				FileDialog dialId = new FileDialog(getShell());
 				dialId.setFilterPath(Platform.getLocation().toOSString());
-			
+
 				dialId.setText("MoSS file directory");
 				String dirId = dialId.open();
 				if (dirId != null) {
 					txtIdOutputFile.setText(dirId);
-				}else{
-					return; }
+				} else {
+					return;
+				}
 				((MossWizard) getWizard()).getFileTable()
 						.put("outputId", dirId);
 			}
@@ -238,6 +244,7 @@ public class InputPage extends WizardPage {
 
 	}
 
+	
 	class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -272,7 +279,7 @@ public class InputPage extends WizardPage {
 				return String.valueOf(mol.getValue());
 			if (index == 2)
 				return mol.getDescription();
-			
+
 			return "??";
 		}
 
