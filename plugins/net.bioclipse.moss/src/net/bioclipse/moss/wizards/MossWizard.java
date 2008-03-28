@@ -447,7 +447,6 @@ public class MossWizard extends Wizard implements IAdaptable {
 		this.fileTable = fileTable;
 	}
 
-	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter.equals(IContextProvider.class)) {
 			return new MossContextProvider();
