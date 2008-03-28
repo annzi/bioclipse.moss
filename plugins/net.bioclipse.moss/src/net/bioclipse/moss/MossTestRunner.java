@@ -9,6 +9,9 @@ package net.bioclipse.moss;
 
 import java.io.*;
 
+import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import moss.Fragment;
 import moss.Graph;
 import moss.Miner;
@@ -16,8 +19,15 @@ import moss.NamedGraph;
 import moss.SMILES;
 
 public class MossTestRunner {
+    
+    private static final Logger logger = Logger.getLogger(MossTestRunner.class);
+    
 	public static void main(String[] args) {
 
+	    // print logging output to the console since we're not running
+	    // in Bioclipse environment
+	    org.apache.log4j.BasicConfigurator.configure();
+	    
 		// Model to store our data
 		MossModel mossModel = new MossModel();
 		runMoss(mossModel, "", "");
@@ -75,13 +85,14 @@ public class MossTestRunner {
 		try {
 			miner.setSeed(mossModel.getSeed(), "smiles");
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
+		
 		try {
 			miner.setExcluded(mossModel.getExNode(), mossModel.getExSeed(),
 					"smiles");
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
 
 		// Loop over all inputMolecules in mossModel
@@ -101,7 +112,7 @@ public class MossTestRunner {
 				try {
 					graph = smiles.parse(reader);
 				} catch (IOException e) {
-					e.printStackTrace();
+				    LogUtils.debugTrace(logger, e);
 					System.exit(1);
 				}
 
@@ -127,7 +138,7 @@ public class MossTestRunner {
 		try {
 			miner.setOutput(outputFileName, "smiles", outputFileNameId);
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 			return null;
 		}
 
@@ -140,7 +151,7 @@ public class MossTestRunner {
 		try {
 			bo.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
 		ps.close();
 		return null;

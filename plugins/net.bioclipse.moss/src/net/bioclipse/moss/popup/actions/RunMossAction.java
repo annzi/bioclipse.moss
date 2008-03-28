@@ -18,6 +18,9 @@ import net.bioclipse.moss.MossModel;
 import net.bioclipse.moss.MossTestRunner;
 import net.bioclipse.moss.wizards.MossWizard;
 
+import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +42,8 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class RunMossAction implements IObjectActionDelegate {
 
+    private static final Logger logger = Logger.getLogger(RunMossAction.class);
+    
 	private IWorkbenchPart part;
 	private ISelection selection;
 	private IResource parent;
@@ -181,7 +186,7 @@ public class RunMossAction implements IObjectActionDelegate {
 						try {
 							parent.refreshLocal(IResource.DEPTH_ONE, null);
 						} catch (CoreException e) {
-							e.printStackTrace();
+						    LogUtils.debugTrace(logger, e);
 						}
 						// viewer.refresh(refreshFrom.getParent (), false);
 					}
