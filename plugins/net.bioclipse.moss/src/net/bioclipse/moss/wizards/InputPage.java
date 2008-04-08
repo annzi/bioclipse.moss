@@ -104,11 +104,7 @@ public class InputPage extends WizardPage {
 		tableViewer = new CheckboxTableViewer(table);
 		tableViewer.setContentProvider(new ViewContentProvider());
 		tableViewer.setLabelProvider(new ViewLabelProvider());
-		try {
-			tableViewer.setInput(((MossWizard) getWizard()).getMossModel());
-		} catch (Exception e) {
-			return;
-		}
+		
 		tableViewer.setAllChecked(true);
 		// A molecule can get unselected this method checks whether or not the
 		// molecule is to be treated or not
@@ -132,6 +128,12 @@ public class InputPage extends WizardPage {
 		column3 = new TableColumn(table, SWT.NONE);
 		column3.setText(colnames[2]);
 		column3.setWidth(1000);
+		
+		try {
+			tableViewer.setInput(((MossWizard) getWizard()).getMossModel());
+		} catch (Exception e) {
+			return;
+		}
 
 		// Output directory settings
 		Label label = new Label(container, SWT.NONE);
