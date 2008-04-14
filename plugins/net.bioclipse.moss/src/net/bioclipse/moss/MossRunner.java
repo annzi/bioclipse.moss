@@ -18,9 +18,9 @@ import moss.Miner;
 import moss.NamedGraph;
 import moss.SMILES;
 
-public class MossTestRunner {
+public class MossRunner {
     
-    private static final Logger logger = Logger.getLogger(MossTestRunner.class);
+    private static final Logger logger = Logger.getLogger(MossRunner.class);
     
 	public static void main(String[] args) {
 
@@ -96,9 +96,9 @@ public class MossTestRunner {
 		}
 
 		// Loop over all inputMolecules in mossModel
-		for (int i = 0; i < mossModel.getInputMolecules().size(); i++) {
-
-			InputMolecule mol = mossModel.getInputMolecules().get(i);
+//		for (int i = 0; i < mossModel.getInputMolecules().size(); i++) {
+			for(InputMolecule mol : mossModel.getInputMolecules()){
+//			InputMolecule mol = mossModel.getInputMolecules().get(i);
 			if (mol.isChecked()) {
 
 				// If you like to check which molecules that has been

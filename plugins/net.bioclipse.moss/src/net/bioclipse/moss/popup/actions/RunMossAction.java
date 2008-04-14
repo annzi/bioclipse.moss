@@ -15,7 +15,7 @@ import java.io.File;
 
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
-import net.bioclipse.moss.MossTestRunner;
+import net.bioclipse.moss.MossRunner;
 import net.bioclipse.moss.wizards.MossWizard;
 
 import org.apache.log4j.Logger;
@@ -176,7 +176,7 @@ public class RunMossAction implements IObjectActionDelegate {
 
 				monitor.worked(2);
 
-				MossTestRunner.runMoss(mossModel, outputFileName,
+				MossRunner.runMoss(mossModel, outputFileName,
 						outputFileNameId);
 
 				monitor.done();
