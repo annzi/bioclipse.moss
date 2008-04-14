@@ -104,20 +104,7 @@ public class InputPage extends WizardPage {
 		tableViewer = new CheckboxTableViewer(table);
 		tableViewer.setContentProvider(new ViewContentProvider());
 		tableViewer.setLabelProvider(new ViewLabelProvider());
-		
-		tableViewer.setAllChecked(true);
-		// A molecule can get unselected this method checks whether or not the
-		// molecule is to be treated or not
-		tableViewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				Object obj = event.getElement();
-				boolean status = event.getChecked();
-				if (obj instanceof InputMolecule) {
-					InputMolecule imol = (InputMolecule) obj;
-					imol.setChecked(status);
-				}
-			}
-		});
+	
 		// Add columns to table id, value, and description(in SMILES)
 		column1 = new TableColumn(table, SWT.NONE);
 		column1.setText(colnames[0]);
@@ -134,7 +121,19 @@ public class InputPage extends WizardPage {
 		} catch (Exception e) {
 			return;
 		}
-
+		tableViewer.setAllChecked(true);
+		// A molecule can get unselected this method checks whether or not the
+		// molecule is to be treated or not
+		tableViewer.addCheckStateListener(new ICheckStateListener() {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				Object obj = event.getElement();
+				boolean status = event.getChecked();
+				if (obj instanceof InputMolecule) {
+					InputMolecule imol = (InputMolecule) obj;
+					imol.setChecked(status);
+				}
+			}
+		});
 		// Output directory settings
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Workspace directory for output file");

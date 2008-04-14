@@ -13,7 +13,7 @@ public class InputMolecule {
 	private String description;
 	private boolean checked;
 
-	/** Constructir, defines the input molecule by identity (a,b,c..etc) a associated value
+	/** Constructor, defines the input molecule by identity (a,b,c..etc) a associated value
 	 and a molecule written in SMILES*/
 	public InputMolecule(String id, float value, String description) {
 		super();
