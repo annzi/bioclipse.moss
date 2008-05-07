@@ -217,7 +217,7 @@ public class MoSSPanel extends JPanel {
     tfld.setText(text);         /* and configure it */
     tfld.setInputVerifier(new InputVerifier() {
       @Override
-	public boolean verify (JComponent comp) {
+    public boolean verify (JComponent comp) {
         String text = ((JTextField)comp).getText();
         if (text.length() <= 0) return true;
         try { Double.parseDouble(text); }

@@ -448,7 +448,7 @@ public int hashCode ()
           edge = ext.edges[i];  /* traverse the added edges */
           if (edge.mark >= 0) continue;
           if (edge != emb.edges[--k]) break;
-	}                       /* if an edge differs, abort the loop */
+    }                       /* if an edge differs, abort the loop */
         if (i < 0) return false;/* if all edges are identical, */
       }                         /* the new embedding would be */
     }                           /* a duplicate, so do not add it */

@@ -1680,7 +1680,7 @@ public class Miner implements Runnable {
           case 'L': smode |= LOGIC;                              break;
           default : throw new IOException(
                       "error: unknown option -" +s.charAt(1));
-	} }                     /* set option variables */
+    } }                     /* set option variables */
       else if ((s.length() > 0) /* if the argument is an option */
       &&       (s.charAt(0) == '+')) {
         if (s.length() < 2)     /* check for an option letter */
@@ -1709,7 +1709,7 @@ public class Miner implements Runnable {
           case  1: subfn = s; break;
           case  2: idsfn = s; break;
           default: throw new IOException("error: too many arguments");
-	}                       /* there should be two fixed args: */
+    }                       /* there should be two fixed args: */
       }                         /* a seed description and a */
     }                           /* name of an input file */
 

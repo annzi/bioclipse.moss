@@ -307,7 +307,7 @@ public class OverlapGraph {
         for (k = s.deg; --k >= 0; ) {
           d = s.adjs[k];        /* traverse each neighbor's neighbors */
           if ((d.mark < 0) && (--d.red <= 1)) s.red++;
-	}                       /* reduce their node degrees and */
+    }                       /* reduce their node degrees and */
       }                         /* count leaves and isolated nodes */
       for (i = node.deg; --i >= 0; ) {
         s = node.adjs[i];       /* traverse the node's neighbors */
@@ -456,7 +456,7 @@ public class OverlapGraph {
           if (s.mark <= r.mark) continue;
           for (k = s.deg; --k >= 0; ) {
             d = s.adjs[k]; if (d.mark < 0) d.red++; }
-	}                       /* increase degree of their neighbors */
+    }                       /* increase degree of their neighbors */
         for (i = r.deg; --i >= 0; ) {
           s = r.adjs[i]; if (s.mark > r.mark) s.mark = -1; }
         this.rem += r.red;      /* unexclude the node's neighbors */

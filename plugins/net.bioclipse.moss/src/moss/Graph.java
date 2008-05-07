@@ -795,7 +795,7 @@ public int hashCode ()
     if (node == term) {         /* if a ring has been found */
       if (min > 0) return 0;    /* if min. size not reached, abort */
       for (r = 1; (r & Edge.RINGMASK) != 0; r <<= 1)
-	if ((rings & r) == 0) break;
+    if ((rings & r) == 0) break;
       if ((r & Edge.RINGMASK) == 0) return Edge.BRIDGE;
       edge.flags |= r;          /* find an unused ring flag, set it */
       return r;                 /* in the ring flags of the edge, */

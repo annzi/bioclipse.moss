@@ -5,19 +5,19 @@ import org.eclipse.help.IContextProvider;
 
 public class MossContextProvider implements IContextProvider {
 
-	public IContext getContext(Object target) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IContext getContext(Object target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public int getContextChangeMask() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public int getContextChangeMask() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	public String getSearchExpression(Object target) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getSearchExpression(Object target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
