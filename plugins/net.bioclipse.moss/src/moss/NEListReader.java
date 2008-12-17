@@ -16,19 +16,16 @@
             2007.08.16 bug in function main() fixed (type managers)
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.FileWriter;
-
 /*--------------------------------------------------------------------*/
 /** Class for readers for a simple node/edge list format.
  *  @author Christian Borgelt
  *  @since  2007.06.22 */
 /*--------------------------------------------------------------------*/
 public class NEListReader extends GraphReader {
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -36,38 +33,32 @@ public class NEListReader extends GraphReader {
   private Notation     linog;
   /** the buffer for an input field */
   private StringBuffer buf;
-
   /*------------------------------------------------------------------*/
   /** Create a reader for a simple node/edge list format.
    *  @param  reader the reader to read from
    *  @param  mode   the read mode
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public NEListReader (Reader reader, int mode)
   {                             /* --- create a node/edge list reader */
     super(reader, mode);        /* store the arguments */
     this.ntn = new NEList();    /* create a notation and a buffer */
     this.buf = new StringBuffer();
   }  /* NEListReader() */
-
   /*------------------------------------------------------------------*/
   /** Read an (optional) header.
    *  @return <code>false</code>, because headers are not supported
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean readHeader () throws IOException
   { return false; }
-
   /*------------------------------------------------------------------*/
   /** Read a graph name.
    *  @return the graph name read
    *  @throws IOException if no name could be read
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private String readName () throws IOException
   {                             /* --- read a graph name */
     int c = this.read();        /* check for end of line or separator */
@@ -89,14 +80,12 @@ public boolean readHeader () throws IOException
     }                           /* remove trailing blanks */
     return this.buf.toString(); /* return the graph name */
   }  /* readName() */
-
   /*------------------------------------------------------------------*/
   /** Read a field.
    *  @return the field read
    *  @throws IOException if no field could be read
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private String readField () throws IOException
   {                             /* --- read a field */
     int c = this.read();        /* check for a separator */
@@ -113,7 +102,6 @@ public boolean readHeader () throws IOException
     this.unread(c);             /* push back the last character */
     return this.buf.toString().trim();
   }  /* readField() */          /* return the field read */
-
   /*------------------------------------------------------------------*/
   /** Check for an empty line.
    *  @param  c the next character (already read)
@@ -122,7 +110,6 @@ public boolean readHeader () throws IOException
    *  @throws IOException if the current line is not empty
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private boolean empty (int c) throws IOException
   {                             /* --- check for an empty line */
     while ((c == ' ') && (c == '\t'))
@@ -131,7 +118,6 @@ public boolean readHeader () throws IOException
       throw new IOException("(rest of) line is not empty");
     return true;                /* always return 'true' */
   }  /* empty() */
-
   /*------------------------------------------------------------------*/
   /** Read a graph.
    *  <p>The next graph description is read and split into the graph
@@ -144,13 +130,11 @@ public boolean readHeader () throws IOException
    *          (otherwise the end of the input has been reached)
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean readGraph () throws IOException
   {                             /* --- read the next graph */
     int    c;                   /* buffer for a character */
     String s;                   /* buffer for a field */
-
     this.graph = this.ntn.parse(this);
     if (this.graph == null) return false;
     this.nodes = this.graph.getNodeCount();
@@ -179,7 +163,6 @@ public boolean readGraph () throws IOException
     this.empty(this.read());    /* check if rest of line is empty */
     return this.empty(this.read());
   }  /* readGraph() */          /* check for an empty line */
-
   /*------------------------------------------------------------------*/
   /** Get a (line) description of the current graph.
    *  <p>Since a connection table is not a line description,
@@ -187,7 +170,6 @@ public boolean readGraph () throws IOException
    *  @return a line description (LiNoG) of the current graph
    *  @since  2007.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public String getDesc ()
   {                             /* --- get a (line) description */
@@ -200,23 +182,19 @@ public String getDesc ()
     }                           /* create a description if possible */
     return this.desc;           /* return the description */
   }  /* getDesc() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  @param  args the command line arguments
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-  
   public static void main (String args[])
   {                             /* --- main function for testing */
     NEListReader reader;        /* reader for the input  file */
     NEListWriter writer;        /* writer for the output file */
-
     if (args.length != 2) {     /* if wrong number of arguments */
       System.err.println("usage: java moss.NEListReader <in> <out>");
       return;                   /* print a usage message */
     }                           /* and abort the program */
-
     try {                       /* try to read an NEList format file */
       reader = new NEListReader(new FileReader(args[0]), GRAPHS);
       writer = new NEListWriter(new FileWriter(args[1]), GRAPHS);
@@ -231,5 +209,4 @@ public String getDesc ()
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-  
 }  /* class NEListReader */

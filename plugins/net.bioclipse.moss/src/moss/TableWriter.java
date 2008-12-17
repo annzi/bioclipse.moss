@@ -14,17 +14,14 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Writer;
-
 /*--------------------------------------------------------------------*/
 /** Class for writers for simple table formats for graph data sets.
  *  @author Christian Borgelt
  *  @since  2007.03.04 */
 /*--------------------------------------------------------------------*/
 public class TableWriter extends GraphWriter {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -33,7 +30,6 @@ public class TableWriter extends GraphWriter {
     { "id", "value", "description" },          /* GRAPHS */
     { "id", "description", "nodes", "edges",   /* SUBS */
       "s_abs", "s_rel", "c_abs", "c_rel" } };
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -41,7 +37,6 @@ public class TableWriter extends GraphWriter {
   private char recsep = '\n';
   /** the field separator */
   private char fldsep = ',';
-
   /*------------------------------------------------------------------*/
   /** Create a simple table format writer.
    *  @param  writer the writer to write to
@@ -49,29 +44,24 @@ public class TableWriter extends GraphWriter {
    *  @param  ntn    the notation for the graph descriptions
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public TableWriter (Writer writer, int mode, Notation ntn)
   {                             /* --- create a table writer */
     super(writer, mode);        /* store the arguments */
     this.ntn = (ntn != null) ? ntn : new SMILES();
   }  /* TableWriter() */
-
   /*------------------------------------------------------------------*/
   /** Set the record and field separators.
    *  @param  recsep the record separator
    *  @param  fldsep the field  separator
    *  @since  2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setChars (char recsep, char fldsep)
   { this.recsep = recsep; this.fldsep = fldsep; }
-
   /*------------------------------------------------------------------*/
   /** Write a header.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public void writeHeader () throws IOException
   {                             /* --- write a table header */
@@ -82,13 +72,11 @@ public void writeHeader () throws IOException
     }                           /* separated by field separators */
     this.write(this.recsep);    /* terminate the record */
   }  /* writeHeader() */
-
   /*------------------------------------------------------------------*/
   /** Write a description of the current graph.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public void writeGraph () throws IOException
   {                             /* --- write a graph description */
@@ -107,5 +95,4 @@ public void writeGraph () throws IOException
     }                           /* write the support values */
     this.write(this.recsep);    /* terminate the record */
   }  /* writeGraph() */
-
 }  /* class TableWriter */

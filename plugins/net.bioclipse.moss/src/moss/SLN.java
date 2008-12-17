@@ -26,18 +26,15 @@
             2007.07.05 loop check added (it must be src != dst)
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for the SYBYL line notation (SLN, Tripos, Inc.).
  *  @author Christian Borgelt
  *  @since  2006.08.12 */
 /*--------------------------------------------------------------------*/
 public class SLN extends MoleculeNtn {
-  
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -49,43 +46,35 @@ public class SLN extends MoleculeNtn {
   private Recoder      coder;
   /** the buffer for creating atom descriptions */
   private StringBuffer buf;
-
   /*------------------------------------------------------------------*/
   /** Create a SYBYL line notation object.
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public SLN ()
   {                             /* --- create an SLN object */ 
     this.labels = new int[64];  /* create a label to node index map */
     this.desc = this.buf = null;/* clear the description buffers */
   }  /* SLN() */
-
   /*------------------------------------------------------------------*/
   /** Whether this is a line notation (single line description).
    *  @return <code>true</code>, since SLN is a line notation
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean isLine ()
   { return true; }
-
   /*------------------------------------------------------------------*/
   /** Read an atom type, including shorthand hydrogens.
    *  @return the type of the next atom
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readAtom () throws IOException
   {                             /* --- read an atom description */
     int i, k;                   /* loop variable, buffer */
     int c, n;                   /* current and next character */
     int atom = 0;               /* number/code of an atom */
-
     this.labels[0] = 0;         /* clear the label buffer */
-
     /* --- find the atom number --- */
     c = this.read();            /* get first element character */
     if ((c < 'A') || (c > 'Z')) /* check for a letter */
@@ -107,7 +96,6 @@ public boolean isLine ()
       if (c >= 0) this.unread(c);
       return atom | Atoms.codeHydros(this.getHydros());
     }                           /* add shorthand hydrogens */
-
     /* --- get a possible label --- */
     for (i = n = 0; true; i++){ /* read a possible label */
       c = this.read();          /* read the next character */
@@ -125,7 +113,6 @@ public boolean isLine ()
         throw new IOException("missing ';' after label");
       c = this.read();          /* read the character */
     }                           /* after the separator */
-
     /* --- get a possible charge --- */
     while ((c != ']')           /* attributes read loop */
     &&     (c >= 0)) {          /* (but evaluate only charge) */
@@ -139,7 +126,6 @@ public boolean isLine ()
       while ((c != ']') && (c != ';') && (c >= 0))
         c = this.read();        /* skip until separator or delimiter */
     }                           /* (end of the current property) */
-
     /* --- skip additional information --- */
     while ((c != ']') && (c >= 0))
       c = this.read();          /* skip characters until ']' */
@@ -147,14 +133,12 @@ public boolean isLine ()
     atom |= Atoms.codeHydros(this.getHydros());
     return atom;                /* return the atom code */
   }  /* readAtom() */
-
   /*------------------------------------------------------------------*/
   /** Read an atom label.
    *  @return the value of the label
    *  @throws IOException if the label is incomplete or invalid
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readLabel () throws IOException
   {                             /* --- get a ref. to a labeled atom */
     int c = this.read();        /* get the next character */
@@ -168,7 +152,6 @@ public boolean isLine ()
     if (c >= 0) this.unread(c); /* push back character after label */
     return k;                   /* return the label value */
   }  /* readLabel() */
-
   /*------------------------------------------------------------------*/
   /** Recursive function to parse (a branch of) a molecule.
    *  @param  src the source atom for the next bond
@@ -177,20 +160,17 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private boolean parse (int src) throws IOException
   {                             /* --- parse a molecule description */
     int c;                      /* next character */
     int a, b, i;                /* atom and bond types, buffer */
     int dst;                    /* index of destination atom */
-
     a = dst = -1;               /* clear the atom type and index */
     b = Bonds.UNKNOWN;          /* and the bond type */
     while (true) {              /* parse loop for a branch */
       c = this.read();          /* read the next character */
       if (c < 0) return false;  /* if at end, abort indicating no ')' */
       switch (c) {              /* get and evaluate next character */
-
         /* -- branches -- */
         case ')':               /* if at the end of a branch */
           if (b != Bonds.UNKNOWN)  /* check for a preceding bond */
@@ -202,7 +182,6 @@ public boolean isLine ()
           if (!this.parse(src)) /* recursively parse the branch */
             throw new IOException("missing ')'");
           break;                /* check for a closing ')' */
-
         /* -- labels -- */
         case '@':               /* reference to a labeled atom */
           i = this.readLabel(); /* read and check the label value */
@@ -211,14 +190,12 @@ public boolean isLine ()
           dst = this.labels[i]; /* get and check the atom index */
           if (dst < 0) throw new IOException("invalid label " +i);
           a = 0; break;         /* clear the atom type */
-
         /* -- bonds -- */
         case '.': b = Bonds.NULL;     break;
         case '-': b = Bonds.SINGLE;   break;
         case ':': b = Bonds.AROMATIC; break;
         case '=': b = Bonds.DOUBLE;   break;
         case '#': b = Bonds.TRIPLE;   break;
-
         /* -- atoms -- */
         case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
         case 'G': case 'H': case 'I': case 'J': case 'K': case 'L':
@@ -239,7 +216,6 @@ public boolean isLine ()
           }                     /* of the label array */
           this.labels[i] = dst; /* store the new atom index */
           break;                /* with the label read */
-
         default : throw new IOException("invalid character '"
                                         +(char)c +"' (" +c +")");
       }                         /* catch all other characters */
@@ -268,7 +244,6 @@ public boolean isLine ()
       dst = -1;                 /* clear the atom index */
     }                           /* (for the next loop) */
   }  /* parse() */
-  
   /*------------------------------------------------------------------*/
   /** Parse a description of a molecule.
    *  @param  reader the reader to read from
@@ -276,7 +251,6 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public Graph parse (Reader reader) throws IOException
   {                             /* --- parse a molecule description */
@@ -289,7 +263,6 @@ public Graph parse (Reader reader) throws IOException
     this.mol.opt();             /* optimize memory usage and */
     return this.mol;            /* return the created molecule */
   }  /* parse() */
-
   /*------------------------------------------------------------------*/
   /** Create a description of an atom.
    *  @param  type  the type  of the atom
@@ -297,13 +270,11 @@ public Graph parse (Reader reader) throws IOException
    *  @return the description of the atom
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private String describe (int type, int label)
   {                             /* --- describe an atom */
     int     c, h;               /* charge, number of hydrogens */
     String  e;                  /* element name of the atom */
     boolean b;                  /* whether brackets are needed */
-
     if ((type & Node.CHAIN) != 0) return Atoms.getChainName();
     if (type == Node.ANY) {     /* if this is a wildcard atom, */
       e = Atoms.getWildcard();  /* get the special name and */
@@ -332,19 +303,16 @@ public Graph parse (Reader reader) throws IOException
                       if (h >  1) this.buf.append(h); }
     return this.buf.toString(); /* add the shorthand hydrogens and */
   }  /* describe() */           /* return the created description */
-
   /*------------------------------------------------------------------*/
   /** Recursive function to create a description.
    *  @param  atom the current atom
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void out (Node atom)
   {                             /* --- recursive part of output */
     int  i, k, n;               /* loop variables, number of branches */
     Edge b;                     /* to traverse the bonds */
     Node d;                     /* destination of a bond */
-
     k = atom.type;              /* get and decode chemical element */
     if (this.coder != null) k = this.coder.decode(k);
     k |= Atoms.codeHydros(MoleculeNtn.getHydros(atom, this.coder));
@@ -379,21 +347,18 @@ public Graph parse (Reader reader) throws IOException
         this.desc.append(")");  /* terminate it if it is not the last */
     }                           /* (last branch needs no parantheses) */
   }  /* out() */
-
   /*------------------------------------------------------------------*/
   /** Create a description of a given molecule.
    *  @param  mol the molecule to describe
    *  @return a description of the given molecule
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public String describe (Graph mol)
   {                             /* --- create a string description */
     int  i, n, t;               /* loop variable, counter, buffer */
     Node a, d;                  /* to traverse the atoms */
     Edge e;                     /* to access edges from hydrogens */
-
     if (this.desc == null)      /* create a description buffer */
       this.desc = new StringBuffer();
     this.desc.setLength(0);     /* clear the description buffer */
@@ -425,7 +390,6 @@ public String describe (Graph mol)
     }
     return this.desc.toString();/* return the created description */
   }  /* describe() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  <p>It is tried to parse the first argument as an SLN description
@@ -434,7 +398,6 @@ public String describe (Graph mol)
    *  @param  args the command line arguments
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-  
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -448,5 +411,4 @@ public String describe (Graph mol)
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-  
 }  /* class SLN */

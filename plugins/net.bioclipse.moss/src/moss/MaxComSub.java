@@ -14,17 +14,14 @@
             2006.11.22 bug in findByEdge fixed (unmap isolated nodes)
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.StringReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for finding maximum common subgraphs.
  *  @author Christian Borgelt
  *  @since  2006.11.19 */
 /*--------------------------------------------------------------------*/
 public class MaxComSub {
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -43,17 +40,14 @@ public class MaxComSub {
   protected int[] edgemap;
   /** the found maximum common subgraph (created on demand) */
   protected Graph mcs;
-
   /*------------------------------------------------------------------*/
   /** Find the maximum common subgraph of two given graphs.
    *  @param  g1 the first  graph
    *  @param  g2 the second graph
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public MaxComSub (Graph g1, Graph g2)
   { this(g1, g2, false); }
-
   /*------------------------------------------------------------------*/
   /** Find the maximum common subgraph of two given graphs.
    *  @param  g1     the first  graph
@@ -62,11 +56,9 @@ public class MaxComSub {
    *                 (default: edge mappings)
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public MaxComSub (Graph g1, Graph g2, boolean byNode)
   {                             /* --- find maximum common subgraph */
     int i;                      /* loop variable */
-
     this.g1 = g1;               /* note the given graphs and */
     this.g2 = g2;               /* create node and edge maps */
     this.nodemap = new int[g1.nodecnt];
@@ -87,17 +79,14 @@ public class MaxComSub {
       this.findByEdge(g1.edgecnt, 0, g1.edgecnt -g2.edgecnt);
     }                           /* call corresponding function */
   }  /* MaxComSub() */
-
   /*------------------------------------------------------------------*/
   /** Record a found mapping.
    *  @param  costs the accumulated costs of edit operations
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void record (int costs)
   {                             /* --- record a found mapping */
     int i;                      /* loop variable */
-
     if (costs >= this.costs)    /* if new map is not better, abort, */
       return;                   /* otherwise sum unmapped nodes/edges */
     for (i = this.g2.nodecnt; --i >= 0; )
@@ -112,7 +101,6 @@ public class MaxComSub {
     for (i = this.g1.edgecnt; --i >= 0; )
       this.edgemap[i] = this.g1.edges[i].mark;
   }  /* record() */
-
   /*------------------------------------------------------------------*/
   /** Find the maximum common subgraph by node mappings.
    *  @param  n     the number of unprocessed nodes
@@ -120,14 +108,12 @@ public class MaxComSub {
    *  @param  min   the minimum additional costs of edit operations
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void findByNode (int n, int costs, int min)
   {                             /* --- find MCS by node mappings */
     int  i, j, k, x, c;         /* loop variables, buffers */
     Node n1, n2;                /* original and image node */
     Edge e1, e2;                /* to traverse the edges */
     Node a1, a2;                /* to traverse the adjacent nodes */
-
     if (costs +Math.abs(min) >= this.costs)
       return;                   /* if cannot improve current solution */
     if (n <= 0) {               /* check for a complete mapping */
@@ -163,7 +149,6 @@ public class MaxComSub {
     }                           /* in the end also try the empty map */
     this.findByNode(n, costs+1 +n1.deg, min-1);
   }  /* findByNode() */
-
   /*------------------------------------------------------------------*/
   /** Check whether two nodes match.
    *  @param  n1 the first  node
@@ -171,21 +156,17 @@ public class MaxComSub {
    *  @return whether the two nodes match
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private static boolean match (Node n1, Node n2, Graph g)
   { if (n1.mark >= 0) return (n2 == g.nodes[n1.mark]);
     return (n2.mark < 0) && (n1.type == n2.type); }
-
   /*------------------------------------------------------------------*/
   /** Map a node onto another (or unmap them).
    *  @param  n1 the first  node
    *  @param  n2 the second node
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private static void map (Node n1, Node n2)
   { int x = n1.mark; n1.mark = -n2.mark-1; n2.mark = -x-1; }
-
   /*------------------------------------------------------------------*/
   /** Find the maximum common subgraph by edge mappings.
    *  @param  n     the number of unprocessed edges
@@ -193,13 +174,11 @@ public class MaxComSub {
    *  @param  min   the minimum additional costs of edit operations
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void findByEdge (int n, int costs, int min)
   {                             /* --- find MCS by edge mappings */
     int  i, k, m;               /* loop variables, buffer */
     Edge e1, e2;                /* source and destination edge */
     Node n1, n2;                /* to access the nodes */
-
     if (costs +Math.abs(min) >= this.costs)
       return;                   /* if cannot improve current solution */
     if (n <= 0) {               /* check for a complete mapping */
@@ -251,46 +230,37 @@ public class MaxComSub {
     }                           /* in the end also try the empty map */
     this.findByEdge(n, costs+1, min-1);
   }  /* findByEdge() */
-
   /*------------------------------------------------------------------*/
   /** Get the costs of the best sequence of edit operations.
    *  @return the costs of the best sequence of edit operations
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getCosts ()
   { return this.costs; }
-
   /*------------------------------------------------------------------*/
   /** Get the mapping of the nodes of graph 1 to the nodes of graph 2.
    *  @return the node map (graph index to subgraph index)
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int[] getNodeMap ()
   { return this.nodemap; }
-
   /*------------------------------------------------------------------*/
   /** Get the mapping of the edges of graph 1 to the edges of graph 2.
    *  @return the edge map (graph index to subgraph index)
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int[] getEdgeMap ()
   { return this.edgemap; }
-
   /*------------------------------------------------------------------*/
   /** Get the mapping of the edges of graph 1 to the edges of graph 2.
    *  @return the maximum common subgraph
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Graph getAsGraph ()
   {                             /* --- get MCS as a graph */
     int  i, k, n;               /* loop variable, counters */
     Node node;                  /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
-
     if (this.mcs != null)       /* if a graph already exists, */
       return this.mcs;          /* simply return it */
     for (n = 0, i = this.g1.nodecnt; --i >= 0; )
@@ -311,20 +281,17 @@ public class MaxComSub {
     }                           /* create edges */
     return this.mcs;            /* return the created graph */
   }  /* getAsGraph() */
-
   /*------------------------------------------------------------------*/
   /** Main function for basic testing basic functionality.
    *  @param  args the command line arguments
    *  @since  2006.11.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static void main (String args[])
   {                             /* --- main function for testing */
     Notation  ntn;              /* graph notation */
     Graph     g1, g2;           /* created graphs */
     int[]     masks;            /* masks for node and edge types */
     MaxComSub mcs;              /* maximum common subgraph */
-
     if ((args.length != 2)      /* if wrong number of arguments */
     &&  (args.length != 3)) {   /* (need 2 or 3 arguments) */
       System.err.println("usage: java moss.MaxComSub <graph> <graph>");
@@ -344,5 +311,4 @@ public class MaxComSub {
       System.err.println(e.getMessage()); return; }
     System.out.println(mcs.getAsGraph() +" : " +mcs.getCosts());
   }  /* main() */
-
 }  /* class MaxComSub */

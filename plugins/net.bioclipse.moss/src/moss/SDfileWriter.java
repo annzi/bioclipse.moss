@@ -14,30 +14,25 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Writer;
-
 /*--------------------------------------------------------------------*/
 /** Class for writers for structure-data files (SDfile, Elsevier MDL).
  *  @author Christian Borgelt
  *  @since  2007.02.24 */
 /*--------------------------------------------------------------------*/
 public class SDfileWriter extends GraphWriter {
-
   /*------------------------------------------------------------------*/
   /** Create a writer for SDfiles.
    *  @param  writer the writer to write to
    *  @param  mode   the write mode
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public SDfileWriter (Writer writer, int mode)
   {                             /* --- create an SDfile writer */
     super(writer, mode);        /* store the arguments */
     this.ntn = new Ctab();      /* create a notation */
   }  /* SDfileWriter() */
-
   /*------------------------------------------------------------------*/
   /** Write a header.
    *  <p>This function does nothing,
@@ -45,17 +40,14 @@ public class SDfileWriter extends GraphWriter {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public void writeHeader () throws IOException
   { }
-
   /*------------------------------------------------------------------*/
   /** Write a description of the current graph.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public void writeGraph () throws IOException
   {                             /* --- write the current graph */
@@ -75,5 +67,4 @@ public void writeGraph () throws IOException
     }                           /* write the support values */
     this.write("\n$$$$\n");     /* terminate the graph description */
   }  /* writeGraph() */
-
 }  /* class SDfileWriter */

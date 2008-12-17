@@ -14,20 +14,17 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-
 /*--------------------------------------------------------------------*/
 /** Class for readers for simple table formats for graph data sets.
  *  @author Christian Borgelt
  *  @since  2007.03.04 */
 /*--------------------------------------------------------------------*/
 public class TableReader extends GraphReader {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -40,7 +37,6 @@ public class TableReader extends GraphReader {
   /** class/type flag: comment character */
   public static final int COMMENT = 0x08;
   /** the field names for the different file types */
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -59,7 +55,6 @@ public class TableReader extends GraphReader {
   private String[]     record;
   /** whether there is a pushed back record */
   private boolean      pbrec;
-
   /*------------------------------------------------------------------*/
   /** Create a table reader with default character flags.
    *  <p>By default the following character settings are used:<br>
@@ -70,7 +65,6 @@ public class TableReader extends GraphReader {
    *  @param  ntn    the notation of the graphs
    *  @since  2006.10.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public TableReader (Reader reader, int mode, Notation ntn)
   {                             /* --- create a table reader */
     super(reader, mode);       /* store the arguments */
@@ -87,7 +81,6 @@ public class TableReader extends GraphReader {
     this.record = new String[TableWriter.HEADER[this.mode].length];
     this.pbrec  = false;        /* create a record buffer */
   }  /* TableReader() */
-
   /*------------------------------------------------------------------*/
   /** Set the characters for a specific type/class.
    *  @param  type  the type/class of the characters to set;
@@ -98,7 +91,6 @@ public class TableReader extends GraphReader {
    *  @param  chars the characters to set
    *  @since  2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setChars (int type, String chars)
   {                             /* --- set the characters of a class */
     for (int i = this.cflags.length; --i >= 0; )
@@ -106,7 +98,6 @@ public class TableReader extends GraphReader {
     for (int i = chars.length(); --i >= 0; )
       this.cflags[chars.charAt(i)] |= type;
   }  /* setChars() */           /* set flags for given characters */
-
   /*------------------------------------------------------------------*/
   /** Set the characters for all types.
    *  <p>If a parameter is <code>null</code>, the corresponding
@@ -117,7 +108,6 @@ public class TableReader extends GraphReader {
    *  @param  comment the comment characters
    *  @since  2007.05.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setChars (String recseps, String fldseps,
                         String blanks,  String comment)
   {                             /* --- set characters of all classes */
@@ -126,7 +116,6 @@ public class TableReader extends GraphReader {
     if (blanks  != null) this.setChars(BLANK,   blanks);
     if (comment != null) this.setChars(COMMENT, comment);
   }  /* setChars() */
-
   /*------------------------------------------------------------------*/
   /** Check whether a given character is in a given class
    *  or of a given type.
@@ -138,10 +127,8 @@ public class TableReader extends GraphReader {
    *  @return whether the character is in the given class
    *  @since  2006.10.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public boolean isType (int type, char c)
   { return (this.cflags[c] & type) != 0; }
-
   /*------------------------------------------------------------------*/
   /** Get the classes/types of a given character.
    *  @param  c the character to query
@@ -150,10 +137,8 @@ public class TableReader extends GraphReader {
    *          <code>BLANK</code>, or <code>COMMENT</code>
    *  @since  2006.10.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getTypes (char c)
   { return this.cflags[c]; }
-
   /*------------------------------------------------------------------*/
   /** Get a string stating the current record number.
    *  Useful for error reporting.
@@ -161,10 +146,8 @@ public class TableReader extends GraphReader {
    *          in the format "(record xxx)"
    *  @since  2007.01.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String rno ()
   { return this.rno(0); }
-
   /*------------------------------------------------------------------*/
   /** Get a string stating the current record number.
    *  <p>Useful for error reporting.</p>
@@ -173,10 +156,8 @@ public class TableReader extends GraphReader {
    *          in the format "(record xxx)"
    *  @since  2007.03.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String rno (int offset)
   { return " (record " +(this.recno +offset) +")"; }
-
   /*------------------------------------------------------------------*/
   /** Read the next field/cell of the table.
    *  <p>Note that a record separator is (virtually) inserted at the
@@ -194,15 +175,12 @@ public class TableReader extends GraphReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2006.10.05/2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readField () throws IOException
   {                             /* --- read the next field */
     int c, f, i;                /* character, flags, index */
-
     this.field = null;          /* initialize the field */
     c = this.read();            /* get and check the next character */
     if (c < 0) return this.delim = -1;
-
     /* --- skip comment records --- */
     if (this.delim != 0) {      /* if at the start of a record */
       while ((c < this.cflags.length)     /* comment read loop */
@@ -217,7 +195,6 @@ public class TableReader extends GraphReader {
         if (c < 0) return this.delim = -1;
       }                         /* check for end of file/input */
     }                           /* (comment records are skipped) */
-
     /* --- skip leading blanks --- */
     while ((c < this.cflags.length)
     &&     ((this.cflags[c] & BLANK) != 0)) {
@@ -228,7 +205,6 @@ public class TableReader extends GraphReader {
     /* if it is a blank, the end of file/input is translated into a */
     /* record separator. -1 is returned only if no character could  */
     /* be read before the end of file/input is encountered.         */
-
     /* --- read the field --- */
     if (c < this.cflags.length) {
       f = this.cflags[c];       /* get the character class and */
@@ -247,14 +223,12 @@ public class TableReader extends GraphReader {
       if ((f & RECSEP) != 0) { this.delim = 1; this.recno++; break; }
       if ((f & FLDSEP) != 0) { this.delim = 0;               break; }
     }                           /* read up to a separator */
-
     /* --- remove trailing blanks --- */
     i = this.buf.length();      /* find index of last non-blank char. */
     do { f = this.buf.charAt(--i); }
     while ((f < this.cflags.length)
     &&     ((this.cflags[f] & BLANK) != 0));
     this.field = this.buf.substring(0, ++i);
-
     /* --- skip trailing blanks --- */
     if (this.delim != 0)        /* if not at a field separator, */
       return this.delim;        /* abort the function directly */
@@ -269,7 +243,6 @@ public class TableReader extends GraphReader {
     if ((f & FLDSEP) == 0) this.unread(c);
     return this.delim = 0;      /* set and return the delimiter type */
   }  /* readField() */
-
   /*------------------------------------------------------------------*/
   /** Read the next record of the table.
    *  @return whether a record could be read
@@ -277,11 +250,9 @@ public class TableReader extends GraphReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private boolean readRecord () throws IOException
   {                             /* --- read a graph name/identifier */
     int i, n;                   /* loop variable, number of fields */
-
     if (this.readField() < 0)   /* read the first field and */
       return false;             /* check for end of input */
     n = this.record.length;     /* get the number of fields */
@@ -296,7 +267,6 @@ public class TableReader extends GraphReader {
       throw new IOException("too many fields" +this.rno());
     return true;                /* return 'record successfully read' */
   }  /* readRecord() */
-
   /*------------------------------------------------------------------*/
   /** Read an (optional) table header.
    *  @return whether a header was present
@@ -304,13 +274,11 @@ public class TableReader extends GraphReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean readHeader () throws IOException
   {                             /* --- read an (optional) header */
     int      i;                 /* loop variable */
     String[] hdr;               /* buffer for the header fields */
-
     if (!this.readRecord())     /* try to read a record and */
       return false;             /* check for end of input */
     hdr = TableWriter.HEADER[this.mode];
@@ -319,7 +287,6 @@ public boolean readHeader () throws IOException
     this.pbrec = (i >= 0);      /* check the field names */
     return i < 0;               /* return whether a header was found */
   }  /* readHeader() */
-
   /*------------------------------------------------------------------*/
   /** Read the next graph description.
    *  <p>The next graph description is read and split into the graph
@@ -334,12 +301,10 @@ public boolean readHeader () throws IOException
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean readGraph () throws IOException
   {                             /* --- get the next graph description */
     String s = null;            /* buffer for a field */
-
     if (!this.pbrec             /* if there is no pushed back record */
     &&  !this.readRecord())     /* and no new record can be read, */
       return false;             /* the end of the input is reached */
@@ -366,14 +331,12 @@ public boolean readGraph () throws IOException
       throw new IOException("malformed number '"+s+"'"+this.rno(-1)); }
     return true;                /* return that a graph was read */
   }  /* readGraph() */
-
   /*------------------------------------------------------------------*/
   /** Get the current graph or substructure.
    *  @return the current graph
    *  @throws IOException if a parse error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public Graph getGraph () throws IOException
   {                             /* --- get the current graph */
@@ -389,24 +352,20 @@ public Graph getGraph () throws IOException
     srdr.close();               /* parse the graph description */
     return this.graph;          /* and return the parsed graph */
   }  /* getGraph() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  @param  args the command line arguments
    *  @since  2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-  
   public static void main (String args[])
   {                             /* --- main function for testing */
     Notation    ntn;            /* notation for the graphs */
     TableReader reader;         /* reader for the input  file */
     TableWriter writer;         /* writer for the output file */
-
     if (args.length != 2) {     /* if wrong number of arguments */
       System.err.println("usage: java moss.TableReader <in> <out>");
       return;                   /* print a usage message */
     }                           /* and abort the program */
-
     try {                       /* try to read the file */
       ntn    = new SMILES();    /* with a SMILES notation */
       reader = new TableReader(new FileReader(args[0]), GRAPHS, ntn);
@@ -423,5 +382,4 @@ public Graph getGraph () throws IOException
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-  
 }  /* class TableReader */

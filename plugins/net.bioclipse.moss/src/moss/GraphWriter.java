@@ -16,18 +16,15 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.io.BufferedWriter;
-
 /*--------------------------------------------------------------------*/
 /** Class for a writer for graph data sets.
  *  @author Christian Borgelt
  *  @since  2007.02.24 */
 /*--------------------------------------------------------------------*/
 public abstract class GraphWriter extends BufferedWriter {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -35,7 +32,6 @@ public abstract class GraphWriter extends BufferedWriter {
   public static final int GRAPHS = 0;
   /** write mode: substructures */
   public static final int SUBS   = 1;
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -63,53 +59,43 @@ public abstract class GraphWriter extends BufferedWriter {
   protected int      cabs  = 0;
   /** the relative support in the complement */
   protected float    crel  = 0.0F;
-
   /*------------------------------------------------------------------*/
   /** Create a writer for a graph data set.
    *  @param  writer the writer to write to
    *  @param  mode   the write mode
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected GraphWriter (Writer writer, int mode)
   {                             /* --- create a graph reader */
     super(writer);              /* init. writer and store write mode */
     this.mode = (mode == GRAPHS) ? GRAPHS : SUBS;
   }  /* GraphWriter() */
-
   /*------------------------------------------------------------------*/
   /** Get the mode of the graph writer.
    *  @return the mode of the graph writer
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getMode ()
   { return this.mode; }
-
   /*------------------------------------------------------------------*/
   /** Get the notation of the graph writer.
    *  @return the notation of the graph writer
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Notation getNotation ()
   { return this.ntn; }
-
   /*------------------------------------------------------------------*/
   /** Set the name of the current graph.
    *  @param  name the name of the current graph
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setName (String name)
   { this.name = name; }
-
   /*------------------------------------------------------------------*/
   /** Set the current graph or substructure.
    *  @param  graph the graph or substructure to set
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setGraph (Graph graph)
   {                             /* --- set the current graph */
     this.graph = graph;         /* store the graph and */
@@ -120,68 +106,53 @@ public abstract class GraphWriter extends BufferedWriter {
       this.edges = graph.getEdgeCount();
     }                           /* (cannot be set directly) */
   }  /* setGraph() */
-
   /*------------------------------------------------------------------*/
   /** Set the value associated with the current graph.
    *  @param  value the value associated with the current graph
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setValue (float value)
   { this.value = value; }
-
   /*------------------------------------------------------------------*/
   /** Set the absolute focus support of the current substructure.
    *  @param  supp the absolute focus support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setAbsSupp (int supp)
   { this.sabs = supp; }
-
   /*------------------------------------------------------------------*/
   /** Set the relative focus support of the current substructure.
    *  @param  supp the relative focus support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setRelSupp (float supp)
   { this.srel = supp; }
-
   /*------------------------------------------------------------------*/
   /** Set the absolute complement support of the current substructure.
    *  @param  supp the absolute complement support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setAbsCompl (int supp)
   { this.cabs = supp; }
-
   /*------------------------------------------------------------------*/
   /** Set the relative complement support of the current substructure.
    *  @param  supp the relative complement support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setRelCompl (float supp)
   { this.crel = supp; }
-
   /*------------------------------------------------------------------*/
   /** Write a header.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract void writeHeader () throws IOException;
-
   /*------------------------------------------------------------------*/
   /** Write the current graph description.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract void writeGraph () throws IOException;
-
   /*------------------------------------------------------------------*/
   /** Create a graph writer for a given format and mode.
    *  @param  writer the writer to write to
@@ -190,7 +161,6 @@ public abstract class GraphWriter extends BufferedWriter {
    *  @return the created input/output format
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static GraphWriter createWriter (Writer writer, int mode,
                                           String format)
   {                             /* --- create a graph writer */
@@ -210,5 +180,4 @@ public abstract class GraphWriter extends BufferedWriter {
       return new NEListWriter(writer, mode);
     return null;                /* evaluate the notation name */
   }  /* createWriter() */
-
 }  /* class GraphWriter */

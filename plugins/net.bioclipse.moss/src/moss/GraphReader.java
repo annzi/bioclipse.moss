@@ -16,18 +16,15 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.PushbackReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for a reader for graph data sets.
  *  @author Christian Borgelt
  *  @since  2007.02.24 */
 /*--------------------------------------------------------------------*/
 public abstract class GraphReader extends PushbackReader {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -35,7 +32,6 @@ public abstract class GraphReader extends PushbackReader {
   public static final int GRAPHS = 0;
   /** read mode: substructures */
   public static final int SUBS   = 1;
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -63,38 +59,31 @@ public abstract class GraphReader extends PushbackReader {
   protected int      cabs  = 0;
   /** the relative support in the complement */
   protected float    crel  = 0.0F;
-
   /*------------------------------------------------------------------*/
   /** Create a reader for a graph data set.
    *  @param  reader the reader to read from
    *  @param  mode   the read mode
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected GraphReader (Reader reader, int mode)
   {                             /* --- create a graph reader */
     super(reader, 4);           /* init. reader and store read mode */
     this.mode = (mode == GRAPHS) ? GRAPHS : SUBS;
   }  /* GraphReader() */
-
   /*------------------------------------------------------------------*/
   /** Get the mode of the graph reader.
    *  @return the mode of the graph reader
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getMode ()
   { return this.mode; }
-
   /*------------------------------------------------------------------*/
   /** Get the notation of the graph reader.
    *  @return the notation of the graph reader
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Notation getNotation ()
   { return this.ntn; }
-
   /*------------------------------------------------------------------*/
   /** Read an (optional) header.
    *  @return whether a header was present
@@ -102,9 +91,7 @@ public abstract class GraphReader extends PushbackReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract boolean readHeader () throws IOException;
-
   /*------------------------------------------------------------------*/
   /** Read a graph.
    *  <p>The next graph description is read and split into the graph
@@ -119,24 +106,19 @@ public abstract class GraphReader extends PushbackReader {
    *  @throws IOException if an i/o error or a parse error occurs
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract boolean readGraph () throws IOException;
-
   /*------------------------------------------------------------------*/
   /** Get the name of the current graph.
    *  @return the name of the current graph
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String getName ()
   { return this.name; }
-
   /*------------------------------------------------------------------*/
   /** Get a line description of the current graph.
    *  @return a line description of the current graph
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String getDesc ()
   {                             /* --- get a (line) description */
     if (this.desc == null) {    /* if there is no description */
@@ -145,82 +127,65 @@ public abstract class GraphReader extends PushbackReader {
     }                           /* create a description if possible */
     return this.desc;           /* return the description */
   }  /* getDesc() */
-
   /*------------------------------------------------------------------*/
   /** Get the current graph or substructure.
    *  @return the current graph
    *  @throws IOException if a parse error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Graph getGraph () throws IOException
   { return this.graph; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of nodes of the current graph.
    *  @return the number of nodes of the current graph
    *          or -1 if this number is not known
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getNodeCount ()
   { return this.nodes; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of edges of the current graph.
    *  @return the number of edges of the current graph
    *          or -1 if this number is not known
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getEdgeCount ()
   { return this.edges; }
-
   /*------------------------------------------------------------------*/
   /** Get the value associated with the current graph.
    *  @return the value associated with the current graph
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public float getValue ()
   { return this.value; }
-
   /*------------------------------------------------------------------*/
   /** Get the absolute focus support of the current substructure.
    *  @return the absolute focus support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getAbsSupp ()
   { return this.sabs; }
-
   /*------------------------------------------------------------------*/
   /** Get the relative focus support of the current substructure.
    *  @return the relative focus support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public float getRelSupp ()
   { return this.srel; }
-
   /*------------------------------------------------------------------*/
   /** Get the absolute complement support of the current substructure.
    *  @return the absolute complement support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getAbsCompl ()
   { return this.cabs; }
-
   /*------------------------------------------------------------------*/
   /** Get the relative support of the current substructure.
    *  @return the relative complement support
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public float getRelCompl ()
   { return this.crel; }
-
   /*------------------------------------------------------------------*/
   /** Create a graph reader for a given format and mode.
    *  @param  reader the reader to read from
@@ -229,7 +194,6 @@ public abstract class GraphReader extends PushbackReader {
    *  @return the created graph reader
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static GraphReader createReader (Reader reader, int mode,
                                           String format)
   {                             /* --- create a graph reader */
@@ -249,5 +213,4 @@ public abstract class GraphReader extends PushbackReader {
       return new NEListReader(reader, mode);
     return null;                /* evaluate the format/notation name */
   }  /* createReader() */
-
 }  /* class GraphReader */

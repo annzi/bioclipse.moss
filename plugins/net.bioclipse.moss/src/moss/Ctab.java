@@ -18,18 +18,15 @@
             2007.07.02 buffer for creating descriptions added
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.FileReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for the connection table notation (Ctab, Elsevier MDL).
  *  @author Christian Borgelt
  *  @since  2007.02.21 */
 /*--------------------------------------------------------------------*/
 public class Ctab extends MoleculeNtn {
-  
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -38,7 +35,6 @@ public class Ctab extends MoleculeNtn {
     Bonds.NULL,   Bonds.SINGLE, Bonds.DOUBLE, Bonds.TRIPLE,
     Bonds.AROMATIC,
     Bonds.SINGLE, Bonds.SINGLE, Bonds.DOUBLE, Bonds.SINGLE };
-
   /** the encoding map for bond types */
   private static final int[] ENCODE_MAP = {
   /*  0   1   2   3   4   5   6   7  */
@@ -50,34 +46,28 @@ public class Ctab extends MoleculeNtn {
   /* 24  25  26  27  28  29  30  31  */
       0,  0,  0,  0,  0,  0,  0,  0,
   };
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
   /** the buffer for number reading */
   private int[] buf;
-
   /*------------------------------------------------------------------*/
   /** Create a connection table notation.
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Ctab ()
   {                             /* --- create a Ctab object */
     this.buf  = new int[16];    /* create a buffer for number reading */
     this.desc = null;           /* clear the description buffer */
   }  /* Ctab() */
-
   /*------------------------------------------------------------------*/
   /** Whether this is a line notation (single line description).
    *  @return <code>false</code>, since Ctab is a multi-line notation
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean isLine ()
   { return false; }
-
   /*------------------------------------------------------------------*/
   /** Read an integer number.
    *  @param  reader the reader to read from
@@ -85,12 +75,10 @@ public boolean isLine ()
    *  @throws IOException if no integer number could be read
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readInt (Reader reader) throws IOException
   {                             /* --- read an integer number */
     int i, k, c;                /* loop variables, character */
     int n, s = 0;               /* integer value read, sign */
-
     for (i = 0; i < 3; i++) {   /* an integer number consists */
       this.buf[i] = reader.read();     /* of three characters */
       if (this.buf[i] < 0) throw new IOException("incomplete field");
@@ -115,7 +103,6 @@ public boolean isLine ()
     }                           /* digits into a number */
     return (s < 0) ? -n : n;    /* return the parsed number */
   }  /* readInt() */
-
   /*------------------------------------------------------------------*/
   /** Get a real number from a string.
    *  @param  reader the reader to read from
@@ -123,13 +110,11 @@ public boolean isLine ()
    *  @throws IOException if no real number could be read
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private float readReal (Reader reader) throws IOException
   {                             /* --- read a real number */
     int   i, k, c;              /* loop variables, character */
     int   n, s = 0;             /* integer part and sign */
     float f;                    /* fractional part */
-
     for (i = 0; i < 5; i++) {   /* there are five digits before */
       this.buf[i] = reader.read();         /* the decimal point */
       if (this.buf[i] < 0) throw new IOException("incomplete field");
@@ -168,7 +153,6 @@ public boolean isLine ()
     f += n;                     /* add integer part to fraction */
     return (s < 0) ? -f : f;    /* return the parsed number */
   }  /* readReal() */
-
   /*------------------------------------------------------------------*/
   /** Read a chemical element.
    *  @param  reader the reader to read from
@@ -176,12 +160,10 @@ public boolean isLine ()
    *  @throws IOException if no integer number could be read
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readElem (Reader reader) throws IOException
   {                             /* --- read a chemical element */
     int i, k;                   /* loop variables */
     int c, n;                   /* current and next character */
-
     for (i = 0; i < 3; i++) {   /* an element name consists */
       this.buf[i] = reader.read();   /* of three characters */
       if (this.buf[i] < 0) throw new IOException("incomplete element");
@@ -210,7 +192,6 @@ public boolean isLine ()
     }                           /* get the element code */
     return k;                   /* return the element code */
   }  /* readElem() */
-
   /*------------------------------------------------------------------*/
   /** Parse the description of a molecule.
    *  @param  reader the reader to read from
@@ -218,7 +199,6 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public Graph parse (Reader reader) throws IOException
   {                             /* --- parse a molecule description */
@@ -226,7 +206,6 @@ public Graph parse (Reader reader) throws IOException
     int   i, k, s, d;           /* loop variables, indices */
     int   t;                    /* atom and bond type */
     Graph mol;                  /* created molecule */
-
     mol = new Graph(this);      /* create a molecule */
     na  = this.readInt(reader); /* read the number of atoms */
     nb  = this.readInt(reader); /* and  the number of bonds */
@@ -311,14 +290,12 @@ public Graph parse (Reader reader) throws IOException
     mol.opt();                  /* optimize memory usage */
     return mol;                 /* return the created molecule */
   }  /* parse() */
-
   /*------------------------------------------------------------------*/
   /** Create a description of a given molecule.
    *  @param  mol the molecule to describe
    *  @return a description of the given molecule
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public String describe (Graph mol)
   {                             /* --- create a string description */
@@ -326,7 +303,6 @@ public String describe (Graph mol)
     Node   s, d;                /* source and destination atom */
     Edge   b;                   /* incident bond */
     String e;                   /* element name, buffer */
-
     if (this.desc == null)      /* create a description buffer */
       this.desc = new StringBuffer();
     this.desc.setLength(0);     /* clear the description buffer */
@@ -388,7 +364,6 @@ public String describe (Graph mol)
     this.desc.append("M  END"); /* store end of connection table */
     return this.desc.toString();/* return the created description */
   }  /* describe() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  <p>It is tried to parse the contents of the file given by the
@@ -398,7 +373,6 @@ public String describe (Graph mol)
    *  @param  args the command line arguments
    *  @since  2007.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-  
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -413,5 +387,4 @@ public String describe (Graph mol)
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-  
 }  /* class Ctab */

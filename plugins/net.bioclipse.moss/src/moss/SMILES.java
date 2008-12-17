@@ -28,11 +28,9 @@
             2007.07.05 loop check added (it must be src != dst)
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for the Simplified Molecular Input Line Entry System
  *  (SMILES, Daylight, Inc.).
@@ -40,7 +38,6 @@ import java.io.StringReader;
  *  @since  2006.08.12 */
 /*--------------------------------------------------------------------*/
 public class SMILES extends MoleculeNtn {
-  
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -59,7 +56,6 @@ public class SMILES extends MoleculeNtn {
     Atoms.NITROGEN   /* N */, Atoms.OXYGEN /* O */,
     Atoms.PHOSPHORUS /* P */, Atoms.SULFUR /* S */
   };
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -73,48 +69,40 @@ public class SMILES extends MoleculeNtn {
   private Recoder      coder;
   /** the buffer for creating atom descriptions */
   private StringBuffer buf;
-
   /*------------------------------------------------------------------*/
   /** Create a SMILES notation object.
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public SMILES ()
   {                             /* --- create a SMILES object */ 
     this.labels = new int[100]; /* create a label to node index map */
     this.bonds  = new int[100]; /* and a buffer for bond types */
     this.desc = this.buf = null;/* clear the description buffers */
   }  /* SMILES() */
-
   /*------------------------------------------------------------------*/
   /** Whether this is a line notation (single line description).
    *  @return <code>true</code>, because SMILES is a line notation
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean isLine ()
   { return true; }
-
   /*------------------------------------------------------------------*/
   /** Read an atom type, including shorthand hydrogens.
    *  @return the type of the next atom
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private int readAtom () throws IOException
   {                             /* --- read an atom description */
     int k;                      /* loop variable, buffer */
     int c, n;                   /* current and next character */
     int atom = 0;               /* type code of an atom */
-
     /* At this point an opening bracket '[' has already been read. */
     do {                        /* skip a possible leading number */
       c = this.read();          /* (isotope index before element) */
       if (c < 0) throw new IOException("missing element after '['");
     } while ((c >= '0') && (c <= '9'));
-
     /* --- get the element code --- */
     if ((c >= 'a') && (c <= 'z')) {
       atom = Atoms.AROMATIC;    /* if the element name starts */
@@ -137,7 +125,6 @@ public boolean isLine ()
     }                           /* (both characters were used) */
     atom |= k;                  /* add element code and hydrogens */
     atom |= Atoms.codeHydros(k = this.getHydros());
-
     /* --- add a possible charge --- */
     c = this.read();            /* read the next character */
     if ((c == '+') || (c == '-')) {
@@ -146,14 +133,12 @@ public boolean isLine ()
       else if ((n <= '0') || (n > '9')) { this.unread(n); n = '1'; }
       atom |= Atoms.codeCharge((c == '+') ? n -'0' : '0' -n);
     }                           /* add the charge to the code */
-
     /* --- skip additional information --- */
     while ((c != ']') && (c >= 0))
       c = this.read();          /* skip characters until ']' */
     if (c < 0) throw new IOException("missing ']'");
     return atom;                /* return the atom code */
   }  /* readAtom() */
-
   /*------------------------------------------------------------------*/
   /** Recursive function to parse (a branch of) a molecule.
    *  @param  src the index of the source atom for the next bond
@@ -162,20 +147,17 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private boolean parse (int src) throws IOException
   {                             /* --- parse a molecule description */
     int c, n;                   /* current and next character */
     int a, b, i = 0;            /* atom and bond types, buffer */
     int dst;                    /* index of destination atom */
-
     b = Bonds.UNKNOWN;          /* initialize the bond type */
     while (true) {              /* parse loop for a branch */
       a = dst = -1;             /* clear the atom type and index */
       c = this.read();          /* read the next character */
       if (c < 0) return false;  /* if at end, abort indicating no ')' */
       switch (c) {              /* get and evaluate next character */
-
         /* -- branches -- */
         case ')':               /* if at the end of a branch */
           if (b != Bonds.UNKNOWN)  /* check for a preceding bond */
@@ -187,7 +169,6 @@ public boolean isLine ()
           if (!this.parse(src)) /* recursively parse the branch */
             throw new IOException("missing ')'");
           break;                /* check for a closing ')' */
-
         /* -- labels -- */
         case '%': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
@@ -216,7 +197,6 @@ public boolean isLine ()
             this.bonds[i] = Bonds.UNKNOWN;
           }                     /* turn a forward  reference */
           break;                /* into a backward reference */
-
         /* -- bonds -- */
         case  '.': b = Bonds.NULL;     break;
         case  '-': b = Bonds.SINGLE;   break;
@@ -225,7 +205,6 @@ public boolean isLine ()
         case  ':': b = Bonds.AROMATIC; break;
         case  '=': b = Bonds.DOUBLE;   break;
         case  '#': b = Bonds.TRIPLE;   break;
-
         /* -- atoms -- */
         case 'b': a = Atoms.BORON      | Atoms.AROMATIC; break;
         case 'B': c = this.read();
@@ -247,7 +226,6 @@ public boolean isLine ()
         case 'I': a = Atoms.IODINE;                      break;
         case 'H': a = Atoms.HYDROGEN;                    break;
         case '[': a = this.readAtom();                   break;
-
         default : throw new IOException("invalid character '"
                                         +(char)c +"' (" +c +")");
       }                         /* catch all other characters */
@@ -279,7 +257,6 @@ public boolean isLine ()
       if (dst > src) src = dst; /* replace the source atom */
     }                           /* (for the next loop) */
   }  /* parse() */
-  
   /*------------------------------------------------------------------*/
   /** Parse the description of a molecule.
    *  @param  reader the reader to read from
@@ -287,7 +264,6 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public Graph parse (Reader reader) throws IOException
   {                             /* --- parse a molecule description */
@@ -306,20 +282,17 @@ public Graph parse (Reader reader) throws IOException
     this.mol.opt();             /* optimize memory usage and */
     return this.mol;            /* return the created molecule */
   }  /* parse() */
-
   /*------------------------------------------------------------------*/
   /** Create a description of an atom.
    *  @param  type the type of the atom
    *  @return the description of the atom
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private String describe (int type)
   {                             /* --- describe an atom */
     int    i, h;                /* loop variable, number of hydrogens */
     int    t, c;                /* element type and charge */
     String e;                   /* element name of the atom */
-
     if (type == Node.ANY)         return Atoms.getWildcard();
     if ((type & Node.CHAIN) != 0) return Atoms.getChainName();
     t = Atoms.getElem(type);    /* get the element type */
@@ -348,20 +321,17 @@ public Graph parse (Reader reader) throws IOException
     this.buf.append("]");       /* add charge and closing bracket */
     return this.buf.toString(); /* return the created description */
   }  /* describe() */
-
   /*------------------------------------------------------------------*/
   /** Recursive function to create a description.
    *  @param  atom the current atom
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void out (Node atom)
   {                             /* --- recursive part of output */
     int  i, k, n;               /* loop variables, number of branches */
     int  p;                     /* preceding label, exchange buffer */
     Edge b;                     /* to traverse the bonds */
     Node d;                     /* destination of a bond */
-
     k = atom.type;              /* get and decode chemical element */
     if (this.coder != null) k = this.coder.decode(k);
     if (!Atoms.isAromatic(k)) { /* if the aromatic flag is not set */
@@ -409,21 +379,18 @@ public Graph parse (Reader reader) throws IOException
         this.desc.append(")");  /* terminate it if it is not the last */
     }                           /* (last branch needs no parantheses) */
   }  /* out() */
-
   /*------------------------------------------------------------------*/
   /** Create a string description of a molecule.
    *  @param  mol the molecule to describe
    *  @return the created string description
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public String describe (Graph mol)
   {                             /* --- create a string description */
     int  i, n, t;               /* loop variable, counter, buffer */
     Node a, d;                  /* to traverse the atoms */
     Edge e;                     /* to access edges from hydrogens */
-
     if (this.desc == null)      /* create a description buffer */
       this.desc = new StringBuffer();
     this.desc.setLength(0);     /* clear the description buffer */
@@ -457,7 +424,6 @@ public String describe (Graph mol)
     }
     return this.desc.toString();/* return the created description */
   }  /* describe() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  <p>It is tried to parse the first argument as a SMILES description
@@ -466,7 +432,6 @@ public String describe (Graph mol)
    *  @param  args the command line arguments
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-  
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -480,5 +445,4 @@ public String describe (Graph mol)
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-  
 }  /* class SMILES */

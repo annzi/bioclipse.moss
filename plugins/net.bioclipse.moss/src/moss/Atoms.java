@@ -14,14 +14,12 @@
             2007.06.25 function getCode() improved
 ----------------------------------------------------------------------*/
 package moss;
-
 /*--------------------------------------------------------------------*/
 /** Class for an atom type manager.
  *  @author Christian Borgelt
  *  @since  2007.06.20 */
 /*--------------------------------------------------------------------*/
 public class Atoms extends TypeMgr {
-
   /*------------------------------------------------------------------*/
   /*  constants: element types                                        */
   /*------------------------------------------------------------------*/
@@ -139,7 +137,6 @@ public class Atoms extends TypeMgr {
   public static final int MEITNERIUM    = 109;  /* Mt */
   /** the number of chemical elements (not all actually exist) */
   public static final int ELEMCNT       = 126;  /* = 0x7e */
-
   /*------------------------------------------------------------------*/
   /*  constants: flags and masks                                      */
   /*------------------------------------------------------------------*/
@@ -155,7 +152,6 @@ public class Atoms extends TypeMgr {
   public static final int HYDROMASK   = 0xff0000;
   /** the shift value for extracting the hydrogens from an atom type */
   public static final int HYDROSHIFT  = 16;
-
   /*------------------------------------------------------------------*/
   /*  constants: names                                                */
   /*------------------------------------------------------------------*/
@@ -180,13 +176,11 @@ public class Atoms extends TypeMgr {
       "Ac", "Th", "Pa", "U",  "Np", "Pu", "Am", "Cm", "Bk", "Cf",
       "Es", "Fm", "Md", "No",
       "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
-
      "?", "?", "?", "?", "?", "?", "?", "?", "?", "?",
      "?", "?", "?", "?", "?", "?", "*", "*"
   };
   /* Question marks are used for atom type code that should not occur.*/
   /* Stars are used for special atom types, like chain or wildcard.   */
-
   /*------------------------------------------------------------------*/
   /*  class variables                                                 */
   /*------------------------------------------------------------------*/
@@ -194,16 +188,13 @@ public class Atoms extends TypeMgr {
   protected static int[][] map;
   /** the atom type manager (only one instance is needed) */
   protected static Atoms   atoms;
-
   /*------------------------------------------------------------------*/
   /** Class initialization.
    *  @since  2006.11.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   static {                      /* --- class initialization */
     int    i, k, m;             /* loop variable, indices */
     String name;                /* to traverse the element names */
-
     Atoms.map = new int[26][27];/* map from element names to codes */
     for (i = ELEMCNT; --i > 0; ) {
       name = ELEMENTS[i];       /* traverse the element names */
@@ -214,15 +205,12 @@ public class Atoms extends TypeMgr {
     }                           /* (character pairs to codes) */
     Atoms.atoms = new Atoms();  /* create the only instance */
   }  /* <clinit> */
-
   /*------------------------------------------------------------------*/
   /** Create an atom type manager.
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Atoms ()
   { }
-
   /*------------------------------------------------------------------*/
   /** Add an atom type.
    *  <p>The set of atom types is fixed and cannot be extended.
@@ -234,10 +222,8 @@ public class Atoms extends TypeMgr {
    *  @see    #getCode(String)
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int add (String name)
   { return this.getCode(name); }
-
   /*------------------------------------------------------------------*/
   /** Map an atom name to the corresponding code.
    *  @param  name the name of the atom
@@ -245,13 +231,11 @@ public class Atoms extends TypeMgr {
    *          -1 if the name is not an atom description
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getCode (String name)
   {                             /* --- get an atom code */
     int  len, k = 0;            /* number of characters, index */
     char c, e;                  /* buffers for characters */
     int  code;                  /* code of the atom */
-
     len = name.length();        /* get the number of characters */
     if (len <= 0) return -1;    /* check for at least one character */
     e = name.charAt(k);         /* check for an uppercase letter */
@@ -275,20 +259,17 @@ public class Atoms extends TypeMgr {
     }                           /* add a charge to the atom type */
     return (k >= len) ? code : -1;
   }  /* getCode() */            /* check for end of name */
-
   /*------------------------------------------------------------------*/
   /** Map a code to the corresponding atom name.
    *  @param  code the code of the atom
    *  @return the name of the atom
    *  @since  2007.03.05/2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String getName (int code)
   {                             /* --- get an atom name */
     int          c;             /* charge of the atom */
     String       e;             /* element type of the atom */
     StringBuffer s;             /* created string description */
-
     e = ELEMENTS[Atoms.getElem(code)];
     c = Atoms.getCharge(code);  /* get element and charge of the atom */
     if (c == 0) return e;       /* if pure element type, abort */
@@ -297,34 +278,27 @@ public class Atoms extends TypeMgr {
     else if (c < 0) { s.append("-"); if (c < -1) s.append(-c); }
     return s.toString();        /* return the created description */
   }  /* getName() */
-
   /*------------------------------------------------------------------*/
   /** Get the only/the default instance.
    *  @return the only/the default instance of this class
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static Atoms getAtoms ()
   { return Atoms.atoms; }
-
   /*------------------------------------------------------------------*/
   /** Get the name of a chain atom.
    *  @return the name of a chain atom
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static String getChainName ()
   { return ELEMENTS[ELEMCNT]; }
-
   /*------------------------------------------------------------------*/
   /** Get the name of a wildcard atom.
    *  @return the name of a wildcard atom
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static String getWildcard ()
   { return ELEMENTS[ELEMCNT+1]; }
-
   /*------------------------------------------------------------------*/
   /** Extract the chemical element from an atom type.
    *  <p>The chemical element is only part of the type of an atom.
@@ -334,29 +308,23 @@ public class Atoms extends TypeMgr {
    *  @return the chemical element encoded in the given atom type
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int getElem (int type)
   { return type & ELEMMASK; }
-
   /*------------------------------------------------------------------*/
   /** Extract the name of a chemical element from an atom type.
    *  @param  type the type from which to extract the chemical element
    *  @return the name of the chemical element encoded int the type
    *  @since  2006.30.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static String getElemName (int type)
   { return ELEMENTS[type & ELEMMASK]; }
-
   /*------------------------------------------------------------------*/
   /** Check whether an atom type specifies an aromatic atom.
    *  @return whether the atom type is aromatic
    *  @since  2006.10.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static boolean isAromatic (int type)
   { return (type & AROMATIC) != 0; }
-
   /*------------------------------------------------------------------*/
   /** Encode a charge for addition to an atom type.
    *  <p>The result of this function has to be combined with an element
@@ -365,32 +333,26 @@ public class Atoms extends TypeMgr {
    *  @return the encoded charge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int codeCharge (int chg)
   { chg = (chg < 0) ? (-chg & 0x0f) | 0x10 : (chg & 0x0f);
     return (chg << CHARGESHIFT) & CHARGEMASK; }
-
   /*------------------------------------------------------------------*/
   /** Extract the charge from an atom type.
    *  @param  type the type from which to extract the charge
    *  @return the charge encoded in the given atom type
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int getCharge (int type)
   { type = (type & CHARGEMASK) >> CHARGESHIFT;
     return ((type & 0x10) != 0) ? -(type & 0x0f) : (type & 0x0f); }
-
   /*------------------------------------------------------------------*/
   /** Remove the charge from an atom type.
    *  @param  type the type from which to remove the charge
    *  @return the atom type without any charge
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int removeCharge (int type)
   { return type & ~CHARGEMASK; }
-
   /*------------------------------------------------------------------*/
   /** Encode hydrogens for addition to an atom type.
    *  <p>The result of this function has to be combined with an element
@@ -399,30 +361,24 @@ public class Atoms extends TypeMgr {
    *  @return the encoded number of hydrogens
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int codeHydros (int n)
   { return (n << HYDROSHIFT) & HYDROMASK; }
-
   /*------------------------------------------------------------------*/
   /** Extract the hydrogens from an atom type.
    *  @param  type the type from which to extract the hydrogens
    *  @return the number of hydrogens encoded in the given atom type
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int getHydros (int type)
   { return (type & HYDROMASK) >> HYDROSHIFT; }
-
   /*------------------------------------------------------------------*/
   /** Remove the hydrogens from an atom type.
    *  @param  type the type from which to remove the hydrogens
    *  @return the atom type without any hydrogens
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static int removeHydros (int type)
   { return type & ~HYDROMASK; }
-
   /*------------------------------------------------------------------*/
   /** Main function for testing some basic functionality.
    *  <p>It is tried to parse the first command line argument
@@ -430,7 +386,6 @@ public class Atoms extends TypeMgr {
    *  @param  args the command line arguments
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -445,5 +400,4 @@ public class Atoms extends TypeMgr {
     System.out.print("name(" +c +") = ");
     System.out.println(s);      /* convert from code to name */
   }  /* main() */
-
 }  /* class Atoms */

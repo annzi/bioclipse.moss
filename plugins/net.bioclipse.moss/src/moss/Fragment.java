@@ -68,10 +68,8 @@
             2007.11.08 bug in function mergeExts() fixed
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.StringReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for graph fragments (subgraphs and their embeddings).
  *  <p>A graph fragment is a part of a graph. It consists of a list
@@ -83,7 +81,6 @@ import java.io.StringReader;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Fragment {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -121,7 +118,6 @@ public class Fragment {
   protected static final int PACKED    = 0x20;
   /** default flags that are set when a fragment is created */
   protected static final int DEFAULT   = VALID | CLOSED;
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -156,40 +152,32 @@ public class Fragment {
   protected int[]     supp;
   /** the indices of the nodes of new ring edges */
   protected int[]     ris;
-
   /*------------------------------------------------------------------*/
   /** Create an empty fragment.
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment ()
   { this(null, 0); }
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from a graph.
    *  @param  graph the subgraph representing the fragment
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (Graph graph)
   { this(graph, 0); }
-
   /*------------------------------------------------------------------*/
   /** Create an empty fragment with an embedding limit.
    *  @param  max the maximum number of embeddings per graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (int max)
   { this(null, max); }
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from a graph with an embedding limit.
    *  @param  graph the subgraph representing the fragment
    *  @param  max   the maximum number of embeddings per graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (Graph graph, int max)
   {                             /* --- create an initial fragment */
     this.graph = graph;         /* store the graph */
@@ -203,17 +191,14 @@ public class Fragment {
     this.flags = DEFAULT;       /* set the default properties */
     this.supp  = new int[4];    /* create the support counters */
   }  /* Fragment() */
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from a graph and a subgraph.
    *  @param  graph the graph into which to embed the subgraph
    *  @param  sub   the subgraph to embed into the graph
    *  @since  2007.10.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (Graph graph, Graph sub)
   { this(graph, sub, 0); }
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from a graph and a subgraph.
    *  @param  graph the graph into which to embed the subgraph
@@ -221,7 +206,6 @@ public class Fragment {
    *  @param  max   the maximum number of embeddings
    *  @since  2007.10.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (Graph graph, Graph sub, int max)
   {                             /* --- create a fragment */
     this(graph, max);           /* do basic initialization */
@@ -229,7 +213,6 @@ public class Fragment {
     sub.prepareEmbed();         /* for embedding and then */
     this.add(graph.embed(sub)); /* embed the subgraph into the graph */
   }  /* Fragment() */
-
   /*------------------------------------------------------------------*/
   /** Special constructor for use in <code>mergeExts()</code>.
    *  <p>A fragment is created from a base fragment and information
@@ -242,7 +225,6 @@ public class Fragment {
    *  @see    #mergeExts(Fragment[],int)
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private Fragment (Fragment frag, int idx, int src, int dst)
   {                             /* --- create an extended fragment */
     this.graph = null;          /* not yet available as a graph */
@@ -259,7 +241,6 @@ public class Fragment {
     this.flags = DEFAULT;       /* set the default properties */
     this.supp  = new int[4];    /* create the support counters */
   }  /* Fragment() */
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from an extension.
    *  <p>This function is called if there is no fragment that is
@@ -268,12 +249,10 @@ public class Fragment {
    *  @param  ext the extension object from which to create the fragment
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Fragment (Extension ext)
   {                             /* --- create an extended fragment */
     int  i, k, n;               /* loop variable, counters, buffer */
     Node node;                  /* to traverse the nodes */
-
     this.graph = null;          /* not yet available as a graph */
     this.base  = ext.frag;      /* note the base fragment */
     this.list  = this.tail = this.curr = ext.makeEmbedding();
@@ -304,24 +283,20 @@ public class Fragment {
     this.ris[k++] = ext.pos2;   /* (distinguish equivalent rings) */
     this.ris[k++] = ext.pmax;   /* and the maximal position */
   }  /* Fragment() */
-
   /*------------------------------------------------------------------*/
   /** Check whether two fragments are equal.
    *  <p>This method is overridden only to avoid certain warnings.</p>
    *  @param  frag the fragment to compare to
    *  @since  2007.11.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean equals (Object frag)
   { return this == frag; }
-
   /*------------------------------------------------------------------*/
   /** Compute the hash code of the fragment.
    *  @return the hash code of the fragment
    *  @since  2006.11.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public int hashCode ()
   {                             /* --- compute a hash code */
@@ -330,7 +305,6 @@ public int hashCode ()
     /* If it exists, the graph is used, because the hash code */
     /* computation is faster for it than for an embedding.    */
   }  /* hashCode() */
-
   /*------------------------------------------------------------------*/
   /** Get the size of the fragment.
    *  <p>The size of the fragment is the number of nodes in an output
@@ -339,11 +313,9 @@ public int hashCode ()
    *  to the number of nodes of an embedding.</p>
    *  @since  2003.02.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int size ()         /* --- get the size of the fragment */
   { return (this.list == null) ? this.graph.nodecnt
           : this.list.nodes.length +this.chcnt; }
-
   /*------------------------------------------------------------------*/
   /** Get the fragment as a (sub-)graph.
    *  <p>For this function to work the fragment must be created from
@@ -353,14 +325,12 @@ public int hashCode ()
    *  @return the fragment as a (sub-)graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Graph getAsGraph ()
   {                             /* --- get fragment as a graph */
     if (this.graph == null)     /* create graph if necessary */
       this.graph = new Graph(this);
     return this.graph;          /* return created graph */
   }  /* getAsGraph() */
-
   /*------------------------------------------------------------------*/
   /** Add an embedding (list) to the fragment.
    *  <p>This function is meant for adding the embeddings of the seed
@@ -376,10 +346,8 @@ public int hashCode ()
    *  @param  emb the embedding to add to the fragment
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void add (Embedding emb)
   { this.add(emb, 1); }
-
   /*------------------------------------------------------------------*/
   /** Add an embedding (list) to the fragment.
    *  <p>The parameter <code>inc</code> is needed for reembedding,
@@ -389,7 +357,6 @@ public int hashCode ()
    *  @param  inc the amount by which to increment the support counters
    *  @since  2006.10.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void add (Embedding emb, int inc)
   {                             /* --- add (a list of) embedding(s) */
     int group = emb.getGroup(); /* get the group of the graph */
@@ -427,7 +394,6 @@ public int hashCode ()
     emb.nodes = null;           /* delete them and only keep */
     emb.edges = null;           /* a reference to the graph */
   }  /* add() */
-
   /*------------------------------------------------------------------*/
   /** Add an extension (as an embedding) to the fragment.
    *  <p>This function is called if a created extension is equivalent
@@ -438,13 +404,11 @@ public int hashCode ()
    *  @return whether the embedding was added (duplicate check)
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean add (Extension ext)
   {                             /* --- add an extended embedding */
     int       i, k, n;          /* loop variables, buffers */
     Embedding emb;              /* created/packed embedding */
     Edge      edge;             /* to traverse the ring edges */
-
     if ((ext.size > 0)          /* if ring extension in same graph */
     &&  (ext.emb.graph == this.tail.graph)) {
       n = ext.emb.edges.length; /* get size of base embedding */
@@ -494,7 +458,6 @@ public int hashCode ()
     emb.edges = null;           /* a reference to the graph */
     return true;                /* return 'embedding was added' */
   }  /* add() */
-
   /*------------------------------------------------------------------*/
   /** Pack the list of embeddings.
    *  <p>Pack the list of embeddings with the maximum number of
@@ -502,22 +465,18 @@ public int hashCode ()
    *  was created.</p>
    *  @since  2007.08.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void pack ()
   { this.pack(this.max); }
-
   /*------------------------------------------------------------------*/
   /** Pack the list of embeddings.
    *  @param  max the maximum number of embeddings per graph
    *  @since  2007.08.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void pack (int max)
   {                             /* --- pack the list of embeddings */
     Embedding emb;              /* to traverse the embeddings */
     Graph     g;                /* graph underlying current embedding */
     int       old = this.max;   /* old maximal number of embeddings */
-
     if (max < 0) max = old;     /* check and adapt and then update */
     this.max = max;             /* the maximal number of embeddings */
     if ((((this.flags & PACKED) != 0) && (max >= old))
@@ -543,12 +502,10 @@ public int hashCode ()
       this.cnt++;               /* append the embedding to the list */
     }                           /* and count it for the current graph */
   }  /* pack() */
-
   /*------------------------------------------------------------------*/
   /** Unpack the list of embeddings.
    *  @since  2007.08.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void unpack ()
   {                             /* --- unpack the list of embeddings */
     if ((this.flags & PACKED) == 0)
@@ -558,7 +515,6 @@ public int hashCode ()
       t = t.succ = emb;         /* always append the next embedding */
     this.flags &= ~PACKED;      /* clear flag for packed embeddings */
   }  /* unpack() */
-
   /*------------------------------------------------------------------*/
   /** Get the first embedding of the fragment.
    *  <p>Together with the function <code>next()</code> this function
@@ -579,14 +535,12 @@ public int hashCode ()
    *  @see    #next()
    *  @since  2005.08.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding first ()
   {                             /* --- get the first embedding */
     this.ris  = null;           /* "delete" node index array */
     this.tail = null;           /* clear the packed embeddings cursor */
     return this.curr = this.list;
   }  /* first() */              /* return the first list element */
-
   /*------------------------------------------------------------------*/
   /** Get the next embedding of the fragment.
    *  @return the next embedding of the fragment or <code>null</code>
@@ -594,7 +548,6 @@ public int hashCode ()
    *  @see    #first()
    *  @since  2005.08.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding next ()
   {                             /* --- get the next embedding */
     this.curr = this.curr.succ; /* advance the embedding cursor */
@@ -609,7 +562,6 @@ public int hashCode ()
     this.tail = this.curr.succ; /* advance packed element pointer */
     return this.curr = this.curr.graph.embed(this.graph);
   }  /* next() */               /* reembed fragment into graph */
-
   /*------------------------------------------------------------------*/
   /** Get the first graph containing the fragment.
    *  <p>Together with the function <code>nextGraph()</code> this
@@ -621,13 +573,11 @@ public int hashCode ()
    *  @see    #nextGraph()
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Graph firstGraph ()
   {                             /* --- get the first graph */
     this.curr = this.list;      /* get the first embedding */
     return (this.curr != null) ? this.curr.graph : null;
   }  /* firstGraph() */         /* return the embedding's graph */
-
   /*------------------------------------------------------------------*/
   /** Get the next graph containing the fragment.
    *  @return the next graph containing the fragment or
@@ -635,7 +585,6 @@ public int hashCode ()
    *  @see    #firstGraph()
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Graph nextGraph ()
   {                             /* --- get the next graph */
     Graph g = this.curr.graph;  /* note the current graph */
@@ -645,7 +594,6 @@ public int hashCode ()
     } while (this.curr.graph == g);
     return this.curr.graph;     /* return the embedding's graph */
   }  /* nextGraph() */
-
   /*------------------------------------------------------------------*/
   /** Find the minimum number of different nodes a node is mapped to.
    *  <p>The minimum number of different nodes a node is mapped to is
@@ -653,14 +601,12 @@ public int hashCode ()
    *  and <code>COMPL</code>) and stored in <code>this.supp</code>.</p>
    *  @since  2007.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void getMinImage ()
   {                             /* --- compute min. node images */
     int       i;                /* loop variable */
     Graph     g;                /* to traverse the graphs */
     Embedding emb;              /* to traverse the embeddings */
     int[]     ics = new int[2]; /* node image counters */
-
     this.supp[FOCUS] =          /* init. the node image minima */
     this.supp[COMPL] = Integer.MAX_VALUE;
     this.unpack();              /* unpack the list of embeddings */
@@ -687,7 +633,6 @@ public int hashCode ()
         if (g.nodes[i].mark >= 0) g.nodes[i].mark = -1;
     }                           /* clear all node markers */
   }  /* getMinImage() */
-
   /*------------------------------------------------------------------*/
   /** Find the size of a maximum independent set of the overlap graph.
    *  <p>The size of a maximum independent set of the overlap graph is
@@ -696,14 +641,12 @@ public int hashCode ()
    *  @param  type the type of MIS support to compute
    *  @since  2007.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private void getMISSize (int type)
   {                             /* --- compute max. indep. set size */
     OverlapGraph olap;          /* overlap graph of embeddings */
     Embedding    emb;           /* to traverse the embeddings */
     Graph        g;             /* graph underlying current embedding */
     int          group;         /* group of a graph (focus/compl.) */
-
     this.supp[FOCUS] = this.supp[COMPL] = 0;
     olap  = new OverlapGraph((type & SUPPMASK) == MIS_HARM);
     group = FOCUS; g = null;    /* create an overlap graph */
@@ -720,7 +663,6 @@ public int hashCode ()
     if (g != null)              /* process the last graph */
       this.supp[group] += olap.getMISSize((type & GREEDY) != 0);
   }  /* getMISSize() */
-
   /*------------------------------------------------------------------*/
   /** Compute the support of the fragment.
    *  <p>The support of the fragment in both graph groups, that is,
@@ -731,7 +673,6 @@ public int hashCode ()
    *  @param  type the type of support to compute
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void computeSupport (int type)
   {                             /* --- compute the support */
     int t = type & SUPPMASK;    /* get the pure support type */
@@ -745,17 +686,14 @@ public int hashCode ()
     if (t == MIN_IMAGE) this.getMinImage();
     else                this.getMISSize(type);
   }  /* computeSupport() */     /* otherwise call special function */
-
   /*------------------------------------------------------------------*/
   /** Get the support of a fragment (in both groups together).
    *  @return the (total) support of a fragment
    *  @see    #computeSupport(int)
    *  @since  2007.10.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getSupport ()
   { return this.supp[FOCUS] +this.supp[COMPL]; }
-
   /*------------------------------------------------------------------*/
   /** Get the support of a fragment in the given group.
    *  @param  group the group for which to get the support
@@ -763,67 +701,53 @@ public int hashCode ()
    *  @see    #computeSupport(int)
    *  @since  2007.08.09 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getSupport (int group)
   { return this.supp[group]; }
-
   /*------------------------------------------------------------------*/
   /** Get the focus support of a fragment.
    *  @return the focus support of a fragment
    *  @see    #computeSupport(int)
    *  @since  2007.06.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getFocusSupport ()
   { return this.supp[FOCUS]; }
-
   /*------------------------------------------------------------------*/
   /** Get the complement support of a fragment.
    *  @return the complement support of a fragment
    *  @see    #computeSupport(int)
    *  @since  2007.06.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getComplSupport ()
   { return this.supp[COMPL]; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of embeddings (in both groups together).
    *  @return the (total) number of embeddings
    *  @since  2007.10.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getEmbCount ()
   { return this.supp[2+FOCUS] +this.supp[2+COMPL]; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of embeddings in the given group.
    *  @param  group the group for which to get the number of embeddings
    *  @return the number of embeddings in the given group
    *  @since  2007.08.09 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getEmbCount (int group)
   { return this.supp[2+group]; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of embeddings in the focus.
    *  @return the number of embeddings in the focus
    *  @since  2007.08.09 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getFocusEmbCount ()
   { return this.supp[2+FOCUS]; }
-
   /*------------------------------------------------------------------*/
   /** Get the number of embeddings in the complement.
    *  @return the number of embeddings in the complement
    *  @since  2007.08.09 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public int getComplEmbCount ()
   { return this.supp[2+COMPL]; }
-
   /*------------------------------------------------------------------*/
   /** Unembed a fragment, that is, remove all embeddings.
    *  <p>The embeddings of fragments that correspond to nodes in the
@@ -833,7 +757,6 @@ public int hashCode ()
    *  returns and the fragment is actually processed.</p>
    *  @since  2005.08.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void unembed ()
   {                             /* --- remove embeddings */
     if (this.graph == null)     /* turn fragment into a graph */
@@ -841,7 +764,6 @@ public int hashCode ()
     this.list = this.tail = this.curr = null;
     this.cnt  = 0;              /* clear the embedding list */
   }  /* unembed() */
-
   /*------------------------------------------------------------------*/
   /** Reembed a fragment, that is, recreate its embedding list.
    *  <p>As long as sibling fragments are processed, the embeddings
@@ -851,14 +773,12 @@ public int hashCode ()
    *  if this is impossible, by reembedding the fragment.</p>
    *  @since  2005.08.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void reembed ()
   {                             /* --- reembed a fragment */
     int       d;                /* destination node index */
     int       edge, node;       /* types of edge and dest. node */
     Embedding emb, xe;          /* to traverse the embeddings */
     Graph     g;                /* to traverse the graphs */
-
     if (this.list != null)      /* if embeddings exist, */
       return;                   /* reembedding is not necessary */
     if ((this.size != 0)        /* if extension of base is impossible */
@@ -884,7 +804,6 @@ public int hashCode ()
     /* not contain the extended fragment. In such cases g.embed and */
     /* emb.extend, respectively, yield null, thus requiring a check.*/
   }  /* reembed() */
-
   /*------------------------------------------------------------------*/
   /** Set or clear the valid flag.
    *  <p>By default a fragment is valid. The valid flag is cleared for
@@ -895,10 +814,8 @@ public int hashCode ()
    *  @param  valid whether to set or clear the valid flag
    *  @since  2006.06.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void setValid (boolean valid)
   { if (valid) this.flags |= VALID; else this.flags &= ~VALID; }
-
   /*------------------------------------------------------------------*/
   /** Check whether the valid flag is set.
    *  <p>If the valid flag is cleared, the fragment need not be
@@ -906,19 +823,15 @@ public int hashCode ()
    *  @return whether the valid flag is set
    *  @since  2006.06.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isValid ()
   { return (this.flags & VALID) != 0; }
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment is the result of a ring extension.
    *  @return whether the fragment is the result of a ring extension
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isRingExt ()
   { return this.size > 0; }
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment is the result of an extension
    *  by a ring edge.
@@ -926,10 +839,8 @@ public int hashCode ()
    *          by a ring edge
    *  @since  2006.05.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isRingEdgeExt ()
   { return this.list.edges[this.idx].isInRing(); }
-
   /*------------------------------------------------------------------*/
   /** Check whether an extension is perfect.
    *  <p>An extension is perfect if it can be applied in exactly the
@@ -956,14 +867,12 @@ public int hashCode ()
    *  @return whether the extension that created the fragment is perfect
    *  @since  2003.08.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isPerfect (Extension ext, boolean chain)
   {                             /* --- check for a perfect extension */
     int       k, n, e;          /* numbers of extensions etc. */
     int[]     bfs;              /* support of base fragment */
     Embedding emb, pre;         /* to traverse the embeddings */
     boolean   tonew;            /* whether edge leads to a new node */
-
     if ((this.flags & PERFECT) != 0)
       return true;              /* check the perfect extension flag */
     if ((this.base == null)     /* if there is no base structure or */
@@ -980,13 +889,11 @@ public int hashCode ()
     &&   (this.supp[2+FOCUS] /  bfs[2+FOCUS]
     !=    this.supp[2+COMPL] /  bfs[2+COMPL])))
       return false;             /* check the support/counter values */
-
     emb = this.first();         /* check for the start of a chain */
     if (chain && emb.edges[this.idx].isBridge()
     &&  (emb.edges[this.idx].type == ext.cedge)
     &&  (emb.nodes[this.dst].type == ext.cnode))
       return false;             /* chain starts are not perfect */
-
     tonew = (this.dst >= this.base.list.nodes.length);
     n = this.supp[  FOCUS] +this.supp[  COMPL];   /* get number of */
     k = this.supp[2+FOCUS] +this.supp[2+COMPL];   /* graphs and embs. */
@@ -999,7 +906,6 @@ public int hashCode ()
       this.flags |= PERFECT;    /* if it is, extension is perfect, */
       return true;              /* so set the corresponding flag */
     }                           /* and return 'extension is perfect' */
-
     e = this.base.list.edges.length;
     n = 0;                      /* init. the extension counters and */
     do { k = 0;                 /* traverse the (base) embeddings */
@@ -1016,7 +922,6 @@ public int hashCode ()
     this.flags |= PERFECT;      /* set the perfect extension flag */
     return true;                /* return 'extension is perfect' */
   }  /* isPerfect() */
-
   /*------------------------------------------------------------------*/
   /** Revert the extension information of the fragment.
    *  <p>If a perfect extension is followed as the only branch and
@@ -1026,7 +931,6 @@ public int hashCode ()
    *  that of the base fragment, so that no fragments are lost.</p>
    *  @since  2003.08.08 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void revert ()
   {                             /* --- revert extension information */
     if ((this.flags & PERFECT) == 0)
@@ -1036,7 +940,6 @@ public int hashCode ()
     this.dst = this.base.dst;   /* to those of the base fragment */
     this.flags |= REVERTED;     /* set the reverted flag */
   }  /* revert() */
-
   /*------------------------------------------------------------------*/
   /** Check whether two fragments are equivalent.
    *  <p>Two fragments are equivalent if they refer to the same nodes
@@ -1050,12 +953,10 @@ public int hashCode ()
    *  @return whether the given fragment is equivalent
    *  @since  2002.07.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isEquivTo (Fragment frag)
   {                             /* --- check for equivalence */
     int       i, k;             /* loop variables */
     Embedding emb, ref;         /* to traverse the embeddings */
-
     ref = frag.list;            /* get the embeddings of */
     emb = this.list;            /* the fragments to compare */
     if ((ref.graph != emb.graph)/* if basic properties differ */
@@ -1079,7 +980,6 @@ public int hashCode ()
       ref.edges[i].mark = -1;   /* unmark the embedding in graph */
     return (k < 0);             /* return comparison result */
   }  /* isEquivTo() */
-
   /*------------------------------------------------------------------*/
   /** Create all ring extensions for a given extension edge.
    *  <p>In its current form this function distinguishes extensions by
@@ -1094,7 +994,6 @@ public int hashCode ()
    *  @param  mna the maximum number of new nodes
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private static ExtList rings (Node src, Edge re, Node dst,
                                 int[] buf, int mna)
   {                             /* --- create ring extensions */
@@ -1103,7 +1002,6 @@ public int hashCode ()
     Node    node;               /* to traverse the nodes of the ring */
     Edge    edge, x = null;     /* to traverse the edges of the ring */
     ExtList e,    l = null;     /* list of ring extensions */
-
     all = re.getRings(); cur = 1;  /* note the ring flags */
     while (all != 0) {          /* while there is another ring flag */
       while ((all & cur) == 0) cur <<= 1;
@@ -1132,7 +1030,6 @@ public int hashCode ()
     }                           /* add it at the head of the list */
     return l;                   /* return the created extensions */
   }  /* rings() */
-
   /*------------------------------------------------------------------*/
   /** Check whether there is a matching ring extension.
    *  <p>All ring flags of the given edge are checked whether they
@@ -1145,14 +1042,12 @@ public int hashCode ()
    *  @return whether there is a matching ring extension
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private static boolean match (ExtList e, Node src, Edge re, Node dst)
   {                             /* --- match ring extensions */
     int   i, n;                 /* loop variables */
     long  all, cur;             /* all ring flags and current one */
     Node  node;                 /* to traverse the nodes of the ring */
     Edge  edge, x = null;       /* to traverse the edges of the ring */
-
     all = re.getRings(); cur = 1;  /* note the ring flags */
     while (all != 0) {          /* while there is another ring flag */
       while ((all & cur) == 0) cur <<= 1;
@@ -1180,7 +1075,6 @@ public int hashCode ()
     }
     return false;               /* no matching ring found */
   }  /* match() */
-
   /*------------------------------------------------------------------*/
   /** Set the flag for a closed fragment.
    *  <p>In the search it is often possible to determine that a fragment
@@ -1192,10 +1086,8 @@ public int hashCode ()
    *  closed flag is set for a fragment.</p>
    *  @since  2006.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void setClosed (boolean closed)
   { if (closed) this.flags |= CLOSED; else this.flags &= ~CLOSED; }
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment is closed.
    *  <p>A fragment is closed if no superstructure has the same support,
@@ -1219,7 +1111,6 @@ public int hashCode ()
    *  @return whether the fragment is closed
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isClosed (Extension ext)
   {                             /* --- check for a closed fragment */
     int       i, k;             /* loop variables */
@@ -1229,10 +1120,8 @@ public int hashCode ()
     Node      s, d;             /* to traverse the nodes */
     Edge      edge;             /* edge of previous extension */
     ExtList   l1, l2, l3, e;    /* list of extensions */
-
     if ((this.flags & CLOSED) == 0)
       return false;             /* check the non-closed flag */
-
     /* --- collect extensions in first graph --- */
     mnn = ext.max -this.size(); /* get max. number of new nodes */
     emb = this.first();         /* and the first embedding */
@@ -1265,7 +1154,6 @@ public int hashCode ()
       l1 = ExtList.merge(l1,l2);/* merge the extension lists */
       emb = this.next();        /* (and remove duplicates) */
     } while ((emb != null) && (emb.graph == cur));
-
     /* --- check extensions in remaining graphs --- */
     while ((emb != null)        /* traverse remaining embeddings */
     &&     (l1  != null)) {     /* while there are extensions left */
@@ -1301,17 +1189,14 @@ public int hashCode ()
       this.flags &= ~CLOSED;    /* the fragment is not closed */
     return (l1 == null);        /* return whether fragment is closed */
   }  /* isClosed() */
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment is in canonical form.
    *  @param  ext the extension object defining the canonical form
    *  @return whether the fragment is in canonical form
    *  @since  2005.07.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean isCanonic (Extension ext)
   { return this.isCanonic(ext, false) > 0; }
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment is in canonical form.
    *  <p>The test may be executed in a partial form, in which only
@@ -1321,7 +1206,6 @@ public int hashCode ()
    *  @param  partial whether to carry out a partial test
    *  @since  2005.07.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int isCanonic (Extension ext, boolean partial)
   {                             /* --- check for canonical form */
     int n = this.list.edges.length;
@@ -1331,7 +1215,6 @@ public int hashCode ()
     if (partial) n = this.idx+1;/* check whether graph is canonic */
     return this.graph.isCanonic(ext, n);
   }  /* isCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Reorganize the fragment with a map from an extension.
    *  <p>The reorganization consists in reordering the nodes and
@@ -1343,7 +1226,6 @@ public int hashCode ()
    *  @param  ext the extension object containing the map
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void map (Extension ext)
   {                             /* --- map fragment after makeCanonic */
     int       i, n, e;          /* loop variable, buffers */
@@ -1351,7 +1233,6 @@ public int hashCode ()
     boolean   nar, ear;         /* flags for array reallocation */
     Node[]    nsrc;             /* source for node array */
     Edge[]    esrc;             /* source for edge array */
-
     this.graph.map(ext);        /* reorganize the subgraph */
     n = this.list.nodes.length; /* get number of nodes and */
     e = this.list.edges.length; /* the number of edges */
@@ -1378,17 +1259,14 @@ public int hashCode ()
         emb.nodes[ext.word[e+i]] = nsrc[i];
     }                           /* (reorganize the embeddings) */
   }  /* map() */
-
   /*------------------------------------------------------------------*/
   /** Make the fragment canonic (minimize the code word).
    *  @param  ext the extension object defining the canonical form
    *  @return whether the fragment was changed
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean makeCanonic (Extension ext)
   { return this.makeCanonic(ext, -1); }
-
   /*------------------------------------------------------------------*/
   /** Make the fragment canonic (minimize the code word).
    *  <p>In the process of trying to minimize the code word, the first
@@ -1399,7 +1277,6 @@ public int hashCode ()
    *  @return whether the fragment was changed
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean makeCanonic (Extension ext, int keep)
   {                             /* --- construct canonical form */
     if (this.list.edges.length <= ((keep < 0) ? 0 : keep))
@@ -1411,7 +1288,6 @@ public int hashCode ()
     this.map(ext);              /* map the embeddings accordingly */
     return true;                /* return 'fragment is changed' */
   }  /* makeCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment has open rings.
    *  @param  min minimum ring size (number of nodes/edges)
@@ -1419,10 +1295,8 @@ public int hashCode ()
    *  @return whether the fragment has open rings
    *  @since  2006.05.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean hasOpenRings (int min, int max)
   { return this.getAsGraph().hasOpenRings(min, max); }
-
   /*------------------------------------------------------------------*/
   /** Check whether the fragment has unclosable rings.
    *  <p>If the output is restricted to fragments containing only closed
@@ -1436,10 +1310,8 @@ public int hashCode ()
    *  @return whether the fragment has unclosable rings
    *  @since  2006.05.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean hasUnclosableRings (Extension ext)
   { return ext.hasUnclosableRings(this); }
-
   /*------------------------------------------------------------------*/
   /** Merge ring extensions that have the same initial edge.
    *  <p>This function does not work with packed embeddings lists due
@@ -1451,7 +1323,6 @@ public int hashCode ()
    *  @return the number of fragments in <code>exts</code> after merging
    *  @since  2006.05.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int mergeExts (Fragment[] exts, int cnt)
   {                             /* --- merge ring extensions */
     int       i, j, k, n, frst; /* loop variables, buffers */
@@ -1462,7 +1333,6 @@ public int hashCode ()
     boolean   found;            /* whether compat. embwdding found */
     Edge[]    bvec;             /* buffer for reallocation */
     Node[]    avec;             /* ditto */
-
     i = n = 0;                  /* init. the extension indices */
     nebe = (this.base != null) ? this.base.list.edges.length : 0;
     while (i < cnt) {           /* section finding and merge loop */
@@ -1479,7 +1349,6 @@ public int hashCode ()
       &&     (exts[i].list.edges[b].type == bt)
       &&     (exts[i].list.nodes[d].type == dt))
         i++;                    /* find corresp. ring extensions */
-
       /* -- single element section -- */
       if (i -frst <= 1) {       /* if only one extension in section, */
         exts[n++] = x;          /* it can simply be kept and adapted */
@@ -1505,7 +1374,6 @@ public int hashCode ()
         }                       /* remove equivalent embeddings */
         continue;               /* the extension has been adapted, */
       }                         /* so continue with the next */
-
       /* -- multiple element section -- */
       res = new Fragment(this, b, s, d);   /* create result fragment */
       if (d >= this.list.nodes.length)
@@ -1538,7 +1406,6 @@ public int hashCode ()
       exts[i] = null;           /* from the extension array */
     return n;                   /* return new number of fragments */
   }  /* mergeExts() */
-
   /*------------------------------------------------------------------*/
   /** Adapt the fragment (limited reordering of the edges and nodes).
    *  <p>For full perfect extension pruning and for combining ring
@@ -1555,7 +1422,6 @@ public int hashCode ()
    *  @return whether the adaptation was successful
    *  @since  2006.04.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean adapt (Extension ext, boolean check)
   {                             /* --- adapt a fragment */
     int       i, k, n, e;       /* loop variables, buffers */
@@ -1564,7 +1430,6 @@ public int hashCode ()
     Edge[]    edges;            /* edge array of the fragment */
     Edge      edge, x;          /* to traverse the edges */
     Embedding emb;              /* to traverse the embeddings */
-
     if ((this.flags & ADAPTED) != 0)
       return true;              /* if already adapted, simply abort */
     this.flags |= ADAPTED;      /* set flag for an adapted fragment */
@@ -1636,7 +1501,6 @@ public int hashCode ()
     k = this.idx; this.idx = i; /* note old edge index and set new */
     return true;                /* return 'adaptation successful' */
   }  /* adapt() */
-
   /*------------------------------------------------------------------*/
   /** Check whether all variable length chains are valid.
    *  <p>A variable length chain is valid if it actually represents
@@ -1646,7 +1510,6 @@ public int hashCode ()
    *  @return whether all variable length chains are valid
    *  @since  2006.11.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean chainsValid ()
   {                             /* --- check variable length chains */
     int       i, k, c;          /* loop variables */
@@ -1655,7 +1518,6 @@ public int hashCode ()
     Embedding emb;              /* to traverse the embeddings */
     Edge      e;                /* to traverse the edges */
     Node      s, d;             /* to traverse the chain atoms */
-
     n = this.chcnt;             /* get the number of chains */
     if (n <= 0) return true;    /* if there are no chains, abort */
     k = this.supp[2] +this.supp[3];
@@ -1670,7 +1532,6 @@ public int hashCode ()
     /* A chain is valid if its minimum length is 1 and there are  */
     /* at least two different chain lengths. Hence the number in  */
     /* buf[4k] and the current counting result allow a decision.  */
-
     /* --- process the first embedding --- */
     emb = this.list;            /* get the first embedding */
     for (i = emb.nodes.length; --i >= 0; )
@@ -1695,7 +1556,6 @@ public int hashCode ()
     }
     for (i = emb.nodes.length; --i >= 0; )
       emb.nodes[i].mark = -1;   /* unmark the nodes of the embedding */
-
     /* --- process the remaining embeddings --- */
     for (emb = emb.succ; emb != null; emb = emb.succ) {
       for (i = n, k = n = 0; k < i; k += 4) {
@@ -1718,37 +1578,30 @@ public int hashCode ()
     }                           /* all chains are valid */
     return false;               /* there is at least on invalid chain */
   }  /* chainsValid() */
-
   /*------------------------------------------------------------------*/
   /** Create a string description of the fragment.
    *  @return a string description of the fragment
    *  @since  2002.03.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public String toString ()
   { return this.getAsGraph().toString(); }
-
   /*------------------------------------------------------------------*/
   /** Create a string description of the fragment.
    *  @param  ntn the notation to use for the description
    *  @return a string description of the fragment
    *  @since  2002.03.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String toString (Notation ntn)
   { return this.getAsGraph().toString(ntn); }
-
   /*------------------------------------------------------------------*/
   /** Create the code word of the fragment.
    *  @param  ext the extension object defining the code word form
    *  @return a string description of the code word
    *  @since  2006.05.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public String toString (Extension ext)
   { return this.getAsGraph().toString(ext); }
-
   /*------------------------------------------------------------------*/
   /** Main function for testing some basic functionality.
    *  <p>It is tried to parse the first two command line arguments as
@@ -1758,23 +1611,19 @@ public String toString ()
    *  @param  args the command line arguments
    *  @since  2007.10.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static void main (String args[])
   {                             /* --- main function for testing */
     Notation ntn;               /* graph notation */
     Graph    graph, sub;        /* created graph and subgraph */
     Fragment frag;              /* created fragment */
     int[]    masks;             /* masks for node and edge types */
-
     if (args.length != 2) {     /* if wrong number of arguments */
       System.err.println("usage: java moss.Fragment <graph> <frag>");
       return;                   /* print a usage message */
     }                           /* and abort the program */
-
     masks    = new int[4];      /* create node and edge masks */
     masks[0] = masks[2] = Atoms.ELEMMASK;
     masks[1] = masks[3] = Bonds.BONDMASK;
-
     try {                       /* try SMILES */
       System.out.print("SMILES: ");
       ntn   = new SMILES();     /* create a SMILES object */
@@ -1787,7 +1636,6 @@ public String toString ()
       return; }                 /* show the number of embeddings */
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
-
     try {                       /* try SYBYL line notation (SLN) */
       System.out.print("SLN   : ");
       ntn   = new SLN();        /* create an SLN object */
@@ -1800,7 +1648,6 @@ public String toString ()
       return; }                 /* show the number of embeddings */
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
-
     try {                       /* try general line notation */
       System.out.print("LiNoG : ");
       ntn   = new LiNoG();      /* create a LiNoG object */
@@ -1813,5 +1660,4 @@ public String toString ()
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
-
 }  /* class Fragment */

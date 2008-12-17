@@ -31,10 +31,8 @@
             2007.10.23 base reference removed, function common() added
 ----------------------------------------------------------------------*/
 package moss;
-
 import java.io.IOException;
 import java.io.StringReader;
-
 /*--------------------------------------------------------------------*/
 /** Class for embeddings of substructures into graphs.
  *  <p>An embedding of a substructure is represented by referring
@@ -54,13 +52,11 @@ import java.io.StringReader;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Embedding {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
   /** dummy for an empty edge vector (avoid multiple instances) */
   private static final Edge[] EMPTY = new Edge[0];
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -72,7 +68,6 @@ public class Embedding {
   protected Node[]    nodes;
   /** the array of edges (references to the underlying graph) */
   protected Edge[]    edges;
-
   /*------------------------------------------------------------------*/
   /** Dummy constructor.
    *  <p>This constructor is only needed to create the dummy object
@@ -82,10 +77,8 @@ public class Embedding {
    *  recursion parameter.</p>
    *  @since  2006.08.28 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding ()
   { this.graph = null; this.nodes = null; this.edges = null; }
-
   /*------------------------------------------------------------------*/
   /** Create a single node embedding.
    *  <p>The node referred to is given by its index in the graph.
@@ -95,14 +88,12 @@ public class Embedding {
    *  @param  index the index of the node in the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding (Graph graph, int index)
   {                             /* --- create a single node embedding */
     this.graph = graph;         /* note the graph referred to */
     this.nodes = new Node[] { graph.nodes[index] };
     this.edges = EMPTY;         /* store a reference to the node */
   }  /* Embedding() */
-
   /*------------------------------------------------------------------*/
   /** Create an embedding from node and edge references.
    *  <p>This function is used when embedding a seed structure.
@@ -112,7 +103,6 @@ public class Embedding {
    *  @param  edges the edges of the substructure
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding (Graph graph, Node[] nodes, Edge[] edges)
   {                             /* --- create embedding from markers */
     this.graph = graph;         /* copy the node and edge arrays */
@@ -121,7 +111,6 @@ public class Embedding {
     this.edges = new Edge[edges.length];
     System.arraycopy(edges, 0, this.edges, 0, edges.length);
   }  /* Embedding() */
-
   /*------------------------------------------------------------------*/
   /** Create an embedding from an extension.
    *  <p>This function is called if a created extension is only
@@ -129,13 +118,11 @@ public class Embedding {
    *  @param  ext the extension to turn into an embedding
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding (Extension ext)
   {                             /* --- create an embedding */
     int  i, n, e;               /* loop variables, buffers */
     Node node;                  /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
-
     this.graph = ext.emb.graph; /* note the graph referred to */
     n = ext.emb.nodes.length;   /* get the old number of nodes */
     if (ext.nodecnt <= 0)       /* if there are no new nodes */
@@ -164,7 +151,6 @@ public class Embedding {
       }                         /* copy the new nodes and edges */
     }                           /* (skip old nodes and edges) */
   }  /* Embedding() */
-
   /*------------------------------------------------------------------*/
   /** Extend a given embedding with a given edge.
    *  <p>This function assumes that the nodes of the embedding to extend
@@ -175,7 +161,6 @@ public class Embedding {
    *  @see    #extend(int,int,int,int)
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding (Embedding emb, Edge edge)
   {                             /* --- create an extended embedding */
     this.graph = emb.graph;     /* note the graph referred to */
@@ -193,18 +178,15 @@ public class Embedding {
       this.nodes[n] = (edge.src.mark < 0) ? edge.src : edge.dst;
     }                           /* store the new node */
   }  /* Embedding() */
-
   /*------------------------------------------------------------------*/
   /** Check whether two embeddings are equal.
    *  <p>This method is overridden only to avoid certain warnings.</p>
    *  @param emb the embedding to compare to
    *  @since  2007.11.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean equals (Object emb)
   { return this == emb; }
-
   /*------------------------------------------------------------------*/
   /** Compute the hash code of the subgraph described by the embedding.
    *  <p>This function should yield the same value as the corresponding
@@ -212,7 +194,6 @@ public boolean equals (Object emb)
    *  @return the hash code of the subgraph described by the embedding
    *  @since  2006.11.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public int hashCode ()
   {                             /* --- compute a hash code */
@@ -220,7 +201,6 @@ public int hashCode ()
     int  h, s;                  /* the computed hash code */
     Node src, dst;              /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
-
     for (i = this.graph.edgecnt; --i >= 0; ) {
       edge = this.graph.edges[i];
       if (edge.mark >= 0) edge.mark = -1;
@@ -275,23 +255,19 @@ public int hashCode ()
     }                           /* unmark all incident nodes */
     return h;                   /* return the computed hash code */
   }  /* hashCode() */
-
   /*------------------------------------------------------------------*/
   /** Get the group of the underlying graph.
    *  @return the group of the underlying graph
    *  @since  2007.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int getGroup ()
   { return (this.graph instanceof NamedGraph)
          ? ((NamedGraph)this.graph).group : NamedGraph.FOCUS; }
-
   /*------------------------------------------------------------------*/
   /** Mark all nodes and edges with a given value.
    *  @param  mark the value with which to mark nodes and edges
    *  @since  2002.04.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void mark (int mark)
   {                             /* --- mark embedding in graph */
     for (int i = this.nodes.length; --i >= 0; )
@@ -299,12 +275,10 @@ public int hashCode ()
     for (int i = this.edges.length; --i >= 0; )
       this.edges[i].mark = mark;/* mark the edges of the embedding */
   }  /* mark() */
-
   /*------------------------------------------------------------------*/
   /** Mark all nodes and edges with their index.
    *  @since  2002.04.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void index ()
   {                             /* --- index embedding in graph */
     for (int i = this.nodes.length; --i >= 0; )
@@ -312,7 +286,6 @@ public int hashCode ()
     for (int i = this.edges.length; --i >= 0; )
       this.edges[i].mark = i;   /* number the edges of the embedding */
   }  /* index() */
-
   /*------------------------------------------------------------------*/
   /** Find the (maximum) length of a common edge array prefix.
    *  @param  emb the embedding to compare to
@@ -320,7 +293,6 @@ public int hashCode ()
    *          or <code>-1</code> if not even the root node coincides
    *  @since  2007.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int common (Embedding emb)
   {                             /* --- find length of common prefix */
     if (this.nodes[0] != emb.nodes[0])
@@ -331,7 +303,6 @@ public int hashCode ()
       if (this.edges[i] != emb.edges[i]) return i;
     return n;                   /* return length of shorter embedding */
   }  /* common() */
-
   /*------------------------------------------------------------------*/
   /** Create all extensions of a given type of this embedding.
    *  <p>The type of the extension is described by the index of the
@@ -346,14 +317,12 @@ public int hashCode ()
    *  @param  node the type of the destination node
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Embedding extend (int src, int dst, int edge, int node)
   {                             /* --- create extensions of an embed. */
     int       i;                /* loop variable */
     Node      s, d;             /* to traverse the nodes */
     Edge      e;                /* to traverse the edges */
     Embedding emb, list = null; /* list of extended embeddings */
-
     this.index();               /* mark the base embedding */
     s = this.nodes[src];        /* get the source node of the ext. */
     for (i = s.deg; --i >= 0; ) {
@@ -371,7 +340,6 @@ public int hashCode ()
     this.mark(-1);              /* unmark the base embedding */
     return list;                /* return the list of embeddings */
   }  /* extend() */
-
   /*------------------------------------------------------------------*/
   /** Check whether this embedding overlaps another.
    *  @param  emb     the embedding to check for an overlap
@@ -379,22 +347,18 @@ public int hashCode ()
    *  @return whether the embeddings overlap each other
    *  @since  2007.06.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean overlaps (Embedding emb, boolean harmful)
   { return (harmful) ? this.overlapsHarmfully(emb)
                      : this.overlaps(emb); }
-
   /*------------------------------------------------------------------*/
   /** Check whether this embedding overlaps another.
    *  @param  emb the embedding to check for an overlap
    *  @return whether the embeddings overlap each other
    *  @since  2007.06.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean overlaps (Embedding emb)
   {                             /* --- check for overlap */
     int i, k;                   /* loop variables */
-
     if (emb.graph != this.graph)
       return false;             /* check for the same graph */
     for (i = this.nodes.length; --i >= 0; )
@@ -409,7 +373,6 @@ public int hashCode ()
       this.nodes[i].mark = -1;  /* unmark nodes of this embedding */
     return (k >= 0);            /* return whether embeddings overlap */
   }  /* overlaps() */
-
   /*------------------------------------------------------------------*/
   /** Check whether this embedding overlaps another harmfully.
    *  <p>It is assumed that the two embeddings refer to the same
@@ -418,14 +381,12 @@ public int hashCode ()
    *  @return whether the embeddings overlap each other harmfully
    *  @since  2007.06.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean overlapsHarmfully (Embedding emb)
   {                             /* --- check for harmful overlap */
     int  i, k;                  /* loop variables */
     int  n, m;                  /* number of nodes and edges */
     int  s, d;                  /* buffers for node markers */
     Edge e;                     /* to traverse the edges */
-
     if (emb.graph != this.graph)
       return false;             /* check for the same graph */
     for (i = n = this.nodes.length; --i >= 0; )
@@ -484,20 +445,17 @@ public int hashCode ()
     this.mark(-1);              /* unmark nodes and edges */
     return (i >= 0);            /* return whether embeddings overlap */
   }  /* overlapsHarmfully() */
-
   /*------------------------------------------------------------------*/
   /** Main function for testing the overlap functions.
    *  @param  args the command line arguments
    *  @since  2007.06.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public static void main (String args[])
   {                             /* --- main function for testing */
     int       n = 0;            /* number of embeddings */
     Notation  ntn;              /* molecule notation */
     Graph     graph, sub;       /* graph and subgraph */
     Embedding embs, e1, e2;     /* list of embeddings */
-
     if (args.length != 2) {     /* if wrong number of arguments */
       System.out.println("java moss.Embedding <graph> <subgraph>");
       return;                   /* print a usage message */
@@ -521,5 +479,4 @@ public int hashCode ()
       }                         /* check all pairs of embeddings */
     }                           /* for (harmful) overlap */
   }  /* main() */
-
 }  /* class Embedding */

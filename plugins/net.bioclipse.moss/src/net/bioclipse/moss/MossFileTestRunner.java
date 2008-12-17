@@ -8,7 +8,6 @@
  *******************************************************************************/
 /*Not beeing used at the moment
  * TODO: Remove if it is 100% sure that input data should not be read directly from file. */
-
 //package net.bioclipse.moss;
 //
 //import java.io.*;

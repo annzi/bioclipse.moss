@@ -43,7 +43,6 @@
             2007.06.21 adapted to new class TypeMgr
 ----------------------------------------------------------------------*/
 package moss;
-
 /*--------------------------------------------------------------------*/
 /** Class for creating extensions of fragments and embeddings.
  *  <p>An extension object records all relevant information about
@@ -66,7 +65,6 @@ package moss;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public abstract class Extension {
-
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -80,7 +78,6 @@ public abstract class Extension {
   public    static final int EQVARS = 8;
   /** the flag for a fixed edge in the ring order test */
   protected static final int FIXED  = Integer.MIN_VALUE;
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -134,7 +131,6 @@ public abstract class Extension {
   protected int       pos2;
   /** the code word for isCanonic/makeCanonic */
   protected int[]     word;
-
   /*------------------------------------------------------------------*/
   /** Initialize the extension variables.
    *  <p>Since <code>Extension</code> is an abstract class, this
@@ -146,7 +142,6 @@ public abstract class Extension {
    *  @param  max  the maximum fragment size (number of nodes)
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Extension (int mode, int max)
   {                             /* -- create an extension structure */
     if ((mode & RING) == 0)     /* equivalent variants are needed */
@@ -162,7 +157,6 @@ public abstract class Extension {
     this.pmin  = this.pos1 = -1;/* init. the variables for */
     this.pmax  = this.pos2 = -1;/* equivalent variants of rings */
   }  /* Extension() */
-
   /*------------------------------------------------------------------*/
   /** Set the ring sizes for ring extensions.
    *  <p>These ring sizes are actually not needed for creating ring
@@ -172,20 +166,16 @@ public abstract class Extension {
    *  @param  rgmax the maximal ring size (number of nodes/edges)
    *  @since  2006.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setRingSizes (int rgmin, int rgmax)
   { this.rgmin = rgmin; this.rgmax = rgmax; }
-
   /*------------------------------------------------------------------*/
   /** Set the node and edge type for chain extensions.
    *  @param  node the type of the chain nodes
    *  @param  edge the type of the chain edges
    *  @since  2006.10.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public void setChainTypes (int node, int edge)
   { this.cnode = node; this.cedge = edge; }
-
   /*------------------------------------------------------------------*/
   /** Initialize the extension generation process.
    *  <p>Instead of creating a new extension object each time an
@@ -198,9 +188,7 @@ public abstract class Extension {
    *               (must be contained in the fragment)
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract void init (Fragment frag, Embedding emb);
-
   /*------------------------------------------------------------------*/
   /** Create the next extension.
    *  <p>Each time this function is called and returns
@@ -214,9 +202,7 @@ public abstract class Extension {
    *  @return whether another extension was created
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract boolean next ();
-
   /*------------------------------------------------------------------*/
   /** Create a ring extension.
    *  <p>Follow a ring flag through the edges of the graph the
@@ -229,13 +215,11 @@ public abstract class Extension {
    *  @return whether another ring extension was created
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean ring ()
   {                             /* --- create a ring extension */
     int  i;                     /* loop variable */
     Node s, d;                  /* to traverse the nodes of the ring */
     Edge r, e = null;           /* to traverse the edges of the ring */
-
     this.chcnt = this.frag.chcnt;     /* copy the chain counter */
     s = this.nodes[0];          /* get the anchor node (source) */
     while (this.all != 0) {     /* while there is another ring flag */
@@ -275,7 +259,6 @@ public abstract class Extension {
     }                           /* return "ring extension succeeded" */
     return false;               /* return "ring extension failed" */
   }  /* ring() */
-
   /*------------------------------------------------------------------*/
   /** Check whether the current ring extension is valid.
    *  <p>In order to reduce the number of generated fragments, rings
@@ -289,9 +272,7 @@ public abstract class Extension {
    *  @return whether the ring is valid (has the correct form)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract boolean validRing ();
-
   /*------------------------------------------------------------------*/
   /** Initialize the generation of equivalent ring extension variants.
    *  <p>If a ring start (and possibly also ends) with an edge that is
@@ -303,18 +284,14 @@ public abstract class Extension {
    *  function initializes this variant generation.</p>
    *  @since  2006.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract void initVars ();
-
   /*------------------------------------------------------------------*/
   /** Create the next ring extension variant.
    *  @return whether another ring variant was created
    *  @see    #initVars()
    *  @since  2006.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract boolean variant ();
-
   /*------------------------------------------------------------------*/
   /** Reorder the edges of a fragment with a ring extension.
    *  <p>After a ring extension it may be necessary to reorder the edges
@@ -347,9 +324,7 @@ public abstract class Extension {
    *          </table></p>
    *  @since  2006.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract int adaptRing (Fragment frag, boolean check);
-
   /*------------------------------------------------------------------*/
   /** Compare two edges with the precedence order of the canonical form.
    *  <p>A canonical form usually allows to compare two edges in the
@@ -370,22 +345,18 @@ public abstract class Extension {
    *          (+1) or equal to (0) the second edge
    *  @since  2006.04.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract int compareEdge (Edge edge1, Edge edge2, int next);
-
   /*------------------------------------------------------------------*/
   /** Prepare the rings of a fragment for a ring order test.
    *  @param  frag the fragment to prepare
    *  @return the fragment as a graph
    *  @since  2007.03.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected Graph prepare (Fragment frag)
   {                             /* --- prepare for ring order test */
     int   i;                    /* loop variable */
     Graph graph;                /* the fragment as a graph */
     Edge  e;                    /* to traverse the edges */
-
     graph = frag.getAsGraph();  /* mark rings in the fragment */
     graph.markRings(0, this.rgmax, 0);
     for (i = graph.edgecnt; --i >= 0; ) {
@@ -398,20 +369,17 @@ public abstract class Extension {
     this.initCanonic(graph, 0); /* init. the canonical form */
     return graph;               /* return the graph that */
   }  /* prepare() */            /* represents the fragment */
-
   /*------------------------------------------------------------------*/
   /** Remove the flags of all rings an edge is contained in.
    *  @param  edge the edge to process
    *  @since  2007.03.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected static void removeRings (Edge edge)
   {                             /* --- remove ring flags */
     int  i;                     /* loop variable */
     long rgs, cur;              /* ring flags */
     Node s, a;                  /* to traverse the ring nodes */
     Edge r, x = null;           /* to traverse the ring edges */
-
     rgs = edge.getRings();      /* traverse the ring flags */
     for (cur = 1; rgs != 0; cur <<= 1) {
       if ((rgs & cur) == 0) continue;
@@ -427,7 +395,6 @@ public abstract class Extension {
       } while (a != s);         /* get the next ring node */
     }                           /* until the ring is closed */
   }  /* removeRings() */
-
   /*------------------------------------------------------------------*/
   /** Internal recursive function to check whether an edge is removable.
    *  <p>If the given edge (which must be a ring edge) is removable,
@@ -439,14 +406,12 @@ public abstract class Extension {
    *  @return whether the edge is removable
    *  @since  2006.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private static boolean isRemovable (Edge edge)
   {                             /* --- check for a removable edge */
     int  i;                     /* loop variable */
     long rgs, cur;              /* ring flags */
     Node s, a;                  /* to traverse the ring nodes */
     Edge r, x = null;           /* to traverse the ring edges */
-
     rgs = edge.getRings();      /* traverse the ring flags */
     for (cur = 1; rgs != 0; cur <<= 1) {
       if ((rgs & cur) == 0) continue;
@@ -465,7 +430,6 @@ public abstract class Extension {
     }                           /* until the ring is closed */
     return true;                /* return 'edge is removable' */
   }  /* isRemovable() */
-
   /*------------------------------------------------------------------*/
   /** Check for a valid ring order.
    *  <p>This function presupposes that the internal edge buffer
@@ -474,13 +438,11 @@ public abstract class Extension {
    *  @param  fixed the number of fixed edges
    *  @since  2007.03.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean validRingOrder (Graph graph, int fixed)
   {                             /* --- check the ring order */
     int  i, k, n;               /* loop variables, number of edges */
     long rgs, cur;              /* ring flags */
     Edge edge;                  /* to traverse the edges */
-
     n = graph.edgecnt;          /* mark the fixed edges */
     for (i = n; --i >= fixed; ) this.edges[i].mark = 0;
     for (++i;   --i >= 0;     ) this.edges[i].mark = FIXED;
@@ -502,7 +464,6 @@ public abstract class Extension {
     }                           /* rings were added in a wrong order */
     return true;                /* otherwise the order is valid */
   }  /* validRingOrder() */
-
   /*------------------------------------------------------------------*/
   /** Create a variable length chain extension.
    *  <p>A variable length chain consists of nodes of the same type
@@ -515,12 +476,10 @@ public abstract class Extension {
    *  @return whether a chain extension was created
    *  @since  2003.02.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean chain ()
   {                             /* --- create a chain extension */
     Node node;                  /* to traverse the nodes of the chain */
     Edge edge;                  /* to traverse the edges of the chain */
-
     edge = this.edges[0];       /* get the starting edge */
     if ((edge.type != this.cedge) || !edge.isBridge())
       return false;             /* first edge must be single, bridge */
@@ -544,7 +503,6 @@ public abstract class Extension {
     this.chcnt    = this.frag.chcnt +1;  /* increment chain counter */
     return (this.emb.nodes.length +this.chcnt +1 <= this.max);
   }  /* chain() */              /* return extension success */
-
   /*------------------------------------------------------------------*/
   /** Compare the current extension to a given fragment.
    *  <p>This function is used to determine whether the current
@@ -561,9 +519,7 @@ public abstract class Extension {
    *          as an argument
    *  @since  2002.04.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract int compareTo (Fragment frag);
-
   /*------------------------------------------------------------------*/
   /** Compare the current ring extension to a fragment.
    *  <p>This is a sub-function of the function <code>compareTo</code>,
@@ -580,14 +536,12 @@ public abstract class Extension {
    *          than (+1) or equal to (0) the given fragment
    *  @since  2006.05.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int compareRing (Fragment frag)
   {                             /* --- compare a ring extension */
     int  i, k, n, e;            /* loop variable, buffers */
     int  t1, t2;                /* buffers for comparison */
     Edge edge, x;               /* to traverse the edges */
     Node node, y;               /* to traverse the nodes */
-
     e = frag.base.list.edges.length;
     i =      frag.list.edges.length -e;
     if (this.edgecnt < i) return -1;  /* compare the number */
@@ -631,7 +585,6 @@ public abstract class Extension {
     if (this.pos2 > i) return +1;
     return 0;                   /* otherwise the fragments are equal */
   }  /* compareRing() */
-
   /*------------------------------------------------------------------*/
   /** Create a fragment from the current extension.
    *  <p>This function is called when the current extension is not
@@ -640,10 +593,8 @@ public abstract class Extension {
    *  @return the current extension as a fragment
    *  @since  2005.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Fragment makeFragment ()
   { return new Fragment(this); }
-
   /*------------------------------------------------------------------*/
   /** Create an embedding from the current extension.
    *  <p>This function is called when the current extension is equal
@@ -652,10 +603,8 @@ public abstract class Extension {
    *  @return the current extension as an embedding
    *  @since  2006.10.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public Embedding makeEmbedding ()
   { return new Embedding(this); }
-
   /*------------------------------------------------------------------*/
   /** Initialize a canonical form test or generation.
    *  <p>For a canonical form test or for the procedure that makes a
@@ -668,11 +617,9 @@ public abstract class Extension {
    *  @param  fixed the number of fixed (immovable) edges
    *  @since  2003.08.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void initCanonic (Graph graph, int fixed)
   {                             /* --- initialize for canonical form */
     int k, n;                   /* number of nodes/edges/characters */
-
     k = graph.nodecnt;          /* enlarge node array if necessary */
     if (k > this.nodes.length) this.nodes = new Node[k];
     k = graph.edgecnt;          /* enlarge edge array if necessary */
@@ -683,7 +630,6 @@ public abstract class Extension {
     this.size      = k;         /* note the number of edges and */
     this.src       = fixed;     /* the number of fixed edges */
   }  /* initCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Create the code word for a given graph.
    *  <p>The code word is created for the current order of the edges
@@ -695,10 +641,8 @@ public abstract class Extension {
    *  @return the number of generated "characters" (array entries)
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int makeWord (Graph graph)
   { return this.makeWord(graph, graph.edgecnt); }
-
   /*------------------------------------------------------------------*/
   /** Create the code word for the first edges of a given graph.
    *  <p>In other words, this function creates the prefix of the
@@ -715,7 +659,6 @@ public abstract class Extension {
    *  @return the number of generated "characters" (array entries)
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int makeWord (Graph graph, int edgecnt)
   {                             /* --- construct (part of) code word */
     int n = (edgecnt << 2) +1;  /* compute number of characters */ 
@@ -728,16 +671,13 @@ public abstract class Extension {
     this.makeWord(graph.edges, edgecnt);
     return n;                   /* return the number of characters */
   }  /* makeWord() */
-
   /*------------------------------------------------------------------*/
   /** Create the (prefix of a) code word for a given edge array.
    *  @param  edges the array of edges for which to create the code word
    *  @param  n     the number of edges to consider
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract void makeWord (Edge[] edges, int n);
-
   /*------------------------------------------------------------------*/
   /** Compare the current code word to the one of the given graph.
    *  <p>This function assumes that <code>makeWord()</code> has been
@@ -751,10 +691,8 @@ public abstract class Extension {
    *          than (+1) or equal to (0) the code word of the graph
    *  @since  2006.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int compareWord (Graph graph)
   { return this.compareWord(graph, graph.edgecnt); }
-
   /*------------------------------------------------------------------*/
   /** Compare the current code word to the one of the given graph.
    *  <p>The comparison takes only the first <code>edgecnt</code>
@@ -772,14 +710,12 @@ public abstract class Extension {
    *          than (+1) or equal to (0) the code word of the graph
    *  @since  2006.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int compareWord (Graph graph, int edgecnt)
   {                             /* --- compare graph to code word */
     for (int i = graph.nodecnt; --i >= 0; )
       graph.nodes[i].mark = i;  /* number the nodes of the graph */
     return this.compareWord(graph.edges, edgecnt);
   }  /* compareWord() */        /* compare the edges of the graph */
-
   /*------------------------------------------------------------------*/
   /** Compare the current code word to the one of the given edge array.
    *  @param  edges the array of edges to compare to
@@ -788,9 +724,7 @@ public abstract class Extension {
    *          than (+1) or equal to (0) the code word of the edges array
    *  @since  2006.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract int compareWord (Edge[] edges, int n);
-
   /*------------------------------------------------------------------*/
   /** Internal recursive function for the canonical form test.
    *  <p>In each recursive call to this function one edge is checked.
@@ -806,9 +740,7 @@ public abstract class Extension {
    *          differs from the canonical form (in this recursion)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract int isCanonic (int bdi, int ati, int cnt);
-
   /*------------------------------------------------------------------*/
   /** Check whether a given graph is canonic.
    *  <p>In addition, if the graph is not canonic, it is determined
@@ -828,12 +760,10 @@ public abstract class Extension {
    *           1, if the graph is canonical.
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected int isCanonic (Graph graph, int fixed)
   {                             /* --- check for canonical form */
     int  i, k, r, t;            /* loop variable, buffers */
     Node node;                  /* to traverse the nodes */
-
     if (graph.edgecnt <= 0)     /* if there are no edges, */
       return 1;                 /* the graph's word is minimal */
     this.initCanonic(graph, fixed); /* build initial code word */
@@ -853,7 +783,6 @@ public abstract class Extension {
     }                           /* evaluate the recursion result */
     return (r < graph.edgecnt) ? 0 : 1;
   }  /* isCanonic() */          /* return the overall result */
-
   /*------------------------------------------------------------------*/
   /** Internal recursive function for making a given graph canonic.
    *  <p>This function works in basically the same way as the analogous
@@ -868,9 +797,7 @@ public abstract class Extension {
    *  @return whether the considered graphs needs to be changed
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract boolean makeCanonic (int bdi, int ati, int cnt);
-
   /*------------------------------------------------------------------*/
   /** Make a given graph canonic.
    *  <p>The form of the graph (that is, the order of its nodes
@@ -895,14 +822,12 @@ public abstract class Extension {
    *  @return whether the graphs needs to be changed
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected boolean makeCanonic (Graph graph, int keep)
   {                             /* --- turn graph into canonical form */
     int     i, n;               /* loop variables, buffers */
     Node    node, root;         /* to traverse the nodes, new root */
     Edge    edge;               /* to traverse the edges */
     boolean changed;            /* whether fragment was changed */
-
     n = (keep >= 0) ? keep : 0; /* get number of edges to keep */
     if (graph.edgecnt <= n)     /* if no edges are moveable, */
       return false;             /* the graph's word is minimal */
@@ -955,7 +880,6 @@ public abstract class Extension {
       this.makeMap(graph, n);   /* build node and edge maps */
     return changed;             /* return whether graph is changed */
   }  /* makeCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Build a map for reordering the nodes and edges.
    *  <p>This map describes the transition from the original form to
@@ -969,12 +893,10 @@ public abstract class Extension {
    *  @param  n     the highest already fixed node index
    *  @since  2006.05.08 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected void makeMap (Graph graph, int n)
   {                             /* --- build map for canonical form */
     int  i, k;                  /* loop variables */
     Edge edge;                  /* to traverse the edges */
-
     k = graph.edgecnt;          /* number edges and build edge map */
     for (i = k; --i >= 0; ) this.edges[i].mark = i;
     for (i = k; --i >= 0; ) this.word[i] = graph.edges[i].mark;
@@ -988,7 +910,6 @@ public abstract class Extension {
     for (k += i = graph.nodecnt; --i >= 0; )  /* build node map */
       this.word[--k] = graph.nodes[i].mark;   /* and copy nodes */
   }  /* makeMap() */
-
   /*------------------------------------------------------------------*/
   /** Check whether a fragment contains unclosable rings.
    *  <p>If the output is restricted to fragments containing only closed
@@ -1002,19 +923,15 @@ public abstract class Extension {
    *  @return whether the given fragment contains unclosable rings
    *  @since  2006.05.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract boolean hasUnclosableRings (Fragment frag);
-
   /*------------------------------------------------------------------*/
   /** Create the code word for a given graph as a string.
    *  @param  graph the graph for which to create a code word
    *  @return a code word (as a string) for the given graph
    *  @since  2006.05.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected String describe (Graph graph)
   { return this.describe(graph, true); }
-
   /*------------------------------------------------------------------*/
   /** Create the code word for a given graph as a string.
    *  <p>This function allows for the code word of the graph already
@@ -1026,7 +943,5 @@ public abstract class Extension {
    *  @return a code word (as a string) for the given graph
    *  @since  2006.05.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   protected abstract String describe (Graph graph, boolean create);
-
 }  /* class Extension */

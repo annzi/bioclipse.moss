@@ -13,14 +13,12 @@
   History : 2007.06.20 file created
 ----------------------------------------------------------------------*/
 package moss;
-
 /*--------------------------------------------------------------------*/
 /** Class for a node or edge type manager.
  *  @author Christian Borgelt
  *  @since  2007.06.20 */
 /*--------------------------------------------------------------------*/
 public abstract class TypeMgr {
-
   /*------------------------------------------------------------------*/
   /** Add a type to the type map.
    *  <p>If the name is already present, no new mapping is added,
@@ -33,25 +31,19 @@ public abstract class TypeMgr {
    *          in this type manager and adding is not possible
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract int add (String name);
-
   /*------------------------------------------------------------------*/
   /** Map a type name to the corresponding type code.
    *  @param  name the name of the type
    *  @return the code of the type
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract int getCode (String name);
-
   /*------------------------------------------------------------------*/
   /** Map a type code to the corresponding type name.
    *  @param  code the code of the type
    *  @return the name of the type
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public abstract String getName (int code);
-
 }  /* class TypeMgr */

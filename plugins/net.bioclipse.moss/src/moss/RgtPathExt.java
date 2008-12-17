@@ -32,7 +32,6 @@
             2007.10.19 bug in ring extension handling fixed
 ----------------------------------------------------------------------*/
 package moss;
-
 /*--------------------------------------------------------------------*/
 /** Class for rightmost path extensions.
  *  <p>Rightmost path extensions are the restricted extensions of a
@@ -58,7 +57,6 @@ package moss;
  *  @since  2005.08.11 */
 /*--------------------------------------------------------------------*/
 public class RgtPathExt extends Extension {
-
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -68,15 +66,12 @@ public class RgtPathExt extends Extension {
   private int   pbi;
   /** the equivalent positions for a new ring edge */
   private int[] eqpos;
-
   /*------------------------------------------------------------------*/
   /** Create a rightmost path extension object.
    *  @since  2007.03.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public RgtPathExt ()
   { this(EDGE, 256); }
-
   /*------------------------------------------------------------------*/
   /** Create a rightmost path extension object.
    *  @param  mode the extension mode
@@ -84,14 +79,12 @@ public class RgtPathExt extends Extension {
    *  @param  max  the maximum fragment size (number of nodes)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   public RgtPathExt (int mode, int max)
   {                             /* --- create a rightmost extension */
     super(mode, max);           /* call the base initialization */
     this.path  = new int[256];  /* and create an edge index array */
     this.eqpos = new int[8];    /* and an equiv. position array */
   }  /* RgtPathExt() */
-
   /*------------------------------------------------------------------*/
   /** Initialize the extension generation process.
    *  <p>Instead of creating a new extension object each time an
@@ -104,7 +97,6 @@ public class RgtPathExt extends Extension {
    *               (must be contained in the fragment)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public void init (Fragment frag, Embedding emb)
   {                             /* --- init. a rightmost extension */
@@ -112,7 +104,6 @@ public void init (Fragment frag, Embedding emb)
     Node s, d;                  /* to traverse/access the nodes */
     Edge e, x;                  /* to traverse/access the edges */
     int  v[];                   /* buffer for reallocation */
-
     emb.index();                /* mark the embedding in the graph */
     this.emb  = emb;            /* note the embedding to extend */
     this.src  = emb.nodes.length -1;
@@ -142,7 +133,6 @@ public void init (Fragment frag, Embedding emb)
       s = emb.nodes[k];         /* on the rightmost path and */
     }                           /* get the next path node */
   }  /* init() */
-
   /*------------------------------------------------------------------*/
   /** Create the next extension.
    *  <p>Each time this function is called and returns
@@ -156,13 +146,11 @@ public void init (Fragment frag, Embedding emb)
    *  @return whether another extension was created
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public boolean next ()
   {                             /* --- create the next extension */
     Node s, d, y, p[];          /* to traverse/access the nodes */
     Edge e, x;                  /* to traverse/access the edges */
-
     /* --- continue an old extension --- */
     if (((this.mode & EQVARS) != 0)
     &&  (this.pos1 >= 0)        /* if there is another equivalent */
@@ -172,7 +160,6 @@ public boolean next ()
     &&  (this.all != 0)         /* if there is another ring flag */
     &&   this.ring())           /* and some ring is admissible, */
       return true;              /* return "extension successful" */
-
     /* --- find a new extension from an additional node --- */
     e = null; d = null;         /* dummy initializations */
     p = this.emb.nodes;         /* get the nodes of the embedding */
@@ -192,7 +179,6 @@ public boolean next ()
         continue;               /* check whether a new node is ok */
       if (this.store(s, e, d)) return true;
     }                           /* store the new extension */
-
     /* -- find a new extension from the rightmost path -- */
     while (true) {              /* find the next unprocessed edge */
       while (++this.idx >= s.deg) {
@@ -231,7 +217,6 @@ public boolean next ()
       if (this.store(s, e, d)) return true;
     }                           /* store the new extension */
   }  /* next() */
-
   /*------------------------------------------------------------------*/
   /** Store the edge and nodes of a found extension.
    *  <p>However, if the extension edge is a ring edge, the full ring
@@ -244,7 +229,6 @@ public boolean next ()
    *  @return whether the extension is valid
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   private boolean store (Node src, Edge edge, Node dst)
   {                             /* --- store next extension */
     this.nodes[0] = src;        /* note the anchor node and the */
@@ -265,7 +249,6 @@ public boolean next ()
     this.chcnt   = this.frag.chcnt;
     return true;                /* copy the chain counter and */
   }  /* store() */              /* return "extension successful" */
-
   /*------------------------------------------------------------------*/
   /** Check whether the current ring extension is valid.
    *  <p>In order to reduce the number of generated fragments, rings
@@ -279,7 +262,6 @@ public boolean next ()
    *  @return whether the ring is valid (has the correct form)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected boolean validRing ()
   {                             /* --- check a ring extension */
@@ -287,7 +269,6 @@ protected boolean validRing ()
     int  sm, dm;                /* indices of source and destination */
     Node node, s, d;            /* to traverse the ring nodes */
     Edge ring, e;               /* to traverse the ring edges */
-
     s = this.nodes[0];          /* get the anchor node (source), */
     e = this.edges[0];          /* the first ring edge, */
     d = this.nodes[1];          /* and its destination node */
@@ -316,7 +297,6 @@ protected boolean validRing ()
     if (node.type < d.type)   return false;
     return this.sym = true;     /* check for correct direction */
   }  /* validRing() */          /* and note the local symmetry */
-
   /*------------------------------------------------------------------*/
   /** Initialize the generation of equivalent ring extension variants.
    *  <p>If a ring start (and possibly also ends) with an edge that is
@@ -330,7 +310,6 @@ protected boolean validRing ()
    *  initializes this variant generation.</p>
    *  @since  2006.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected void initVars ()
   {                             /* --- init. ring extension variants */
@@ -338,7 +317,6 @@ protected void initVars ()
     Edge  e, r;                 /* to access/traverse the edges */
     Node  s, d, x;              /* to access/traverse the nodes */
     int[] p;                    /* buffer for reallocation */
-
     this.pmax =  0;             /* init. the equiv. position counter */
     this.pos2 = -1;             /* second position is not needed */
     r = this.edges[0];          /* get the first edge of the ring */
@@ -361,7 +339,6 @@ protected void initVars ()
     this.pmin = this.pmax;      /* get the first equivalent position */
     this.pos1 = (--this.pmin < 0) ? -1 : this.eqpos[this.pmin];
   }  /* initVars() */
-
   /*------------------------------------------------------------------*/
   /** Create the next ring extension variant.
    *  <p>If a ring start (and possibly also ends) with an edge that is
@@ -378,7 +355,6 @@ protected void initVars ()
    *  @return whether another ring variant was created
    *  @since  2006.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected boolean variant ()
   {                             /* --- create ring extension variant */
@@ -387,7 +363,6 @@ protected boolean variant ()
     this.pos1 = (--this.pmin < 0) ? -1 : this.eqpos[this.pmin];
     return true;                /* otherwise get the next position */
   }  /* variant() */            /* for the equivalent bond */
-
   /*------------------------------------------------------------------*/
   /** Reorder the edges of a fragment with a ring extension.
    *  <p>After a ring extension it may be necessary to reorder the
@@ -420,7 +395,6 @@ protected boolean variant ()
    *          </table></p>
    *  @since  2006.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected int adaptRing (Fragment frag, boolean check)
   {                             /* --- adapt and check ring extension */
@@ -428,7 +402,6 @@ protected int adaptRing (Fragment frag, boolean check)
     Graph   graph;              /* the fragment as a graph */
     Edge    e, x;               /* to traverse the edges */
     boolean changed;            /* whether fragment was changed */
-
     graph = this.prepare(frag); /* mark rings in the fragment */
     this.nodes[0] = graph.nodes[0];
     this.nodes[0].mark = 0;     /* store and mark the root node */
@@ -477,7 +450,6 @@ protected int adaptRing (Fragment frag, boolean check)
     this.makeMap(graph, n);     /* create a map for nodes and edges */
     return 0;                   /* return that fragment needs change */
   }  /* adaptRing() */
-
   /*------------------------------------------------------------------*/
   /** Compare two edges with the precedence order of the canonical form.
    *  <p>The precedence order of the edge properties is:
@@ -501,13 +473,11 @@ protected int adaptRing (Fragment frag, boolean check)
    *          than the second edge
    *  @since  2006.04.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected int compareEdge (Edge b1, Edge b2, int next)
   {                             /* --- compare two edges */
     Node s1, d1, s2, d2;        /* source and destination nodes */
     int  i1, i2;                /* indices of the destination nodes */
-
     s1 = b1.src; d1 = b1.dst;   /* get nodes of first edge */
     if ((d1.mark >= 0) && (d1.mark < s1.mark)) {
       s1 = d1; d1 = b1.src; }   /* exchange nodes if necessary */
@@ -526,7 +496,6 @@ protected int compareEdge (Edge b1, Edge b2, int next)
     if (d1.type > d2.type) return +1;  /* of the destination nodes */
     return 0;                   /* otherwise the edges are equal */
   }  /* compareEdge() */
-
   /*------------------------------------------------------------------*/
   /** Compare the current extension to a given fragment.
    *  <p>This function is used to determine whether the current
@@ -543,12 +512,10 @@ protected int compareEdge (Edge b1, Edge b2, int next)
    *          as an argument
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 public int compareTo (Fragment frag)
   {                             /* --- compare extension to fragment */
     int t1, t2;                 /* buffers for comparison */
-
     if (this.dst < frag.dst) return -1;  /* compare the indices */
     if (this.dst > frag.dst) return +1;  /* of the dest.  nodes */
     if (this.src > frag.src) return -1;  /* compare the indices */
@@ -568,20 +535,17 @@ public int compareTo (Fragment frag)
     return (this.size <= 0)     /* compare ring ext. if necessary */
          ? 0 : this.compareRing(frag);
   }  /* compareTo() */
-
   /*------------------------------------------------------------------*/
   /** Create the (prefix of a) code word for a given edge array.
    *  @param  edges the array of edges for which to create the code word
    *  @param  n     the number of edges to consider
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected void makeWord (Edge[] edges, int n)
   {                             /* --- construct (part of) code word */
     int  i, k;                  /* loop variables, buffers */
     Edge e;                     /* to traverse the edges */
-
     e = edges[0];               /* get first edge and root node */
     this.word[0] = (e.src.mark < e.dst.mark) ? e.src.type : e.dst.type;
     for (i = k = 0; i < n; i++) {
@@ -599,7 +563,6 @@ protected void makeWord (Edge[] edges, int n)
       }                         /* describe an edge of the graph */
     }
   }  /* makeWord() */
-
   /*------------------------------------------------------------------*/
   /** Compare the current code word to the one of the given edge array.
    *  @param  edges the array of edges to compare to
@@ -609,14 +572,12 @@ protected void makeWord (Edge[] edges, int n)
    *          greater than the code word of the given edges array
    *  @since  2006.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected int compareWord (Edge[] edges, int n)
   {                             /* --- compare edges to code word */
     int  i, k;                  /* loop variables */
     Edge e;                     /* to traverse the edges */
     Node s, d;                  /* to traverse the nodes */
-
     e = edges[0];               /* compare the type of the root node */
     s = (e.src.mark < e.dst.mark) ? e.src : e.dst;
     if (s.type < this.word[0]) return -1;
@@ -636,7 +597,6 @@ protected int compareWord (Edge[] edges, int n)
     }                           /* return sign of difference */
     return 0;                   /* otherwise return 'equal' */
   }  /* compareWord() */
-
   /*------------------------------------------------------------------*/
   /** Internal recursive function for the canonical form test.
    *  <p>In each recursive call to this function one edge is checked.
@@ -652,14 +612,12 @@ protected int compareWord (Edge[] edges, int n)
    *          differs from the canonical form (in this recursion)
    *  @since  2005.08.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected int isCanonic (int ei, int ni, int cnt)
   {                             /* --- check prefix words recursively */
     int  i, k, c, m, r;         /* loop variable, node index, buffer */
     Edge e;                     /* to traverse/access the edges */
     Node s, d;                  /* to traverse/access the nodes */
-
     /* --- check for edges closing rings --- */
     d = this.nodes[cnt-1];      /* get the previous destination node */
     k = -1; c = (ei << 2) +1;   /* init. edge and code word index */
@@ -675,7 +633,6 @@ protected int isCanonic (int ei, int ni, int cnt)
         if (s.mark == m) k = i; /* note the index of the edge that */
       }                         /* matches the next reference edge */
     }                           /* (if this edge closes a ring) */
-
     /* --- process edge closing a ring --- */
     r = this.size;              /* set the default result */
     if (this.word[c] < cnt) {   /* if no new node is added */
@@ -689,7 +646,6 @@ protected int isCanonic (int ei, int ni, int cnt)
       e.mark = -1;              /* check remaining edges recursively, */
       return k;                 /* unmark the matching edge, and */
     }                           /* return the recursion result */
-
     /* --- process edge adding a node --- */
     m = this.word[c+1];         /* note index of new source node */
     while (d.mark > m) {        /* check old path up to new source */
@@ -720,7 +676,6 @@ protected int isCanonic (int ei, int ni, int cnt)
     }                           /* evaluate the recursion result */
     return r;                   /* return the overall result */
   }  /* isCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Internal recursive function for making a given graph canonic.
    *  <p>This function works in basically the same way as the analogous
@@ -735,7 +690,6 @@ protected int isCanonic (int ei, int ni, int cnt)
    *  @return whether the considered graphs needs to be changed
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected boolean makeCanonic (int ei, int ni, int cnt)
   {                             /* --- construct canonic code word */
@@ -743,13 +697,11 @@ protected boolean makeCanonic (int ei, int ni, int cnt)
     Edge    e, x;               /* to traverse/access the edges */
     Node    s, d, a;            /* to traverse/access the nodes */
     boolean changed;            /* whether code word was changed */
-
     c = (ei << 2) +1;           /* compute index in code word */
     if (ei >= this.size) {      /* if full code word is constructed */
       i = this.word[c]; this.word[c] = 0;
       return (i != 0);          /* reinstall sentinel and return */
     }                           /* whether code word was changed */
-
     /* --- edge closing a ring --- */
     e = null; s = null;         /* dummy initialization */
     for ( ; ni < cnt; ni++) {   /* search for edges closing rings */
@@ -799,7 +751,6 @@ protected boolean makeCanonic (int ei, int ni, int cnt)
       e.mark = -1;              /* unmark the edge again */
       return changed;           /* return whether the code word */
     }                           /* was changed in the recursion */
-
     /* --- edge to a new node --- */
     if (cnt > this.word[c])     /* if beyond small enough dest., */
       return false;             /* abort the function */
@@ -845,7 +796,6 @@ protected boolean makeCanonic (int ei, int ni, int cnt)
     }                           /* then unmark edge and node again */
     return changed;             /* return whether edges were replaced */
   }  /* makeCanonic() */
-
   /*------------------------------------------------------------------*/
   /** Check whether a fragment contains unclosable rings.
    *  <p>If the output is restricted to fragments containing only closed
@@ -860,7 +810,6 @@ protected boolean makeCanonic (int ei, int ni, int cnt)
    *  @return whether the given fragment contains unclosable rings
    *  @since  2006.05.17 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected boolean hasUnclosableRings (Fragment frag)
   {                             /* --- check for uncloseable rings */
@@ -868,7 +817,6 @@ protected boolean hasUnclosableRings (Fragment frag)
     Graph graph;                /* the fragment as a graph */
     Node  s, d;                 /* to traverse the nodes */
     Edge  e;                    /* to traverse the edges on the path */
-
     graph = frag.getAsGraph();  /* get the fragment as a graph */
     for (i = graph.nodecnt; --i >= 0; )
       graph.nodes[i].mark = i;  /* mark all nodes with their index */
@@ -894,7 +842,6 @@ protected boolean hasUnclosableRings (Fragment frag)
     }                           /* a ring cannot be closed anymore */
     return false;               /* all rings may be closable */
   }  /* hasUnclosableRings() */
-
   /*------------------------------------------------------------------*/
   /** Create the code word for a given graph as a string.
    *  <p>This function allows for the code word of the graph already
@@ -906,14 +853,12 @@ protected boolean hasUnclosableRings (Fragment frag)
    *  @return a code word (as a string) for the given graph
    *  @since  2006.05.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
-
   @Override
 protected String describe (Graph graph, boolean create)
   {                             /* --- create a graph's code word */
     int          i, k, n;       /* loop variable, buffers */
     StringBuffer s;             /* created description */
     TypeMgr      nmgr, emgr;    /* node and edge type manager */
-
     if (create)                 /* construct graph's code word */
       this.makeWord(graph, graph.edgecnt);
     nmgr = graph.getNodeMgr();  /* get the node type manager */
@@ -936,5 +881,4 @@ protected String describe (Graph graph, boolean create)
     }                           /* store the edge descriptions */
     return s.toString();        /* return created string description */
   }  /* describe() */
-
 }  /* class RgtPathExt */
