@@ -15,25 +15,30 @@
             2007.08.16 bug in function writeGraph() fixed (graph name)
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.Writer;
+
 /*--------------------------------------------------------------------*/
 /** Class for writers for a simple node/edge list format.
  *  @author Christian Borgelt
  *  @since  2007.06.22 */
 /*--------------------------------------------------------------------*/
 public class NEListWriter extends GraphWriter {
+
   /*------------------------------------------------------------------*/
   /** Create a writer for a simple node/edge list format.
    *  @param  writer the writer to write to
    *  @param  mode   the write mode
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NEListWriter (Writer writer, int mode)
   {                             /* create a node/edge list writer */
     super(writer, mode);        /* store the arguments */
     this.ntn = new NEList();    /* create a notation */
   }  /* NEListWriter() */
+
   /*------------------------------------------------------------------*/
   /** Write a header.
    *  <p>This function does nothing,
@@ -41,14 +46,17 @@ public class NEListWriter extends GraphWriter {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void writeHeader () throws IOException
   { }
+
   /*------------------------------------------------------------------*/
   /** Write the current graph description.
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void writeGraph () throws IOException
   {                             /* --- write the current graph */
@@ -68,4 +76,5 @@ public void writeGraph () throws IOException
     }                           /* write additional information */
     this.write("\n\n");         /* terminate the output line */
   }  /* writeGraph() */         /* and add an empty line */
+
 }  /* class NEListWriter */

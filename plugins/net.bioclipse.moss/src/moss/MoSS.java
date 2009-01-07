@@ -26,6 +26,7 @@
             2007.11.05 stack trace added to exception in constructor
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
@@ -58,6 +59,7 @@ import javax.swing.JTextArea;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 /*--------------------------------------------------------------------*/
 /** Graphical user interface for the molecular substructure miner.
  *  @author Christian Borgelt
@@ -65,7 +67,9 @@ import javax.swing.event.ChangeListener;
 /*--------------------------------------------------------------------*/
 public class MoSS extends JFrame
   implements Runnable, ChangeListener, ItemListener {
+
   private static final long serialVersionUID = 0x00020003;
+
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -96,6 +100,7 @@ public class MoSS extends JFrame
   /** the names of the extension types */
   private static final String[] EXT_NAMES = {
     "maximum source", "rightmost path" };
+
   /*------------------------------------------------------------------*/
   /*  instance variables: files and format tab                        */
   /*------------------------------------------------------------------*/
@@ -113,6 +118,7 @@ public class MoSS extends JFrame
   private JTextField  idsname;
   /** the seed structure to start the search from */
   private JTextField  seed;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: basics tab                                  */
   /*------------------------------------------------------------------*/
@@ -128,6 +134,7 @@ public class MoSS extends JFrame
   private JTextField  extype;
   /** the node types that are excluded for seeds */
   private JTextField  exseed;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: support tab                                 */
   /*------------------------------------------------------------------*/
@@ -145,6 +152,7 @@ public class MoSS extends JFrame
   private JCheckBox   closed;
   /** the labels that can be disabled in the tab */
   private JLabel[]    splbls;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: matching tab                                */
   /*------------------------------------------------------------------*/
@@ -158,6 +166,7 @@ public class MoSS extends JFrame
   private JCheckBox   charge;
   /** whether to match the atom aromaticity */
   private JCheckBox   atarom;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: rings and chains tab                        */
   /*------------------------------------------------------------------*/
@@ -175,6 +184,7 @@ public class MoSS extends JFrame
   private JCheckBox   chains;
   /** the labels that can be disabled in the tab */
   private JLabel[]    rclbls;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: memory tab                                  */
   /*------------------------------------------------------------------*/
@@ -182,6 +192,7 @@ public class MoSS extends JFrame
   private JSpinner     maxemb;
   /** whether to unembed siblings of the current search tree node */
   private JCheckBox    unembed;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: miscellaneous tab                           */
   /*------------------------------------------------------------------*/
@@ -197,6 +208,7 @@ public class MoSS extends JFrame
   private JCheckBox    normal;
   /** whether to do verbose message output */
   private JCheckBox    verbose;
+
   /*------------------------------------------------------------------*/
   /*  instance variables: window and status line                      */
   /*------------------------------------------------------------------*/
@@ -206,6 +218,7 @@ public class MoSS extends JFrame
   private JButton      exec;
   /** the status line */
   private JTextField   stat;
+
   /*------------------------------------------------------------------*/
   /*  other instance variables                                        */
   /*------------------------------------------------------------------*/
@@ -229,25 +242,31 @@ public class MoSS extends JFrame
   private long         start   = 0;
   /** the buffer for reading the configuration file */
   private StringBuffer buf     = null;
+
   /*------------------------------------------------------------------*/
   /** Create a user interface dialog box.
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public MoSS ()
   { this(null, true); }
+
   /*------------------------------------------------------------------*/
   /** Create a user interface for the molecular substructure miner.
    *  @param  owner the owner of the window to create
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public MoSS (Component owner)
   { this(owner, false); }
+
   /*------------------------------------------------------------------*/
   /** Create a user interface for the molecular substructure miner.
    *  @param  owner  the owner of the window to create
    *  @param  isProg whether started as a stand-alone program
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public MoSS (Component owner, boolean isProg)
   {                             /* --- create user interface */
     this.owner  = owner;        /* note the owner and */
@@ -256,6 +275,7 @@ public class MoSS extends JFrame
     try { EventQueue.invokeAndWait(this); }
     catch (Exception e) { e.printStackTrace(System.err); }
   }  /* MoSS() */               /* create the user interface */
+
   /*------------------------------------------------------------------*/
   /** Create the user interface dialog box.
    *  <p>Following the recommendations in the Java tutorial, the
@@ -263,6 +283,7 @@ public class MoSS extends JFrame
    *  from the event queue, in order to avoid problems with threads.</p>
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void run ()
   {                             /* --- create toolbox dialog */
     Container content;          /* content pane of the frame */
@@ -271,10 +292,13 @@ public class MoSS extends JFrame
     JButton   button;           /* button for the button bar */
     JPanel    bbar;             /* panel for the button bar */
     JPanel    bottom;           /* panel for the bottom */
+
     this.pane = new JTabbedPane(JTabbedPane.LEFT,
                                 JTabbedPane.SCROLL_TAB_LAYOUT);
+
     /* --- files and formats --- */
     this.pane.addTab("Files and Formats", tab = new MoSSPanel());
+
     tab.addLabel("Input data file:");
     tab.addButton("Select", MoSSPanel.MIDDLE).addActionListener(
       new ActionListener () {
@@ -285,6 +309,7 @@ public class MoSS extends JFrame
       public void actionPerformed (ActionEvent e) {
         MoSS.this.showTable(MoSS.this.datname); } } );
     this.datname = tab.addFileInput("moss.dat");
+
     tab.addLabel("Substructure output file:");
     tab.addButton("Select", MoSSPanel.MIDDLE).addActionListener(
       new ActionListener () {
@@ -296,6 +321,7 @@ public class MoSS extends JFrame
       public void actionPerformed (ActionEvent e) {
         MoSS.this.showTable(MoSS.this.subname); } } );
     this.subname = tab.addFileInput("moss.sub");
+
     tab.addLabel("Identifier output file:");
     tab.addButton("Select", MoSSPanel.MIDDLE).addActionListener(
       new ActionListener () {
@@ -306,20 +332,24 @@ public class MoSS extends JFrame
       public void actionPerformed (ActionEvent e) {
         MoSS.this.showTable(MoSS.this.idsname); } } );
     this.idsname = tab.addFileInput("");
+
     tab.addLabel("Input format:");
     this.infmt   = tab.addComboBox(MoSS.FORMAT_NAMES);
     tab.addLabel("Output format:");
     this.subfmt  = tab.addComboBox(MoSS.FORMAT_NAMES);
     tab.addLabel("Seed format:");
     this.seedfmt = tab.addComboBox(MoSS.SEED_NAMES);
+ 
     tab.addLabel("Seed description:");
     this.seed = tab.addTextInput("*");
     tab.addHelp("The seed is a substructure from which to start "
                +"the search.\nA star (*) represents an empty seed "
                +"(no restriction).");
     tab.addFiller(0);
+
     /* --- basic parameters --- */
     this.pane.addTab("Basic Parameters", tab = new MoSSPanel());
+
     tab.addLabel("Threshold for split:");
     this.thresh = tab.addNumberInput("0.5");
     tab.addLabel("Invert split:");
@@ -330,6 +360,7 @@ public class MoSS extends JFrame
                +"equal to the threshold are in the focus, "
                +"all other graphs are\nin the complement. "
                +"Checking this box exchanges the two sets.");
+
     tab.addLabel("Minimal substructure size:");
     this.minsize = tab.addSpinner(1, 1, 999999, 1);
     tab.addLabel("Maximal substructure size:");
@@ -337,6 +368,7 @@ public class MoSS extends JFrame
     tab.addHelp("The substructure size is measured as the number "
                +"of nodes.\nA maximal size of zero means that "
                +"there is no size limit.");
+
     tab.addLabel("Node types to exclude:");
     this.extype = tab.addTextInput("H");
     tab.addLabel("Seed types to exclude:");
@@ -346,8 +378,10 @@ public class MoSS extends JFrame
                +"with other seeds.\nBoth sets of node types have to "
                +"be specified in seed format.");
     tab.addFiller(0);
+
     /* --- support parameters --- */
     this.pane.addTab("Support", tab = new MoSSPanel());
+
     tab.addLabel("Minimal support in focus:");
     this.minsupp = tab.addNumberInput("10.0");
     tab.addLabel("Maximal support in complement:");
@@ -361,28 +395,35 @@ public class MoSS extends JFrame
                +"of graphs or number of nodes)\nof the respective "
                +"subset (focus or complement).");
     tab.addFiller(4);
+
     tab.addLabel("Substructure support type:", MoSSPanel.RIGHT);
     this.supptype = tab.addComboBox(MoSS.SUPP_NAMES);
     this.supptype.addItemListener(this);
+ 
     this.splbls = new JLabel[2];
     this.splbls[0] = tab.addLabel("Use greedy MIS algorithm:");
     this.greedy = tab.addCheckBox(true);
     tab.addHelp("Exact maximum independent set algorithms "
                +"can be very slow.");
+
     this.splbls[1] = tab.addLabel("Report only closed substructures:");
     this.closed = tab.addCheckBox(true);
     tab.addHelp("A substructure is closed if no supergraph "
                 +"has the same support.\nThis provides a lossless "
                 +"way of reducing the size of the output.");
+
     this.itemStateChanged(null);
     tab.addFiller(0);
+
     /* --- matching --- */
     this.pane.addTab("Matching", tab = new MoSSPanel());
+
     tab.addLabel("Aromatic bonds:");
     this.bdarom = tab.addComboBox(MoSS.AROM_NAMES);
     tab.addHelp("Downgrading aromatic bonds means treating them "
                +"as single,\nupgrading means treating them "
                +"as double bonds.");
+
     tab.addLabel("Ignore type of bonds:");
     this.bdtype = tab.addComboBox(MoSS.TYPE_NAMES);
     tab.addLabel("Ignore type of atoms:");
@@ -391,6 +432,7 @@ public class MoSS extends JFrame
                +"or the bond type\nin rings, ring bonds must be "
                +"distinguished from other bonds\n"
                +"(see tab \"Rings and Chains\").");
+
     tab.addLabel("Match charge of atoms:");
     this.charge = tab.addCheckBox(false);
     tab.addHelp("If the charge is matched, atoms with the same "
@@ -400,22 +442,27 @@ public class MoSS extends JFrame
     this.atarom = tab.addCheckBox(false);
     tab.addHelp("An atom is aromatic if it is part "
                +"of an aromatic ring.");
+
     tab.addFiller(6);
     tab.addHelp("All of the above options have an effect "
                +"only if the input data\ndescribes molecules "
                +"(determined from the input/output format).");
     tab.addFiller(0);
+
     /* --- rings and chains --- */
     this.pane.addTab("Rings and Chains", tab = new MoSSPanel());
+
     tab.addLabel("Convert Kekule representations:");
     this.kekule = tab.addCheckBox(true);
     tab.addHelp("Aromatic rings may be coded as alternating single "
                +"and double\nbonds (so-called Kekule representation "
                +"of an aromatic ring).\nIt is recommended to convert "
                +"these to actual aromatic bonds.");
+
     tab.addLabel("Distinguish ring bonds:");
     this.rings = tab.addCheckBox(false);
     this.rings.addChangeListener(this);
+
     this.rclbls = new JLabel[3];
     this.rclbls[0] = tab.addLabel("Minimal ring size:");
     this.minring   = tab.addSpinner(5, 3, 256, 1);
@@ -427,16 +474,20 @@ public class MoSS extends JFrame
                +"distinguished from\nother bonds and that a range "
                +"of relevant ring sizes is specified.\nIt is"
                +"recommended to use full ring extensions if any.");
+
     tab.addFiller(4);
     tab.addLabel("Variable length carbon chains:");
     this.chains = tab.addCheckBox(false);
     tab.addHelp("A carbon chain consists only of carbon atoms "
                +"connected\nby single bonds, which are bridges "
                +"in the molecule.");
+
     this.stateChanged(null);
     tab.addFiller(0);
+
     /* --- memory usage --- */
     this.pane.addTab("Memory", tab = new MoSSPanel());
+
     tab.addLabel("Maximal embeddings:");
     this.maxemb = tab.addSpinner(0, 0, 999999, 1);
     tab.addHelp("In order to speed up extensions each fragment "
@@ -453,17 +504,21 @@ public class MoSS extends JFrame
                +"search tree node\ncan be removed. They are recreated "
                +"when they are needed.");
     tab.addFiller(16);
+
     tab.addHelp("These options help to save memory, sometimes "
                +"considerably,\nbut they usually increase the "
                +"processing time.");
     tab.addFiller(0);
+
     /* --- miscellaneous --- */
     this.pane.addTab("Miscellaneous", tab = new MoSSPanel());
+
     tab.addLabel("Extension type:");
     this.exttype = tab.addComboBox(MoSS.EXT_NAMES);
     tab.addHelp("Maximum source extension defines "
                +"the MoSS/MoFa algorithm,\nrightmost path "
                +"extension the gSpan/CloseGraph algorithm.");
+
     tab.addLabel("Perfect extension pruning:");
     this.perfect = tab.addComboBox(MoSS.PEP_NAMES);
     tab.addLabel("Equivalent sibling pruning:");
@@ -474,24 +529,29 @@ public class MoSS extends JFrame
                +"a repository of\nprocessed subgraphs is used "
                +"to avoid redundant search.\nThis can sometimes "
                +"be faster, but needs more memory.");
+
     tab.addLabel("Normalize output:");
     this.normal = tab.addCheckBox(false);
     tab.addHelp("Normalize the description of the found "
                +"substructures,\nso that they can be compared "
                +"by a simple string comparison.");
+
     tab.addLabel("Verbose message output:");
     this.verbose = tab.addCheckBox(false);
     tab.addHelp("Print the nodes of the search tree during "
                +"the search.\nActivate verbose output only "
                +"for very small datasets.");
     tab.addFiller(0);
+
     /* --- about --- */
     this.pane.addTab("About", tab = new MoSSPanel());
+
     about = new JTextArea("MoSS - Molecular Substructure Miner");
     about.setBackground(tab.getBackground());
     about.setFont(MoSSPanel.BOLD);
     about.setEditable(false);
     tab.add(about, MoSSPanel.RIGHT);
+
     tab.addHelp(
        "A simple graphical user interface for the MoSS program.\n\n"
       +"GUI version 2.3 (2007.08.03), Miner " +Miner.VERSION +"\n"
@@ -509,6 +569,7 @@ public class MoSS extends JFrame
       +"without even the implied warranty of MERCHANTABILITY\n"
       +"or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
       +"GNU Lesser General Public License for more details.");
+
     /* --- buttons --- */
     bbar = new JPanel(new GridLayout(1, 4, 4, 4));
     bbar.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -535,12 +596,14 @@ public class MoSS extends JFrame
         public void actionPerformed (ActionEvent e) {
           MoSS.this.setVisible(false); } } );
     }                           /* configure the button bar */
+
     /* --- status line --- */
     this.stat = new JTextField("MoSS - Molecular Substructure Miner");
     this.stat.setEditable(false);
     bottom = new JPanel(new BorderLayout());
     bottom.add(bbar,      BorderLayout.NORTH);
     bottom.add(this.stat, BorderLayout.SOUTH);
+
     /* --- add contents --- */
     content = this.getContentPane();
     content.add(this.pane, BorderLayout.CENTER);
@@ -552,11 +615,13 @@ public class MoSS extends JFrame
     else                    this.setLocationRelativeTo(this.owner);
     this.pack();                /* configure the frame */
   }  /* run() */
+
   /*------------------------------------------------------------------*/
   /** Handle the state change of the ring marking check box.
    *  @param  e the change event to react to
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void stateChanged (ChangeEvent e)
   {                             /* --- handle state changes */
     boolean state = this.rings.isSelected();
@@ -566,11 +631,13 @@ public class MoSS extends JFrame
     for (int i = this.rclbls.length; --i >= 0; )
       this.rclbls[i].setEnabled(state);
   }  /* stateChanged() */
+
   /*------------------------------------------------------------------*/
   /** Handle the state change of the support type combo box.
    *  @param  e the change event to react to
    *  @since  2007.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void itemStateChanged (ItemEvent e)
   {                             /* --- handle selection changes */
     int     i = this.supptype.getSelectedIndex();
@@ -580,11 +647,13 @@ public class MoSS extends JFrame
     this.closed.setEnabled(state = (i <= 0));
     this.splbls[1].setEnabled(state);
   }  /* itemStateChanged() */
+
   /*------------------------------------------------------------------*/
   /** Get the file chooser (create if necessary).
    *  @return the file chooser
    *  @since  2006.07.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected JFileChooser getChooser ()
   {                             /* --- get the file chooser */
     if (this.chooser != null)   /* if the chooser already exists, */
@@ -598,12 +667,14 @@ public class MoSS extends JFrame
     this.chooser.setFileView(null);
     return this.chooser;        /* create and configure the chooser */
   }  /* getChooser() */
+
   /*------------------------------------------------------------------*/
   /** Get a file name and store it in a text field.
    *  @param  title the title of the file chooser
    *  @param  text  the text field in which to store the file name
    *  @since  2007.02.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void getFileName (String title, JTextField text)
   {                             /* -- get and store a file name */
     this.getChooser().setDialogTitle("Choose " +title +" File...");
@@ -611,6 +682,7 @@ public class MoSS extends JFrame
     if (r != JFileChooser.APPROVE_OPTION) return;
     text.setText(this.chooser.getSelectedFile().getPath());
   }  /* getFileName() */
+
   /*------------------------------------------------------------------*/
   /** Read a line (of the configuration file).
    *  @param  reader the reader to read from
@@ -619,6 +691,7 @@ public class MoSS extends JFrame
    *                      or no line could be read
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private String readLine (FileReader reader) throws IOException
   {                             /* --- read the next input line */
     int c = reader.read();      /* read the next character */
@@ -632,6 +705,7 @@ public class MoSS extends JFrame
     }                           /* read the next character */
     return this.buf.toString(); /* return the input line read */
   }  /* readLine() */
+
   /*------------------------------------------------------------------*/
   /** Read an integer value (from the configuration file).
    *  @param  reader the reader to read from
@@ -640,6 +714,7 @@ public class MoSS extends JFrame
    *                      or no field could be read
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int readInt (FileReader reader) throws IOException
   {                             /* --- get next integer value */
     int c = reader.read();      /* read the next character */
@@ -654,11 +729,13 @@ public class MoSS extends JFrame
     try { return Integer.parseInt(this.buf.toString().trim()); }
     catch (NumberFormatException e) { return 0; }
   }  /* readInt() */             /* decode and return the next field */
+
   /*------------------------------------------------------------------*/
   /** Load a configuration file and set the input fields.
    *  @param  file the file to load the configuration from
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void loadConfig (File file)
   {                             /* --- load configuration */
     if (file == null) {         /* if no file name is given */
@@ -715,11 +792,13 @@ public class MoSS extends JFrame
     }                           /* check for successful reading */
     this.stat.setText("configuration loaded: " +file.getName());
   }  /* loadConfig() */
+
   /*------------------------------------------------------------------*/
   /** Save a configuration file
    *  @param  file the file to save the current configuration to
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void saveConfig (File file)
   {                             /* --- save configuration */
     if (file == null) {         /* if no file name is given, */
@@ -777,11 +856,13 @@ public class MoSS extends JFrame
     }                           /* show a status message */
     this.stat.setText("configuration saved: " +file.getName());
   }  /* saveConfig() */
+
   /*------------------------------------------------------------------*/
   /** Show a molecule table.
    *  @param  text the text field containing the file name
    *  @since  2007.02.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void showTable (JTextField text)
   {                             /* --- show a molecule table */
     String      fname;          /* name of the input file */
@@ -792,6 +873,7 @@ public class MoSS extends JFrame
     MoSSTable   tab;            /* table model */ 
     String      msg;            /* buffer for a message */
     Dimension   size;           /* preferred size of the view */
+
     fname = text.getText();     /* get and check the file name */
     if (fname.length() <= 0) return;
     if      (text == this.idsname) { /* if identifier file, */
@@ -828,10 +910,12 @@ public class MoSS extends JFrame
     frame.pack();               /* prepare the frame again */
     frame.setVisible(true);     /* and finally show it */
   }  /* showTable() */
+
   /*------------------------------------------------------------------*/
   /** Execute the substructure search, that is, start a miner.
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void execute ()
   {                             /* --- execute substructure search */
     int    mode, m;             /* search mode */
@@ -844,6 +928,7 @@ public class MoSS extends JFrame
     int    mrgat, mrgbd;        /* atom and bond masks inside  rings */
     int    min,   max;          /* minimum and maximum fragment size */
     int    rgmin, rgmax;        /* minimum and maximum ring size */
+
     if (this.running) {         /* if running, abort computations */
       if (this.aborted) return; /* if already aborted, abort */
       this.stat.setText("aborting search ...");
@@ -856,23 +941,28 @@ public class MoSS extends JFrame
       catch (Exception e) { split= 0.5F; }
       this.thresh.setText("" +split); /* get the threshold value */
       this.miner.setGrouping(split, this.invert.isSelected());
+
       fname = this.datname.getText();
       if (fname.length() == 0)  /* get and check input file name */
         throw new IOException("no input data file specified");
       fmt = (String)this.infmt.getSelectedItem();
       this.miner.setInput(fname, fmt);
+
       fname = this.subname.getText();
       if (fname.length() == 0)  /* get and check output file name */
         throw new IOException("no substructure output file specified");
       fmt = (String)this.subfmt.getSelectedItem();
       this.miner.setOutput(fname, fmt, this.idsname.getText());
+
       fmt = (String)this.seedfmt.getSelectedItem();
       this.miner.setSeed    (this.seed.getText(),   fmt);
       this.miner.setExcluded(this.extype.getText(),
                              this.exseed.getText(), fmt);
+
       min = ((Integer)this.minsize.getValue()).intValue();
       max = ((Integer)this.maxsize.getValue()).intValue();
       this.miner.setSizes(min, max);  /* set the fragment sizes */
+
       try { supp = Math.abs(Float.parseFloat(this.minsupp.getText())); }
       catch (Exception e) { supp = 10.0F; }
       this.minsupp.setText("" +supp); /* get minimal support in focus */
@@ -884,6 +974,7 @@ public class MoSS extends JFrame
       if (supp >= 0) supp *= 0.01F;   /* change support values from */
       if (comp >= 0) comp *= 0.01F;   /* percentages to fractions */
       this.miner.setLimits(supp, comp);
+
       mode = Miner.EDGEEXT;     /* set default search mode */
       m = this.exttype.getSelectedIndex();
       if (m > 0)                     mode |= Miner.RIGHTEXT;
@@ -913,6 +1004,7 @@ public class MoSS extends JFrame
       }                         /* get ring sizes and set them */
       this.miner.setRingSizes(rgmin, rgmax);
       this.miner.setMode(mode); /* set the search mode */
+
       switch (this.supptype.getSelectedIndex()) {
         case  1: type = Fragment.MIS_OLAP;  break;
         case  2: type = Fragment.MIS_HARM;  break;
@@ -922,6 +1014,7 @@ public class MoSS extends JFrame
       if (this.greedy.isSelected())
         type |= Fragment.GREEDY;/* add the greedy algorithm flag */
       this.miner.setType(type); /* and set the support type */
+
       matom = mrgat = Atoms.ELEMMASK; /* set default masks */
       mbond = mrgbd = Bonds.BONDMASK; /* for atoms and bonds */
       switch (this.bdarom.getSelectedIndex()) {
@@ -943,6 +1036,7 @@ public class MoSS extends JFrame
       if (this.charge.isSelected()) matom |= Atoms.CHARGEMASK;
       if (this.atarom.isSelected()) matom |= Atoms.AROMATIC;
       this.miner.setMasks(matom, mbond, mrgat, mrgbd);
+
       this.miner.setMaxEmbs(    /* maximal number of embeddings */
         ((Integer)this.maxemb.getValue()).intValue()); }
     catch (Exception e) {       /* check successful initialization */
@@ -972,10 +1066,12 @@ public class MoSS extends JFrame
       } } );                    /* update the status text */
     this.timer.start();         /* start the status update timer */
   }  /* execute() */
+
   /*------------------------------------------------------------------*/
   /** Update the status line during the substructure search.
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void update ()
   {                             /* --- update the status text */
     if (!this.running) return;  /* check for a running search */
@@ -983,15 +1079,18 @@ public class MoSS extends JFrame
     if (n < 0) this.stat.setText("reading ... " +(-n) +" graph(s)");
     else this.stat.setText("searching ... " +n +" substructure(s)");
   }  /* update() */
+
   /*------------------------------------------------------------------*/
   /** Report the results of a substructure search in a dialog box.
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void result ()
   {                             /* --- show result of computation */
     int       n;                /* number of found substructures */
     float     t;                /* execution time */
     Exception e;                /* error status of the search */
+
     this.running = false;       /* thread is no longer running */
     this.exec.setText("Run");   /* reset the button text */
     if (this.aborted) {         /* if execution has been aborted */
@@ -1025,12 +1124,14 @@ public class MoSS extends JFrame
       "Information", JOptionPane.INFORMATION_MESSAGE);
     this.miner = null;          /* show a success message */
   }  /* result() */             /* and "delete" the miner */
+
   /*------------------------------------------------------------------*/
   /** Main function to invoke the user interface
    *  as a stand-alone program.
    *  @param  args the command line arguments
    *  @since  2006.07.13 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public static void main (String args[])
   {                             /* --- main function */
     MoSS moss = new MoSS();     /* create a MoSS dialog */
@@ -1038,4 +1139,5 @@ public class MoSS extends JFrame
       moss.loadConfig(new File(args[0]));
     moss.setVisible(true);      /* show the dialog */
   }  /* main() */
+
 }  /* class MoSS */

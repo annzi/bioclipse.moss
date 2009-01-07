@@ -15,7 +15,9 @@
             2007.06.22 trimming made more flexible
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.util.Arrays;
+
 /*--------------------------------------------------------------------*/
 /** Class for recoder types for nodes.
  *  <p>This class is needed for sorting the types w.r.t. their
@@ -28,6 +30,7 @@ import java.util.Arrays;
  *  @since  2006.08.10 */
 /*--------------------------------------------------------------------*/
 class RcType implements Comparable {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -43,12 +46,14 @@ class RcType implements Comparable {
   protected int    idx;
   /** the successor in a hash bin list */
   protected RcType succ;
+
   /*------------------------------------------------------------------*/
   /** Create a recoder type object.
    *  @param  type the value of the type (old code)
    *  @param  code the code  of the type (new code)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public RcType (int type, int code)
   {                             /* --- create a recoder type object */
     this.type = type;           /* note the type value */
@@ -56,6 +61,7 @@ class RcType implements Comparable {
     this.supp = this.frq = 0;   /* initialize the frequencies */
     this.idx  = -1;             /* clear the graph index */
   }  /* RcType() */
+
   /*------------------------------------------------------------------*/
   /** Compare two types w.r.t. their frequency.
    *  @param  obj the type object to compare to
@@ -65,13 +71,17 @@ class RcType implements Comparable {
    *          or greater than the frequency of the given type
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int compareTo (Object obj)
   {                             /* --- compare two type frequencies */
     if (this.frq < ((RcType)obj).frq) return -1;
     if (this.frq > ((RcType)obj).frq) return +1;
     return 0;                   /* return sign of freq. difference */
   }  /* compareTo() */
+
 }  /* class RcType */
+
+
 /*--------------------------------------------------------------------*/
 /** Class for recoders for node types.
  *  <p>Since it can speed up the mining process for frequent
@@ -84,6 +94,7 @@ class RcType implements Comparable {
  *  @since  2006.08.10 */
 /*--------------------------------------------------------------------*/
 public class Recoder {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -97,10 +108,12 @@ public class Recoder {
   private int      max;
   /** the index of the current graph (for frequency counting) */
   private int      idx;
+
   /*------------------------------------------------------------------*/
   /** Create a recoder of default size.
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Recoder ()
   {                             /* --- create a recoder */
     this.types = new RcType[256];  /* create an array for the types */
@@ -108,14 +121,17 @@ public class Recoder {
     this.size  = this.idx = 0;  /* init. counters and graph index */
     this.max   = (int)(0.75 *255);
   }  /* Recoder() */
+
   /*------------------------------------------------------------------*/
   /** Get the size of the recoder.
    *  <p>The size is the number of stored type/code pairs.</p>
    *  @return the size of the recoder (number of types)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int size ()
   { return this.size; }
+
   /*------------------------------------------------------------------*/
   /** Internal function to reorganize the hash table of the recoder.
    *  <p>This function gets called if the load factor of the hash table
@@ -124,10 +140,12 @@ public class Recoder {
    *  table is enlarged, roughly doubling the number of hash bins.</p>
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void rehash ()
   {                             /* --- reorganize the hash table */
     int    i, k, n;             /* loop variable, index, bin count */
     RcType t;                   /* to traverse the types */
+
     n = (this.bins.length << 1) +1;
     this.bins = new RcType[n];  /* create a new hash table */
     for (i = this.size; --i >= 0; ) {
@@ -137,6 +155,7 @@ public class Recoder {
     }                           /* of the approriate hash bin list */
     this.max = (int)(0.75 *n);  /* compute a new maximum number */
   }  /* rehash() */             /* of elements for rehashing */
+
   /*------------------------------------------------------------------*/
   /** Add a type to the recoder.
    *  <p>The added type is assigned the next code, which is the size
@@ -146,10 +165,12 @@ public class Recoder {
    *  @return the code that is assigned to the type
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int add (int type)
   {                             /* --- add a type */
     int    i, n;                /* hash bin index, new array size */
     RcType t, v[];              /* new type object, realloc. buffer */
+
     i = type % this.bins.length;/* try to find the type code */
     for (t = this.bins[i]; t != null; t = t.succ)
       if (t.type == type) return t.code;
@@ -165,6 +186,7 @@ public class Recoder {
       this.rehash();            /* reorganize the hash table */
     return t.code;              /* return the assigned code */
   }  /* add() */
+
   /*------------------------------------------------------------------*/
   /** Encode a type, that is, retrieve its code.
    *  @param  type the type to encode
@@ -172,6 +194,7 @@ public class Recoder {
    *          if the type is not contained in the recoder
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int encode (int type)
   {                             /* --- encode a type value */
     int i = type % this.bins.length;
@@ -179,6 +202,7 @@ public class Recoder {
       if (t.type == type) return t.code;
     return -1;                  /* find and return the type code */
   }  /* encode() */
+
   /*------------------------------------------------------------------*/
   /** Decode a type code, that is, retrieve the original type value.
    *  @param  code the type code to decode
@@ -187,12 +211,14 @@ public class Recoder {
    *          contain a corresponding type.
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int decode (int code)
   {                             /* --- decode a type code */
     if ((code < 0) || (code >= this.size))
       return code;              /* if the code is unknown, return it */
     return this.types[code].type;
   }  /* decode() */             /* otherwise return corresp. value */
+
   /*------------------------------------------------------------------*/
   /** Count a type code.
    *  <p>Increment the internal counters for the frequency
@@ -200,12 +226,14 @@ public class Recoder {
    *  @param  code the type code to count
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void count (int code)
   {                             /* --- count occurrence of a type */
     RcType t = this.types[code];/* get the corresponding type object */
     t.frq++;                    /* and increment the counters */
     if (t.idx < this.idx) { t.idx = this.idx; t.supp++; }
   }  /* count() */
+
   /*------------------------------------------------------------------*/
   /** Commit a type code counting.
    *  <p>This function must be called after each graph for which the
@@ -215,6 +243,7 @@ public class Recoder {
    *  @see    #count(int)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void commit ()
   {                             /* --- commit support counting */
     if (++this.idx < Integer.MAX_VALUE)
@@ -223,6 +252,7 @@ public class Recoder {
       this.types[i].idx = -1;   /* reinitialize graph indices */
     this.idx = 0;               /* (per element and globally) */
   }  /* commit() */
+
   /*------------------------------------------------------------------*/
   /** Trim the recoder with a minimum support or frequency.
    *  <p>All types having a support or a frequency less than the given
@@ -236,22 +266,27 @@ public class Recoder {
    *  @see    #trimSupp(int)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void trim (boolean freq, int min)
   { if (freq) this.trimFreq(min); else this.trimSupp(min); }
+
   /*------------------------------------------------------------------*/
   /** Trim the recoder with a minimum support.
    *  @param  min the minimum support of a type
    *  @see    #trimSupp(int)
    *  @since  2007.06.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void trim (int min)
   { this.trimSupp(min); }
+
   /*------------------------------------------------------------------*/
   /** Trim the recoder with a minimum support.
    *  @param  min the minimum support of a type
    *  @see    #trim(boolean,int)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void trimSupp (int min)
   {                             /* --- trim types w.r.t. support */ 
     for (int i = this.size; --i >= 0; ) {
@@ -259,12 +294,14 @@ public class Recoder {
       if (t.supp < min) t.supp = t.frq = -1;
     }                           /* exclude infrequent types */
   }  /* trimSupp() */
+
   /*------------------------------------------------------------------*/
   /** Trim the recoder with a minimum frequency.
    *  @param  min the minimum frequency of a type
    *  @see    #trim(boolean,int)
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void trimFreq (int min)
   {                             /* --- trim types w.r.t. frequency */ 
     for (int i = this.size; --i >= 0; ) {
@@ -272,6 +309,7 @@ public class Recoder {
       if (t.frq < min) t.supp = t.frq = -1;
     }                           /* exclude infrequent types */
   }  /* trimFreq() */
+
   /*------------------------------------------------------------------*/
   /** Clear the frequency and support of a type.
    *  <p>Calling this function also removes a possible marking of the
@@ -279,8 +317,10 @@ public class Recoder {
    *  @param  code the code of the type for which to clear the counters
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void clear (int code)
   { RcType e = this.types[code]; e.supp = e.frq = 0; }
+
   /*------------------------------------------------------------------*/
   /** Mark a type as excluded.
    *  <p>Note that marking a type as excluded loses its frequency and
@@ -290,8 +330,10 @@ public class Recoder {
    *  @param  code the code of the type to mark as excluded
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void exclude (int code)
   { RcType e = this.types[code]; e.supp = e.frq = -1; }
+
   /*------------------------------------------------------------------*/
   /** Check whether a type is excluded.
    *  <p>Types can be excluded by explicitely calling the function
@@ -301,8 +343,10 @@ public class Recoder {
    *  @see    #exclude(int)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isExcluded (int code)
   { return this.types[code].supp < 0; }
+
   /*------------------------------------------------------------------*/
   /** Set frequency and support to a maximal value.
    *  <p>This function indirectly offers the possibility to move a type
@@ -315,16 +359,20 @@ public class Recoder {
    *               for which to maximize the frequency
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void maximize (int code)
   { RcType e = this.types[code]; e.supp = e.frq = Integer.MAX_VALUE; }
+
   /*------------------------------------------------------------------*/
   /** Check whether a code has maximal frequency.
    *  @param  code the code of the type to check
    *  @see    #maximize(int)
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isMaximal (int code)
   { return this.types[code].supp >= Integer.MAX_VALUE; }
+
   /*------------------------------------------------------------------*/
   /** Sort types w.r.t.&nbsp;their frequency.
    *  <p>The types are sorted ascendingly w.r.t. their frequency,
@@ -333,10 +381,12 @@ public class Recoder {
    *  types, maximized type succeed all other types.</p>
    *  @since  2006.08.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void sort ()
   {                             /* --- sort types w.r.t. frequency */ 
     Arrays.sort(this.types, 0, this.size);
     for (int i = this.size; --i >= 0; )
       this.types[i].code = i;   /* sort and recode the types */
   }  /* sort() */
+
 }  /* class Recoder */

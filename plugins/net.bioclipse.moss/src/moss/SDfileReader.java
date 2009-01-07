@@ -14,16 +14,19 @@
             2007.06.26 split into reader and writer
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.FileWriter;
+
 /*--------------------------------------------------------------------*/
 /** Class for readers for structure-data files (SDfile, Elsevier MDL).
  *  @author Christian Borgelt
  *  @since  2007.02.24 */
 /*--------------------------------------------------------------------*/
 public class SDfileReader extends GraphReader {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -31,12 +34,14 @@ public class SDfileReader extends GraphReader {
   private Notation     smiles;
   /** the buffer for an input line */
   private StringBuffer buf;
+
   /*------------------------------------------------------------------*/
   /** Create a reader for SDfiles.
    *  @param  reader the reader to read from
    *  @param  mode   the read mode
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public SDfileReader (Reader reader, int mode)
   {                             /* --- create an SDfile reader */
     super(reader, mode);        /* store the arguments */
@@ -44,6 +49,7 @@ public class SDfileReader extends GraphReader {
     this.buf    = new StringBuffer();
     this.smiles = null;         /* clear the line notation */
   }  /* SDfileReader() */
+
   /*------------------------------------------------------------------*/
   /** Read the next input line.
    *  @return the next input line or <code>null</code>
@@ -51,6 +57,7 @@ public class SDfileReader extends GraphReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.02.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected String readLine () throws IOException
   {                             /* --- read the next input line */
     int c = this.read();        /* read the next character */
@@ -62,6 +69,7 @@ public class SDfileReader extends GraphReader {
     }                           /* read the next character */
     return this.buf.toString(); /* return the input line read */
   }  /* readLine() */
+
   /*------------------------------------------------------------------*/
   /** Read an (optional) header.
    *  <p>This function always returns <code>false</code> and reads
@@ -70,9 +78,11 @@ public class SDfileReader extends GraphReader {
    *  @throws IOException if an i/o error occurs
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean readHeader () throws IOException
   { return false; }
+
   /*------------------------------------------------------------------*/
   /** Get the next graph description.
    *  <p>The next graph description is read and split into the graph
@@ -85,11 +95,13 @@ public boolean readHeader () throws IOException
    *  @throws IOException if an i/o error or a parse error occurs
    *  @since  2007.03.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean readGraph () throws IOException
   {                             /* --- get the next graph description */
     int    i, k;                /* indices in input line */
     String line, s = null;      /* buffer for an input line/a field */
+
     this.desc  = null;          /* clear the line description */
     this.name  = this.readLine();
     if (this.name == null) return false;
@@ -150,6 +162,7 @@ public boolean readGraph () throws IOException
       throw new IOException("malformed number '" +s +"'"); }
     return true;                /* return that a graph was read */
   }  /* readGraph() */
+
   /*------------------------------------------------------------------*/
   /** Get a (line) description of the current graph.
    *  <p>Since a connection table is not a line description,
@@ -157,6 +170,7 @@ public boolean readGraph () throws IOException
    *  @return a line description (SMILES) of the current graph
    *  @since  2007.03.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public String getDesc ()
   {                             /* --- get a (line) description */
@@ -168,19 +182,23 @@ public String getDesc ()
     }                           /* create a description if possible */
     return this.desc;           /* return the description */
   }  /* getDesc() */
+
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  @param  args the command line arguments
    *  @since  2007.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+  
   public static void main (String args[])
   {                             /* --- main function for testing */
     SDfileReader reader;        /* reader for the input  file */
     SDfileWriter writer;        /* writer for the output file */
+
     if (args.length != 2) {     /* if wrong number of arguments */
       System.err.println("usage: java moss.SDfileReader <in> <out>");
       return;                   /* print a usage message */
     }                           /* and abort the program */
+
     try {                       /* try to read an SDfile */
       reader = new SDfileReader(new FileReader(args[0]), GRAPHS);
       writer = new SDfileWriter(new FileWriter(args[1]), GRAPHS);
@@ -194,4 +212,5 @@ public String getDesc ()
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
+  
 }  /* class SDfileReader */

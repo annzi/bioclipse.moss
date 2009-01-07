@@ -6,6 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *****************************************************************************/
+
 /*----------------------------------------------------------------------
   File    : Miner.java
   Contents: Find common substructures of graphs
@@ -95,12 +96,14 @@
             2007.11.07 warning about failed ring marking added
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.io.FileWriter;
 import java.io.PrintStream;
+
 /*--------------------------------------------------------------------*/
 /** Class for managing repository elements.
  *  <p>A repository element is a hash bin list element that records
@@ -109,6 +112,7 @@ import java.io.PrintStream;
  *  @since  2006.11.10 */
 /*--------------------------------------------------------------------*/
 class RepElem {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -130,12 +134,14 @@ class RepElem {
   protected int     hash;
   /** the next element in the hash bin list */
   protected RepElem succ;
+
   /*------------------------------------------------------------------*/
   /** Create an element of a substructure repository.
    *  @param  frag the fragment to store
    *  @param  hash the hash code of the substructure
    *  @since  2006.11.10 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected RepElem (Fragment frag, int hash)
   {                             /* --- create a repository element */
     Embedding emb = frag.list;
@@ -148,13 +154,17 @@ class RepElem {
     this.embs1 = frag.supp[3];
     this.hash  = hash;
   }  /* RepElem() */
+
 }  /* class RepElem */
+
+
 /*--------------------------------------------------------------------*/
 /** Class for the molecular substructure miner.
  *  @author Christian Borgelt
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Miner implements Runnable {
+
   /*------------------------------------------------------------------*/
   /*  constants: version information                                  */
   /*------------------------------------------------------------------*/
@@ -167,11 +177,13 @@ public class Miner implements Runnable {
   /** the copyright information for this program */
   public static final String COPYRIGHT =
     "(c) 2002-2007 Christian Borgelt";
+
   /*------------------------------------------------------------------*/
   /*  constants: message texts                                        */
   /*------------------------------------------------------------------*/
   private static final String RING_WARN =
     "  warning: could not mark all rings in ";
+
   /*------------------------------------------------------------------*/
   /*  constants: sizes and flags                                      */
   /*------------------------------------------------------------------*/
@@ -221,6 +233,7 @@ public class Miner implements Runnable {
    *  canonical form and full perfect extension pruning */
   public  static final int DEFAULT    = EDGEEXT    | CLOSED
                                       | PR_CANONIC | PR_PERFECT;
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -294,6 +307,7 @@ public class Miner implements Runnable {
   private   Exception   error  = null;
   /** whether to abort the search thread */
   private volatile boolean stop = false;
+
   /* --- benchmark variables --- */
   /** for benchmarking: the maximum depth of the search tree */
   protected int  maxdep;
@@ -331,10 +345,12 @@ public class Miner implements Runnable {
   protected long isocnt;
   /** for benchmarking: the number of comparisons with embeddings */
   protected long embcmps;
+
   /*------------------------------------------------------------------*/
   /** Create an empty miner with default parameter settings.
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Miner ()
   {                             /* --- create a substructure finder */
     this.masks    = new int[4]; /* init. the edge and node masks */
@@ -342,6 +358,7 @@ public class Miner implements Runnable {
     this.masks[1] = this.masks[3] = Edge.TYPEMASK;
     this.cnts     = new int[2]; /* create the support counters */
   }  /* Miner() */
+
   /*------------------------------------------------------------------*/
   /** Set the search mode.
    *  <p>The search mode is a combination of the search mode flags,
@@ -349,8 +366,10 @@ public class Miner implements Runnable {
    *  @param  mode the search mode
    *  @since  2006.10.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setMode (int mode)
   { this.mode = mode; }
+
   /*------------------------------------------------------------------*/
   /** Set the support type.
    *  <p>Constants for support types are defined in the class
@@ -359,8 +378,10 @@ public class Miner implements Runnable {
    *  @see    Fragment
    *  @since  2006.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setType (int type)
   { this.type = type; }
+
   /*------------------------------------------------------------------*/
   /** Set the support limits.
    *  <p>Positive values are fractions of the focus or complement set,
@@ -369,25 +390,31 @@ public class Miner implements Runnable {
    *  @param  comp the maximum support in the complement
    *  @since  2006.10.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setLimits (double supp, double comp)
   { this.fsupp = supp; this.fcomp = comp; }
+
   /*------------------------------------------------------------------*/
   /** Set the minimum and maximum fragment size.
    *  @param  min the minimum fragment size (number of nodes)
    *  @param  max the maximum fragment size (number of nodes)
    *  @since  2006.10.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+  
   public void setSizes (int min, int max)
   { this.min = min; this.max = (max <= 0) ? Integer.MAX_VALUE : max; }
+
   /*------------------------------------------------------------------*/
   /** Set the minimum and maximum ring size.
    *  @param  min the minimum ring size (number of nodes/edges)
    *  @param  max the maximum ring size (number of nodes/edges)
    *  @since  2006.10.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setRingSizes (int min, int max)
   { this.rgmin = (min <  0)        ? 0   : min;
     this.rgmax = (max >= this.min) ? max : this.min; }
+
   /*------------------------------------------------------------------*/
   /** Set the node and edge masks.
    *  @param  node     the mask for nodes outside (marked) rings
@@ -396,6 +423,7 @@ public class Miner implements Runnable {
    *  @param  ringedge the mask for edges in (marked) rings
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setMasks (int node, int edge, int ringnode, int ringedge)
   {                             /* --- set node and edge masks */
     this.masks[0] = node;       /* mask for node types outside rings */
@@ -403,6 +431,7 @@ public class Miner implements Runnable {
     this.masks[2] = ringnode;   /* mask for node types inside  rings */
     this.masks[3] = ringedge;   /* mask for edge types inside  rings */
   }  /* setMasks() */
+
   /*------------------------------------------------------------------*/
   /** Set the maximum number of embeddings per graph.
    *  <p>Restricting the maximum number of embeddings per graph
@@ -411,8 +440,10 @@ public class Miner implements Runnable {
    *  @param  mepm the maximum number of embeddings per graph
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setMaxEmbs (int mepm)
   { this.mepm = mepm; }
+
   /*------------------------------------------------------------------*/
   /** Set the excluded nodes and excluded seeds.
    *  <p>Excluded nodes are completely removed from the search, that is,
@@ -425,8 +456,10 @@ public class Miner implements Runnable {
    *  @param  exseed the node types to exclude as seeds
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setExcluded (Graph extype, Graph exseed)
   { this.extype = extype; this.exseed = exseed; }
+
   /*------------------------------------------------------------------*/
   /** Set the excluded nodes and excluded seeds.
    *  <p>The arguments <code>exat</code> and <code>exsd</code> are
@@ -437,6 +470,7 @@ public class Miner implements Runnable {
    *  @param  format the format of the descriptions
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setExcluded (String extype, String exseed, String format)
     throws IOException
   {                             /* --- set the excluded node types */
@@ -461,17 +495,20 @@ public class Miner implements Runnable {
                            +" " +s +"(s)] done.");
     }                           /* parse the excluded seeds */
   }  /* setExcluded() */
+
   /*------------------------------------------------------------------*/
   /** Set the seed structure to start the search from.
    *  @param  seed the seed structure for the search
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setSeed (Graph seed) throws IOException
   {                             /* --- set the seed structure */
     if (!seed.isConnected())    /* check for a connected seed */
       throw new IOException("error: seed structure is not connected");
     this.seed = seed;           /* note the seed structure */
   }  /* setSeed() */
+
   /*------------------------------------------------------------------*/
   /** Set the seed structure to start the search from.
    *  <p>The argument <code>desc</code> is parsed as graph
@@ -481,6 +518,7 @@ public class Miner implements Runnable {
    *  @param  format the format of the seed description
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setSeed (String desc, String format) throws IOException
   {                             /* --- set the seed structure */
     if ((desc == null)   || desc.equals("")
@@ -496,6 +534,7 @@ public class Miner implements Runnable {
     this.log.println("["  +this.seed.getNodeCount()+" "+n+"(s)"
                     +", " +this.seed.getEdgeCount()+" "+e+"(s)] done.");
   }  /* setSeed() */
+
   /*------------------------------------------------------------------*/
   /** Set the grouping parameters.
    *  <p>If <code>invert == false</code>, all graphs having an
@@ -509,56 +548,69 @@ public class Miner implements Runnable {
    *  @param  invert whether to invert the grouping
    *  @since  2007.03.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setGrouping (double thresh, boolean invert)
   {                             /* --- set the grouping parameters */
     this.thresh = thresh;       /* note threshold and group index */
     this.group  = (invert) ? 1 : 0;
   }  /* setGrouping() */
+
   /*------------------------------------------------------------------*/
   /** Sets the stream to which progress messages are written.
    *  <p>By default all messages are written to {@link System#err}.</p>
    *  @param  stream the stream to write to
    *  @since  2007.05.30 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setLog (PrintStream stream)
   { this.log = stream; }
+  
   /*------------------------------------------------------------------*/
   /** Set the input reader.
    *  @param  reader the reader from which to read the graphs
    *  @since  2007.03.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setInput (GraphReader reader)
   { this.reader = reader; }
+
   /*------------------------------------------------------------------*/
   /** Set the input reader.
    *  @param  fname  the name of the input data file
    *  @param  format the format of the input data
    *  @since  2007.03.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setInput (String fname, String format) throws IOException
   { this.reader = GraphReader.createReader(new FileReader(fname),
                     GraphReader.GRAPHS, format); }
+
   /*------------------------------------------------------------------*/
   /** Set the output writer.
    *  @param  writer the writer to write the found substructures
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setOutput (GraphWriter writer)
   { this.writer = writer; this.wrids = null; }
+
   /*------------------------------------------------------------------*/
   /** Set the output writers.
    *  @param  writer the writer to write the found substructures
    *  @param  wrids  the writer to write the graph identifiers
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setOutput (GraphWriter writer, Writer wrids)
   { this.writer = writer; this.wrids = wrids; }
+
   /*------------------------------------------------------------------*/
   /** Set the output writer.
    *  @param  fname the name of the file for the found substructures
    *  @param  format the format for the output
    *  @since  2007.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setOutput (String fname, String format)
     throws IOException
   {                             /* --- set the output */
@@ -566,6 +618,7 @@ public class Miner implements Runnable {
                     GraphWriter.SUBS, format);
     this.wrids  = null;
   }  /* setOutput() */
+
   /*------------------------------------------------------------------*/
   /** Set the output writers.
    *  @param  fn_sub the name of the file for the found fragments
@@ -573,6 +626,7 @@ public class Miner implements Runnable {
    *  @param  format the format for the output
    *  @since  2006.06.26 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setOutput (String fn_sub, String format, String fn_ids)
     throws IOException
   {                             /* --- set the output */
@@ -581,6 +635,7 @@ public class Miner implements Runnable {
     this.wrids  = ((fn_ids != null) && !fn_ids.equals(""))
                 ? new FileWriter(fn_ids) : null;
   }  /* setOutput() */
+
   /*------------------------------------------------------------------*/
   /** Add a graph to the database.
    *  <p>When the graph is added, its group is evaluated and it is
@@ -592,6 +647,7 @@ public class Miner implements Runnable {
    *  @param  graph the graph to add
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void addGraph (NamedGraph graph)
   {                             /* --- add a graph to the database */
     this.cnts[graph.group]++;   /* count the new graph */
@@ -614,11 +670,13 @@ public class Miner implements Runnable {
       this.curr      = graph;   /* of the focus graph list */
     }
   }  /* addGraph() */
+
   /*------------------------------------------------------------------*/
   /** Configure the notations of the miner.
    *  @return a configured notation (type managers)
    *  @since  2007.07.06 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private Notation configNtns ()
   {                             /* --- configure notations */
     Notation out = this.writer.getNotation();
@@ -631,6 +689,7 @@ public class Miner implements Runnable {
       in.setTypeMgrs(out);      /* set the fixed types for the input */
     return in;                  /* return the configured notation */
   }  /* configNtns() */
+
   /*------------------------------------------------------------------*/
   /** Convert Kekul&eacute; representations to true aromatic rings.
    *  <p>In a Kekul&eacute; representation an aromatic ring with
@@ -641,6 +700,7 @@ public class Miner implements Runnable {
    *  @return the number of modified graphs
    *  @since  2003.08.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int aromatize ()
   {                             /* --- convert Kekul\'e to aromatic */
     int n = 0;                  /* number of modified graphs */
@@ -650,11 +710,13 @@ public class Miner implements Runnable {
       if (Bonds.aromatize(g) > 0) n++;
     return n;                   /* return number of mod. graphs */
   }  /* aromatize() */
+
   /*------------------------------------------------------------------*/
   /** Mask the node and edge types of all graphs.
    *  @return the number of processed graphs
    *  @since  2002.03.28 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int maskTypes ()
   {                             /* --- mask node and edge types */
     if (this.seed != null)      /* if there is a seed, mask types */
@@ -663,6 +725,7 @@ public class Miner implements Runnable {
       g.maskTypes(this.masks);  /* mask types in all graphs */
     return this.cnts[0] +this.cnts[1];
   }  /* maskTypes() */          /* return the number of graphs */
+
   /*------------------------------------------------------------------*/
   /** Mark rings in a given size range in all graphs.
    *  <p>For ring extensions the rings have to be marked in the
@@ -672,6 +735,7 @@ public class Miner implements Runnable {
    *  @return the number graphs with of marked rings
    *  @since  2003.08.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int markRings (int min, int max)
   {                             /* --- mark rings in all graphs */
     int n = 0, k = 0, r;        /* number of graphs, rings */
@@ -689,6 +753,7 @@ public class Miner implements Runnable {
     }                           /* warn about failures */
     return n;                   /* return the number of mod. graphs */
   }  /* markRings() */
+
   /*------------------------------------------------------------------*/
   /** Mark pseudo-rings up to a given size.
    *  <p>Pseudo-rings are rings that are smaller than the rings marked
@@ -700,6 +765,7 @@ public class Miner implements Runnable {
    *  @return the number of graphs with marked pseudo-rings
    *  @since  2006.06.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int markPseudo (int max)
   {                             /* --- mark pseudo-rings in all mols. */
     int n = 0;                  /* number of graphs */
@@ -708,6 +774,7 @@ public class Miner implements Runnable {
       if (g.markPseudo(max) > 0) n++;
     return n;                   /* return the number of mod. graphs */
   }  /* markPseudo() */
+
   /*------------------------------------------------------------------*/
   /** Mark bridges in all graphs of the database.
    *  <p>Bridges have to be marked for correct perfect extension
@@ -716,6 +783,7 @@ public class Miner implements Runnable {
    *  @return the number of graphs with marked bridges
    *  @since  2005.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int markBridges ()
   {                             /* --- mark bridges in all graphs */
     int n = 0;                  /* number of graphs */
@@ -725,6 +793,7 @@ public class Miner implements Runnable {
       if (g.markBridges() > 0) n++;
     return n;                   /* return the number of mod. graphs */
   }  /* markBridges() */
+
   /*------------------------------------------------------------------*/
   /** Split all graphs into their connected components.
    *  <p>Note that the numbers of graphs in the focus and
@@ -732,11 +801,13 @@ public class Miner implements Runnable {
    *  @return the total number of connected components
    *  @since  2007.06.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int split ()
   {                             /* --- split into connected comps. */
     NamedGraph list;            /* to traverse the graphs */
     NamedGraph ccs;             /* connected components */
     int        n = 0;           /* number of connected components */
+
     list = this.graphs;         /* get the graphs and reinitialize */
     this.graphs = this.tail = this.curr = null;
     while (list != null) {      /* while there are more graphs */
@@ -753,27 +824,32 @@ public class Miner implements Runnable {
     }                           /* and skip the processed graph */
     return n;                   /* return the number of components */
   }  /* split() */
+
   /*------------------------------------------------------------------*/
   /** Print a counter.
    *  @param  n the counter to print
    *  @since  2007.07.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void print (int n)
   {                             /* --- print a counter */
     String s = "        " +n;   /* format the number and print it */
     this.log.print(s.substring(s.length()-9));
     this.log.print("\b\b\b\b\b\b\b\b\b");
   }  /* print() */
+
   /*------------------------------------------------------------------*/
   /** Set up the miner (prepare the graph database for the search).
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void setup ()
   {                             /* --- set up the miner */
     int        i, t;            /* loop variable, type buffer */
     NamedGraph graph;           /* to traverse the graphs */
     Node       node;            /* to traverse the nodes */
     boolean    f;               /* flag for frequency-based support */
+
     t = this.type & Fragment.SUPPMASK;
     f = (t != Fragment.GRAPHS); /* check the support type */
     if (f) {                    /* if frequency-based support */
@@ -788,6 +864,7 @@ public class Miner implements Runnable {
     else this.comp = (int)Math.floor(this.fcomp *this.cnts[1]);
     if (this.supp <= 0)         /* compute and adapt the */
       this.supp = 1;            /* absolute support values */
+    
     this.coder = new Recoder(); /* create a node type recoder */
     for (graph = this.graphs; graph != null; graph = graph.succ) {
       if (graph.group != 0) break; /* traverse the graphs */
@@ -833,16 +910,19 @@ public class Miner implements Runnable {
     if (this.seed != null)      /* if there is a seed structure, */
       this.seed.encode(this.coder);   /* encode the seed's nodes */
   }  /* setup() */
+
   /*------------------------------------------------------------------*/
   /** Embed the seed structure into all graphs.
    *  @return the number of graphs that contain the seed
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int embed ()
   {                             /* --- embed seed into all graphs */
     int        n = 0;           /* graph counter */
     NamedGraph graph;           /* to traverse the graphs */
     Embedding  emb;             /* created list of embeddings */
+
     if (this.seed == null)      /* check for an empty seed */
       return 0;                 /* and abort if there is none */
     this.seed.prepareEmbed();   /* prepare seed for embedding */
@@ -856,18 +936,21 @@ public class Miner implements Runnable {
     }
     return n;                   /* return the number of graphs */
   }  /* embed() */
+
   /*------------------------------------------------------------------*/
   /** Reorganize the substructure repository.
    *  <p>The hash table of the substructure repository is enlarged
    *  and the substructures are rehashed to achieve faster access.</p>
    *  @since  2006.11.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void rehash ()
   {                             /* --- reorganize the repository */
     int     i, k;               /* loop variable, hash bin index */
     int     n;                  /* new number of hash bins */
     RepElem buf[];              /* buffer for reallocation */
     RepElem e, t;               /* to traverse the hash bin lists */
+
     n   = (this.bins.length << 1) +1;
     buf = new RepElem[n];       /* allocate a new hash bin array */
     for (i = this.bins.length; --i >= 0; ) {
@@ -881,6 +964,7 @@ public class Miner implements Runnable {
     this.bins  = buf;           /* set the new hash bin array */
     this.limit = (int)(n*0.75); /* and the new rehashing threshold */
   }  /* rehash() */
+
   /*------------------------------------------------------------------*/
   /** Check for whether a given fragment has already been processed.
    *  <p>If no canonical form pruning is used, a repository of already
@@ -893,6 +977,7 @@ public class Miner implements Runnable {
    *  @return whether the fragment is contained in the repository
    *  @since  2006.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private boolean duplicate (Fragment frag)
   {                             /* --- check for a duplicate fragment */
     int       k;                /* loop variable */
@@ -900,6 +985,7 @@ public class Miner implements Runnable {
     RepElem   re;               /* to traverse the bin list */
     Embedding emb;              /* to traverse the embeddings */
     boolean   found = false;    /* whether the fragment was found */
+
     this.repcnt++;              /* count the repository access */
     hash = frag.hashCode();     /* compute the hash code and */
     i = hash % this.bins.length;/* from it the hash bin index */
@@ -936,6 +1022,7 @@ public class Miner implements Runnable {
       this.rehash();            /* reorganize hash table if necessary */
     return false;               /* return 'no duplicate' */
   }  /* duplicate() */
+
   /*------------------------------------------------------------------*/
   /** Check and report a found fragment/substructure.
    *  <p>In order to be actually reported (written to the output file),
@@ -948,12 +1035,14 @@ public class Miner implements Runnable {
    *  @return whether the fragment has been reported
    *  @since  2002.03.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected boolean output (Fragment frag) throws IOException
   {                             /* --- output a substructure */
     int    id;                  /* substructure identifier */
     Graph  sub;                 /* fragment as a graph */
     Graph  g;                   /* to traverse the graphs */
     double s;                   /* support of a substructure */
+
     /* --- check the fragment --- */
     if (!frag.isValid()) {            /* skip invalid fragments */
       this.invalid++; return false; } /* (non-canonic, but needed) */
@@ -971,6 +1060,7 @@ public class Miner implements Runnable {
       this.chains++; return false; }  /* (one length or minimum != 1) */
     id = ++this.subcnt;         /* count the new substructure and */
     this.print(this.subcnt);    /* print the number of substructures */
+
     /* --- write substructure file --- */
     sub = frag.getAsGraph();    /* get fragment as a graph */
     if ((this.mode & NORMFORM) != 0) {
@@ -991,6 +1081,7 @@ public class Miner implements Runnable {
     this.writer.setRelCompl((float)(s *100.0));
     this.writer.writeGraph();   /* write the substructure and */
     this.writer.flush();        /* flush the substructure writer */
+
     /* --- write graph identifier file --- */
     if (this.wrids == null)     /* if there is no identifier file, */
       return true;              /* return 'fragment was reported' */
@@ -1003,6 +1094,7 @@ public class Miner implements Runnable {
     this.wrids.flush();         /* flush the identifier writer */
     return true;                /* return 'fragment was reported' */
   }  /* output() */
+
   /*------------------------------------------------------------------*/
   /** Main recursive function of the mining process.
    *  <p>In this function the extensions of the given fragment are
@@ -1014,6 +1106,7 @@ public class Miner implements Runnable {
    *  @return whether to continue the search (search not aborted)
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private boolean recurse (Fragment frag, int depth) throws IOException
   {                             /* --- recursive search */
     int        i, k, n, r;      /* loop variables, buffers */
@@ -1024,6 +1117,7 @@ public class Miner implements Runnable {
     boolean    revert;          /* whether to revert extension info. */
     boolean    adapt;           /* whether to adapt code words */
     boolean    part, check;     /* flags for the canonical form test */
+
     if (Thread.currentThread().isInterrupted())
       this.stop = true;         /* check for thread interruption */
     if (this.stop)              /* check for an external abort */
@@ -1031,6 +1125,7 @@ public class Miner implements Runnable {
     this.nodecnt++;             /* count the search tree node */
     if (depth > this.maxdep)    /* update the maximal depth */
       this.maxdep = depth;      /* of the recursion/search tree */
+
     /* --- verbose information output --- */
     if (( this.mode & VERBOSE) != 0) {
       for (i = depth; --i >= 0;)/* if verbose output about */
@@ -1052,6 +1147,7 @@ public class Miner implements Runnable {
         System.out.print(k);    /* print the number of embeddings */
       System.out.println(" (" +frag.supp[0] +")");
     }                           /* print the support of the fragment */
+
     /* --- create extensions --- */
     xfs = new Fragment[size = 16];
     cnt = 0;                    /* initialize the fragment array */
@@ -1082,6 +1178,7 @@ public class Miner implements Runnable {
       }                         /* (after this loop cnt is the */
     }                           /* number of created fragments) */
     this.fragcnt += cnt;        /* count all fragments (benchmark) */
+
     /* --- support-based pruning --- */
     /* It may be better to do this here only if the support can  */
     /* be computed efficiently. Otherwise it could be done after */
@@ -1104,6 +1201,7 @@ public class Miner implements Runnable {
     /* extensions are not used, explicit tests for closed fragments */
     /* are necessary. Otherwise certain fragments may get lost.     */
     /* Thus not all qualifying fragments must be marked as closed.  */
+
     /* --- chain pruning --- */
     chain = false;              /* clear the chain extension flag */
     if ((this.mode & CHAINEXT) != 0) {
@@ -1115,6 +1213,7 @@ public class Miner implements Runnable {
       while (cnt > n)           /* collect the other fragments */
         xfs[--cnt] = null;      /* at the front of the array and */
     }                           /* decrement the fragment counter */
+
     /* --- ring extension merging --- */
     if ((this.mode & MERGERINGS) != 0)
       cnt = frag.mergeExts(xfs, cnt);
@@ -1122,6 +1221,7 @@ public class Miner implements Runnable {
     /* adaptation of the fragment (for canonical form pruning),   */
     /* because the function mergeExts needs to identify fragments */
     /* that were generated from the same base embedding. */
+
     /* --- unclosable ring pruning --- */
     if ((this.mode & PR_UNCLOSE) != 0) {
       for (i = n = 0; i < cnt; i++) {  /* traverse the fragments */
@@ -1132,6 +1232,7 @@ public class Miner implements Runnable {
       while (cnt > n)           /* collect the remaining fragments */
         xfs[--cnt] = null;      /* at the front of the array and */
     }                           /* decrement the fragment counter */
+
     /* --- perfect extension pruning --- */
     revert = false;             /* default: do not revert ext. info. */
     if ((cnt > 1)               /* if to prune w.r.t. perfect exts. */
@@ -1157,6 +1258,7 @@ public class Miner implements Runnable {
     /* adaptation of the fragment (for canonical form pruning),    */
     /* because the function isPerfect needs to identify fragments  */
     /* that were generated from the same base embedding. */
+
     /* --- equivalent sibling pruning --- */
     if ((cnt > 1)               /* if to prune equivalent siblings */
     &&  ((this.mode & PR_EQUIV) != 0)) {
@@ -1187,6 +1289,7 @@ public class Miner implements Runnable {
       while (cnt > n)           /* "delete" all other fragments */
         xfs[--cnt] = null;      /* from the fragment array and */
     }                           /* decrement the fragment counter */
+
     /* --- fragment adaptation and ring order pruning --- */
     if (((this.mode & (PR_CANONIC|RIGHTEXT))  != 0)
     &&  ((this.mode & (PR_PERFECT|FULLRINGS)) != 0)) {
@@ -1205,6 +1308,7 @@ public class Miner implements Runnable {
     /* canonical form pruning to ensure proper later extensions. */
     /* Similarly, if ring extensions are used, new edges must be */
     /* shifted past already added, but not yet fixed ring edges. */
+
     /* --- canonical form pruning --- */
     if ((this.mode & PR_CANONIC) != 0) {
       part = ((this.mode & FULLRINGS) != 0);
@@ -1217,6 +1321,7 @@ public class Miner implements Runnable {
       while (cnt > n)           /* collect the remaining fragments */
         xfs[--cnt] = null;      /* at the front of the array and */
     }                           /* decrement the fragment counter */
+
     /* --- remove duplicates with repository --- */
     else { /* if ((this.mode & PR_CANONIC) == 0) */
       for (i = n = 0; i < cnt; i++) {  /* traverse the fragments */
@@ -1230,6 +1335,7 @@ public class Miner implements Runnable {
     /* If canonical form pruning is not used, duplicate fragments    */
     /* have to be identified and removed by checking each generated  */
     /* fragment against a repository of already processed fragments. */
+
     /* --- revert extension information --- */
     if ((cnt > 0) && revert)    /* revert the extension information */
       xfs[0].revert();          /* to that of the base fragment */
@@ -1237,11 +1343,13 @@ public class Miner implements Runnable {
     /* information has to be reverted to that of the base fragment, */
     /* because otherwise fragments are lost from the search tree    */
     /* branches to the left of the perfect extension branch.        */
+
     /* --- unembed sibling nodes --- */
     if ((this.mode & UNEMBED) != 0) {
       for (i = cnt; --i > 0; )  /* unembed all fragments except */
         xfs[i].unembed();       /* the one to be processed next */
     }                           /* (saves some memory) */
+
     /* --- recursively process branches --- */
     depth++;                    /* increment the recursion depth */
     for (i = 0; i < cnt; i++) { /* search fragments recursively */
@@ -1255,6 +1363,7 @@ public class Miner implements Runnable {
       this.stop = true;         /* check for thread interruption */
     return !this.stop;          /* return whether search was stopped */
   }  /* recurse() */
+
   /*------------------------------------------------------------------*/
   /** Main function for the mining process.
    *  <p>The seed is embedded into all graphs to create the initial
@@ -1263,6 +1372,7 @@ public class Miner implements Runnable {
    *  @return the number of found substructures
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int search () throws IOException
   {                             /* --- search for substructures */
     int        i, k;            /* loop variables */
@@ -1270,6 +1380,7 @@ public class Miner implements Runnable {
     Embedding  emb;             /* created list of embeddings */
     TypeMgr    ndmgr;           /* manager for node types and names */
     String     s;               /* buffer for output formatting */
+
     if ((this.mode & RIGHTEXT) != 0)   /* create an extension object */
          this.ext = new RgtPathExt(this.mode, this.max);
     else this.ext = new MaxSrcExt (this.mode, this.max);
@@ -1333,14 +1444,17 @@ public class Miner implements Runnable {
     this.bins = null;           /* "delete" the repository */
     return this.subcnt;         /* return number of substructures */
   }  /* search() */
+
   /*------------------------------------------------------------------*/
   /** Write all graphs of the database.
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void writeGraphs () throws IOException
   {                             /* --- write all graphs */
     int        n = 0;           /* graph counter */
     NamedGraph graph;           /* to traverse the graphs */
+
     for (graph = this.graphs; graph != null; graph = graph.succ) {
       if ((this.mode & NORMFORM) != 0)
         graph.makeCanonic(new MaxSrcExt(0, 0));
@@ -1356,12 +1470,14 @@ public class Miner implements Runnable {
       if ((++n & 0xff) == 0) this.print(n);
     }                           /* print the number of graphs */
   }  /* writeGraphs() */
+
   /*------------------------------------------------------------------*/
   /** Evaluate the command line parameter stating the ring size range.
    *  @param  s the command line parameter stating the ring size range
    *  @return an array with the minimum and maximum ring size
    *  @since  2003.08.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private static int[] getRingSizes (String s)
   {                             /* --- get min. and max. ring size */
     int   i, n;                 /* loop variable */
@@ -1380,11 +1496,13 @@ public class Miner implements Runnable {
       sizes[0] = sizes[1] = -1; /* check the given ring sizes */
     return sizes;               /* return the ring size range */
   }  /* getRingSizes() */
+
   /*------------------------------------------------------------------*/
   /** Initialize the miner from command line arguments.
    *  @param  args the command line arguments
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void init (String args[]) throws IOException
   {                             /* --- init. a substructure miner */
     int     i, k = 0;           /* indices, loop variables */
@@ -1410,6 +1528,7 @@ public class Miner implements Runnable {
     String  exsd   = "";        /* excluded seed types */
     int     matom, mbond;       /* type masks for atoms and bonds */
     int     mrgat, mrgbd;       /* type masks for atoms and bonds */
+    
     /* --- print startup/usage message --- */
     if (args.length > 0) {      /* if no arguments are given */
       this.log.print  (this.getClass().getName());
@@ -1510,7 +1629,9 @@ public class Miner implements Runnable {
       System.out.println(" only convert input to a logic format");
       throw new IOException("no arguments given");
     }                           /* print a usage message */
+
     /* remaining option characters: h u w A F I J Q V W X Y Z */
+
     /* --- evaluate arguments --- */
     matom = mrgat = Atoms.ELEMMASK;  /* set default masks */
     mbond = mrgbd = Bonds.BONDMASK;
@@ -1600,6 +1721,7 @@ public class Miner implements Runnable {
     }                       /* there should be two fixed args: */
       }                         /* a seed description and a */
     }                           /* name of an input file */
+
     /* --- check parameters --- */
     if (!input.equalsIgnoreCase("smiles")
     &&  !input.equalsIgnoreCase("sln")
@@ -1626,6 +1748,7 @@ public class Miner implements Runnable {
     if ((sizes != null) && (sizes[0] < 0))
       throw new IOException("error: invalid ring size range");
     if (sizes == null) sizes = new int[2];
+
     /* --- initialize input/output --- */
     this.setGrouping(split, invert);
     this.setInput   (datfn, input);
@@ -1638,6 +1761,7 @@ public class Miner implements Runnable {
     /* should be done before the time-consuming tasks of embedding */
     /* a seed and substructure searching, so that trivial errors   */
     /* like mispelled filenames are reported without delay.        */
+
     /* --- set search parameters --- */
     this.setMode(smode);        /* set the search mode */
     if ((smode & (TRANSFORM|LOGIC)) != 0) return;
@@ -1652,10 +1776,12 @@ public class Miner implements Runnable {
     this.setSeed(desc, format); /* set seed and excluded types */
     this.setExcluded(excl, exsd, format);
   }  /* init() */
+
   /*------------------------------------------------------------------*/
   /** Preprocess the graphs, embed the seed, and start the search.
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void mine () throws IOException
   {                             /* --- run substructure search */
     int        k, n = 0;        /* number of graphs/substructures */
@@ -1664,6 +1790,7 @@ public class Miner implements Runnable {
     NamedGraph graph;           /* created graph */
     String     m = "graph";     /* buffers for log messages */
     long       t;               /* for time measurements */
+    
     /* --- load graph data set --- */
     this.configNtns();          /* configure the graph notations */
     if (this.reader != null) {  /* if to read a graph data set */
@@ -1692,6 +1819,7 @@ public class Miner implements Runnable {
       m = "molecule";           /* (graph or molecule) */
     if (this.cnts[0] <= 0)      /* check for graphs in focus */
       throw new IOException("error: no " +m +" in the focus");
+
     /* --- convert Kekule representations --- */
     if ((this.graphs != null)   /* if the graphs are molecules */
     &&  (this.graphs.getNotation() instanceof MoleculeNtn)
@@ -1702,6 +1830,7 @@ public class Miner implements Runnable {
       t = System.currentTimeMillis() -t;
       this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
     }                           /* report the number of mod. graphs */
+
     /* --- convert to another description language --- */
     if ((this.mode & (TRANSFORM|LOGIC)) != 0) {
       this.log.print("writing " +m +"s ... ");
@@ -1712,6 +1841,7 @@ public class Miner implements Runnable {
                       +" " +m +"(s)] done [" +(t/1000.0) +"s].");
       return;                   /* print a log message */
     }                           /* and abort the program */
+
     /* --- make search mode consistent --- */
     if ((this.seed != null)     /* if the seed contains several nodes */
     &&  (this.seed.nodecnt > 1))
@@ -1762,6 +1892,7 @@ public class Miner implements Runnable {
     /* form pruning, equivalent sibling pruning cannot be applied. */
     /* Unclosable ring pruning does no harm, but is useless, since */
     /* with full ring extensions all rings are always closed.      */
+
     /* --- mark bridges --- */
     if ((this.mode & (PR_PERFECT|PR_PARTIAL|CHAINEXT)) != 0) {
       this.log.print("marking bridges ... ");
@@ -1770,6 +1901,7 @@ public class Miner implements Runnable {
       t = System.currentTimeMillis() -t;
       this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
     }                           /* mark bridges in all graphs */
+
     /* --- mark rings --- */
     if (this.rgmax > 1) {       /* if to mark the edges of rings */
       this.log.print("marking rings (sizes " +this.rgmin
@@ -1779,6 +1911,7 @@ public class Miner implements Runnable {
       t = System.currentTimeMillis() -t;
       this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
     }                           /* mark rings in all graphs */
+
     /* --- mark pseudo-rings --- */
     if ((this.rgmin > 1)        /* if to mark the edges of rings */
     &&  ((this.mode & FULLRINGS)  != 0)
@@ -1791,6 +1924,7 @@ public class Miner implements Runnable {
       this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
       if (k > 0) this.mode |= CLOSERINGS;
     }                           /* set ring filter flag if necessary */
+
     /* --- mask node and edge types --- */
     if ((this.graphs != null)   /* if the graphs are molecules */
     &&  (this.graphs.getNotation() instanceof MoleculeNtn)) {
@@ -1800,6 +1934,7 @@ public class Miner implements Runnable {
       t = System.currentTimeMillis() -t;
       this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
     }                           /* (do this only for molecules) */
+
     /* --- prepare the graphs --- */
     this.log.print("preparing/recoding " +m +"s ... ");
     k = this.cnts[0] +this.cnts[1];
@@ -1807,6 +1942,7 @@ public class Miner implements Runnable {
     this.setup();               /* set up the substructure search */
     t = System.currentTimeMillis() -t;
     this.log.println("[" +k +" " +m+"(s)] done [" +(t/1000.0) +"s].");
+
     /* --- embed the seed --- */
     if (this.seed != null) {    /* if a seed is given */
       this.log.print("embedding the seed ... ");
@@ -1818,6 +1954,7 @@ public class Miner implements Runnable {
                       +") " +m +"(s)] done [" +(t/1000.0) +"s].");
       if (k <= 0) return;       /* print a log message and */
     }                           /* check the number of graphs */
+
     /* --- search for substructures --- */
     this.log.print("searching for substructures ... ");
     t = System.currentTimeMillis();
@@ -1826,19 +1963,23 @@ public class Miner implements Runnable {
     this.log.println("[" +k +" substructure(s)] done ["
                     +(t/1000.0) +"s].");
   }  /* mine() */
+
   /*------------------------------------------------------------------*/
   /** Clean up after the search finished or was aborted.
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void term () throws IOException
   {                             /* --- clean up after search */
     if (this.writer != null) { this.writer.close(); this.writer = null;}
     if (this.wrids  != null) { this.wrids.close();  this.wrids  = null;}
   }  /* term() */
+
   /*------------------------------------------------------------------*/
   /** Run the miner and clean up after the search finished.
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void run ()
   {                             /* --- run the miner */
     this.error = null;          /* clear the error status */
@@ -1850,12 +1991,15 @@ public class Miner implements Runnable {
     if (this.error != null) {   /* report an error */
       this.log.println("\n" +this.error.getMessage()); }
   }  /* run() */
+
   /*------------------------------------------------------------------*/
   /** Abort the miner (if running as a thread).
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void abort ()
   { this.stop = true; }
+
   /*------------------------------------------------------------------*/
   /** Get the substructures that have been found up to now.
    *  <p>This function enables progress reporting by another thread.
@@ -1868,9 +2012,11 @@ public class Miner implements Runnable {
    *          the number of found substructures (if negative)
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getCurrent ()
   { return (this.subcnt >= 0)
           ? this.subcnt : -this.cnts[0] -this.cnts[1]; }
+
   /*------------------------------------------------------------------*/
   /** Get the error status of the search process.
    *  <p>With this function it can be checked, after the search with
@@ -1882,12 +2028,15 @@ public class Miner implements Runnable {
    *          or <code>null</code> if the search was successful
    *  @since  2007.03.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Exception getError ()
   { return this.error; }
+
   /*------------------------------------------------------------------*/
   /** Print statistics about the search.
    *  @since  2006.03.01 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void stats ()
   {                             /* --- show search statistics */
     if ((this.mode & (TRANSFORM|LOGIC|NOSTATS)) != 0) return;
@@ -1911,11 +2060,13 @@ public class Miner implements Runnable {
     this.log.println("actual isomorphism tests     : " +this.isocnt);
     this.log.println("comparisons with embeddings  : " +this.embcmps);
   }  /* stats() */
+
   /*------------------------------------------------------------------*/
   /** Command line invocation of the molecular substructure miner.
    *  @param  args the command line arguments
    *  @since  2002.03.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public static void main (String args[])
   {                             /* --- main function */
     Miner miner = new Miner();  /* substructure miner */
@@ -1926,4 +2077,5 @@ public class Miner implements Runnable {
     catch (IOException e) {     /* report i/o error message */
       System.err.println("\n" +e.getMessage()); }
   }  /* main() */
+
 }  /* class Miner */

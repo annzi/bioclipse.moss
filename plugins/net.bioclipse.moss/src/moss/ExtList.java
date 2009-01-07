@@ -15,6 +15,7 @@
             2006.06.19 adapted to ring extensions
 ----------------------------------------------------------------------*/
 package moss;
+
 /*--------------------------------------------------------------------*/
 /** Class for managing extension lists and their elements.
  *  <p>Extension lists are used to determine whether a fragment is
@@ -29,6 +30,7 @@ package moss;
  *  @since  2005.07.23 */
 /*--------------------------------------------------------------------*/
 public class ExtList {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -44,6 +46,7 @@ public class ExtList {
   protected int[]   ring;
   /** the successor in a list */
   protected ExtList succ;
+
   /*------------------------------------------------------------------*/
   /** Create an extension list element for a single edge extension.
    *  @param  src  the index of the source node
@@ -52,12 +55,14 @@ public class ExtList {
    *  @param  node the type of the destination node
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected ExtList (int src, int dst, int edge, int node)
   {                             /* --- create extension list element */
     this.src  = src;  this.dst  = dst;
     this.edge = edge; this.node = node;
     this.ring = null;           /* store extension information */
   }  /* ExtList() */    
+
   /*------------------------------------------------------------------*/
   /** Create an extension list element for a ring extension.
    *  <p>The information about the ring edges, contained in the array
@@ -72,6 +77,7 @@ public class ExtList {
    *  @param  n    the number of relevant fields in <code>ring</code>
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected ExtList (int src, int dst, int edge, int node,
                      int[] ring, int n)
   {                             /* --- create extension list element */
@@ -79,6 +85,7 @@ public class ExtList {
     this.edge = edge; this.node = node;
     System.arraycopy(ring, 0, this.ring = new int[n], 0, n);
   }  /* ExtList() */            /* store extension information */
+
   /*------------------------------------------------------------------*/
   /** Compare to another extension list element.
    *  <p>This function is needed for merging two extension lists.</p>
@@ -88,9 +95,11 @@ public class ExtList {
    *          than the given list element
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected int compareTo (ExtList e)
   {                             /* --- compare extension list elements*/
     int i, k;                   /* loop variable, buffer */
+
     if (this.src  < e.src)  return -1;  /* compare the properties */
     if (this.src  > e.src)  return +1;  /* of the first/only edge */
     if (this.dst  < e.dst)  return -1;
@@ -109,6 +118,7 @@ public class ExtList {
     }                           /* compare the ring edge properties */
     return 0;                   /* if no diff. found, exts. are equal */
   }  /* compareTo() */
+
   /*------------------------------------------------------------------*/
   /** Merge two sorted extension lists (and remove duplicates).
    *  <p>This function is used to implement a simple merge sort
@@ -120,10 +130,12 @@ public class ExtList {
    *  @return the merged extension lists
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected static ExtList merge (ExtList l1, ExtList l2)
   {                             /* --- merge two extension lists */
     int     r;                  /* result of comparison */
     ExtList out, tail, e;       /* output list, list element */
+
     if (l1 == null) return l2;  /* if one of the lists is empty, */
     if (l2 == null) return l1;  /* return the other */
     tail = null;                /* init. the tail of the output list */
@@ -143,6 +155,7 @@ public class ExtList {
     else                 tail.succ = null;
     return out;                 /* append remaining elements */
   }  /* merge() */              /* and return the merged list */
+
   /*------------------------------------------------------------------*/
   /** Sort an extension list (and remove duplicates).
    *  <p>The algorithm is a simple merge sort. The input list is split
@@ -153,9 +166,11 @@ public class ExtList {
    *  @return the sorted extension list
    *  @since  2005.07.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected static ExtList sort (ExtList list)
   {                             /* --- sort an extension list */
     ExtList l1, l2, e;          /* sublists for mergesort */
+
     if ((list == null) || (list.succ == null))
       return list;              /* abort for zero and one element */
     l1 = l2 = null;             /* initialize the two output lists */
@@ -167,4 +182,5 @@ public class ExtList {
     }                           /* (split into two equal lists) */
     return merge(sort(l1), sort(l2));
   }  /* sort() */               /* sort and then merge the two lists */
+
 }  /* class ExtList */

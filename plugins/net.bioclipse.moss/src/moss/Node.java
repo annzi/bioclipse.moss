@@ -31,8 +31,10 @@
             2007.11.05 functions getDegree() and getEdge() added
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.util.Comparator;
 import java.util.Arrays;
+
 /*--------------------------------------------------------------------*/
 /** Class for nodes of an attributed (labeled/typed) graph.
  *  <p>A node records its type (attribute/label) and all edges
@@ -44,6 +46,7 @@ import java.util.Arrays;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Node implements Comparable {
+
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -60,6 +63,7 @@ public class Node implements Comparable {
   /* Note that chains cannot be marked with the most significant bit */
   /* (the sign bit), because their code has to be larger than that   */
   /* of a non-chain node to ensure proper canonical form treatment.  */
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -71,13 +75,16 @@ public class Node implements Comparable {
   protected int    deg;
   /** the array of incident edges (may not be fully used) */
   protected Edge[] edges;
+
   /*------------------------------------------------------------------*/
   /** Create a node with a given type (attribute/label).
    *  @param  type the type of the node to create
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Node (int type)
   { this(type, 4); }
+
   /*------------------------------------------------------------------*/
   /** Create a node of a given type and given edge array size.
    *  <p>The node is created in such a way that it can accomodate
@@ -88,70 +95,88 @@ public class Node implements Comparable {
    *  @param  size the expected number of edges
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Node (int type, int size)
   {                             /* --- create an node */
     this.type  = type;          /* note the type of the node */
     this.deg   = 0;             /* create an empty edge array */
     this.edges = new Edge[size];/* of the given size */
   }  /* Node() */
+
   /*------------------------------------------------------------------*/
   /** Get the type (attribute/label) of an node.
    *  @return the type of the node
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getType ()
   { return this.type; }
+
   /*------------------------------------------------------------------*/
   /** Mask the edge type with the given mask.
    *  @param  mask the mask for the node type
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void maskType (int mask)
   { this.type &= mask | SPECIAL; }
+
   /*------------------------------------------------------------------*/
   /** Check whether this is a special node (e.g. wildcard or chain).
    *  @return whether this is a special node
    *  @since  2006.10.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isSpecial ()
   { return (this.type & SPECIAL) != 0; }
+
   /*------------------------------------------------------------------*/
   /** Check whether this is a wildcard node.
    *  @return whether this is a wildcard node
    *  @since  2007.06.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isWildcard ()
   { return this.type == ANY; }
+
   /*------------------------------------------------------------------*/
   /** Check whether this is a chain node.
    *  @return whether this is a chain node
    *  @since  2006.10.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isChain ()
   { return (this.type & CHAIN) != 0; }
+
   /*------------------------------------------------------------------*/
   /** Encode the node type.
    *  @param  coder the recoder to encode the node type with
    *  @since  2006.11.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void encode (Recoder coder)
   { if ((this.type & SPECIAL) == 0)
       this.type = coder.encode(this.type); }
+
   /*------------------------------------------------------------------*/
   /** Decode the node type.
    *  @param  coder the recoder to decode the node type with
    *  @since  2006.11.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void decode (Recoder coder)
   { if ((this.type & SPECIAL) == 0)
       this.type = coder.decode(this.type); }
+
   /*------------------------------------------------------------------*/
   /** Get the degree of the node.
    *  @return the degree of the node
    *  @since  2007.11.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getDegree ()
   { return this.deg; }
+
   /*------------------------------------------------------------------*/
   /** Add an edge to a node.
    *  <p>It is not checked whether the source or the destination of
@@ -159,24 +184,29 @@ public class Node implements Comparable {
    *  @param  edge the edge to be added to the node
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void addEdge (Edge edge)
   {                             /* --- add an edge to an node */
     Edge[] old = this.edges;    /* buffer for the old edge array */
     int    max = old.length;    /* (new) array size */
+
     if (this.deg >= max) {      /* if the edge array is full */
       this.edges = new Edge[max +((max > 4) ? max >> 1 : 4)];
       System.arraycopy(old, 0, this.edges, 0, this.deg);
     }                           /* enlarge array and copy edges */
     this.edges[this.deg++] = edge;
   }  /* addEdge() */            /* add the new edge to the array */
+
   /*------------------------------------------------------------------*/
   /** Get an edge of the node.
    *  @param  index the index of the edge (w.r.t. the node)
    *  @return the edge with the given index
    *  @since  2007.11.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Edge getEdge (int index)
   { return this.edges[index]; }
+
   /*------------------------------------------------------------------*/
   /** Optimize memory usage.
    *  <p>This function shrinks the edge array to the minimal size that
@@ -184,6 +214,7 @@ public class Node implements Comparable {
    *  to reduce the memory consumption.</p>
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void opt ()
   {                             /* --- optimize memory usage */
     Edge[] old = this.edges;    /* buffer for the old edge array */
@@ -192,11 +223,13 @@ public class Node implements Comparable {
       System.arraycopy(old, 0, this.edges, 0, this.deg);
     }                           /* shrink the array to needed size */
   }  /* opt() */
+
   /*------------------------------------------------------------------*/
   /** Recursive function to mark a connected component.
    *  @param  mark the value with which to mark the nodes
    *  @since  2007.03.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void mark (int mark)
   {                             /* --- recursively mark nodes */
     this.mark = mark;           /* mark the node as visited */
@@ -206,6 +239,7 @@ public class Node implements Comparable {
       if (n.mark < 0) n.mark(mark);
     }                           /* recursively mark unvisited nodes */
   }  /* mark() */
+
   /*------------------------------------------------------------------*/
   /** Compare two nodes (w.r.t. their marker values).
    *  <p>This function is needed in <code>NamedGraph.split()</code>
@@ -217,12 +251,14 @@ public class Node implements Comparable {
    *          greater than the marker of the node given as an argument
    *  @since  2007.06.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int compareTo (Object obj)
   {                             /* --- compare two nodes */
     if (this.mark < ((Node)obj).mark) return -1;
     if (this.mark > ((Node)obj).mark) return +1;
     return 0;                   /* return the sign of the difference */
   }  /* compareTo() */          /* of the node markers */
+
   /*------------------------------------------------------------------*/
   /** Sort the edges that are incident to the node.
    *  <p>The edges are sorted w.r.t. their type, the type of the node
@@ -235,11 +271,13 @@ public class Node implements Comparable {
    *  is used, so that it is reasonably fast for general graphs.</p>
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void sortEdges ()
   {                             /* --- sort the edges of a node */
     int  i, k;                  /* loop variables, indices */
     Edge e, x;                  /* to traverse/exchange the edges */
     int  d, t;                  /* type of the destination node */
+
     if (this.deg > 12) {        /* if not very few edges to sort */
       Arrays.sort(this.edges, 0, this.deg, new Comparator () {
         public int compare (Object o1, Object o2) {
@@ -274,4 +312,5 @@ public class Node implements Comparable {
       this.edges[k] = e;        /* store the edge to insert */
     }                           /* at the position found */
   }  /* sortEdges() */
+
 }  /* class Node */

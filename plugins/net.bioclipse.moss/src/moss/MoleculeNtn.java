@@ -22,8 +22,10 @@
             2007.07.02 buffer for creating descriptions added
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.Writer;
+
 /*--------------------------------------------------------------------*/
 /** Class for (linear) notations for molecules.
  *  <p>A molecule is represented as a graph with atoms as nodes
@@ -50,27 +52,33 @@ import java.io.Writer;
  *  @since  2006.08.12 */
 /*--------------------------------------------------------------------*/
 public abstract class MoleculeNtn extends Notation {
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
   /** the buffer for creating molecule descriptions */
   protected StringBuffer desc;
+
   /*------------------------------------------------------------------*/
   /** Whether this notation has a fixed set of (node and edge) types.
    *  @return <code>true</code>, because types are atoms and bonds
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean hasFixedTypes ()
   { return true; }
+
   /*------------------------------------------------------------------*/
   /** Get the node type manager.
    *  @return the node type manager
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public TypeMgr getNodeMgr ()
   { return Atoms.getAtoms(); }
+
   /*------------------------------------------------------------------*/
   /** Set the node type manager.
    *  <p>This function has no effect, because node types are fixed.</p>
@@ -78,17 +86,21 @@ public TypeMgr getNodeMgr ()
    *  @see    #hasFixedTypes()
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void setNodeMgr (TypeMgr nodemgr)
   { }
+
   /*------------------------------------------------------------------*/
   /** Get the edge type manager.
    *  @return the edge type manager
    *  @since  2007.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public TypeMgr getEdgeMgr ()
   { return Bonds.getBonds(); }
+
   /*------------------------------------------------------------------*/
   /** Set the edge type manager.
    *  <p>This function has no effect, because edge types are fixed.</p>
@@ -96,14 +108,17 @@ public TypeMgr getEdgeMgr ()
    *  @see    #hasFixedTypes()
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void setEdgeMgr (TypeMgr edgemgr)
   { }
+
   /*------------------------------------------------------------------*/
   /** Read shorthand hydrogen atoms.
    *  @return the number of shorthand hydrogen atoms
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected int getHydros () throws IOException
   {                             /* --- read shorthand hydrogens */
     int c = this.read();        /* read the next character */
@@ -120,6 +135,7 @@ public void setEdgeMgr (TypeMgr edgemgr)
       this.unread(c); return 1; }
     return c -'0';              /* return the number of hydrogens */
   }  /* getHydros() */
+
   /*------------------------------------------------------------------*/
   /** Get the number of adjacent hydrogen atoms (and mark them).
    *  @param  atom  the atom for which to get the adjacent hydrogens
@@ -127,11 +143,13 @@ public void setEdgeMgr (TypeMgr edgemgr)
    *  @return the number of shorthand hydrogen atoms
    *  @since  2006.08.12 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected static int getHydros (Node atom, Recoder coder)
   {                             /* --- get (and mark) hydrogens */
     int  i, t, n = 0;           /* loop variable, buffer, counter */
     Edge e;                     /* to traverse the incident edges */
     Node d;                     /* to traverse the destination nodes */
+
     for (i = atom.deg; --i >= 0; ) {
       e = atom.edges[i];        /* traverse the incident edges */
       if ((e.mark == 0) || (Bonds.getBond(e.type) != Bonds.SINGLE))
@@ -145,13 +163,16 @@ public void setEdgeMgr (TypeMgr edgemgr)
     }
     return (n > 9) ? 9 : n;     /* return the number of hydrogens */
   }  /* getHydros() */
+
   /*------------------------------------------------------------------*/
   /** Write a description of a molecule.
    *  @param  graph  the molecule to write
    *  @param  writer the writer to write to
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void write (Graph graph, Writer writer) throws IOException
   { writer.write(this.describe(graph)); }
+
 }  /* class MoleculeNtn */

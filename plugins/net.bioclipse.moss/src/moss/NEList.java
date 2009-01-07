@@ -15,54 +15,65 @@
             2007.10.19 bug in function write() fixed (type decoding)
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+
 /*--------------------------------------------------------------------*/
 /** Class for a simple node/edge list notation.
  *  @author Christian Borgelt
  *  @since  2006.08.12 */
 /*--------------------------------------------------------------------*/
 public class NEList extends FreeNtn {
+
   /*------------------------------------------------------------------*/
   /** Create a list notation with empty type managers.
    *  <p>By default this notation uses <code>TypeMap</code> objects
    *  for the type managers, which can be extended dynamically.</p>
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NEList ()
   { this(new TypeMap(), new TypeMap()); }
+
   /*------------------------------------------------------------------*/
   /** Create a list notation with given type managers.
    *  @param  nodemgr the manager for the node types
    *  @param  edgemgr the manager for the edge types
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NEList (TypeMgr nodemgr, TypeMgr edgemgr)
   {                             /* --- create a list notation */
     this.nodemgr = nodemgr;     /* store the given */
     this.edgemgr = edgemgr;     /* type managers */
   }  /* NEList() */
+
   /*------------------------------------------------------------------*/
   /** Whether this is a line notation (single line description).
    *  @return <code>false</code>, since this is a multi-line notation
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean isLine ()
   { return false; }
+
   /*------------------------------------------------------------------*/
   /** Read an integer number.
    *  @return the integer number read
    *  @throws IOException if no integer number could be read
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int readInt () throws IOException
   {                             /* --- read an integer number */
     int c;                      /* loop variable, character */
     int n = 0;                  /* integer value read */
+
     c = this.read();            /* check for a separator */
     if ((c != ' ') && (c != '\t'))
       throw new IOException("separator expected instead of "
@@ -83,17 +94,20 @@ public boolean isLine ()
     this.unread(c);             /* push back the last character */
     return n;                   /* return the parsed number */
   }  /* readInt() */
+
   /*------------------------------------------------------------------*/
   /** Read a node or edge type name.
    *  @return the node or edge type name read
    *  @throws IOException if no type could be read
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private String readType () throws IOException
   {                             /* --- read a node or edge label */
     int          i;             /* loop variable */
     int          c;             /* to read the characters */
     StringBuffer s;             /* buffer for the type name */
+
     c = this.read();            /* check for end of line or separator */
     if ((c < 0) || (c == '\n')) return "";
     if ((c != ' ') && (c != '\t'))
@@ -115,6 +129,7 @@ public boolean isLine ()
     }                           /* remove trailing blanks */
     return s.toString();        /* return the type name */
   }  /* readType() */
+
   /*------------------------------------------------------------------*/
   /** Parse a description of an attributed graph.
    *  @param  reader the reader from which to read the description
@@ -122,6 +137,7 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public Graph parse (Reader reader) throws IOException
   {                             /* --- parse a graph description */
@@ -129,6 +145,7 @@ public Graph parse (Reader reader) throws IOException
     int    s, d, e = 0;         /* node indices */
     String t;                   /* type of a node or an edge */
     Graph  graph = null;        /* created graph */
+
     this.setReader(reader);     /* note the reader */
     while (true) {              /* read loop for nodes and edges */
       c = this.read();          /* read the type indicator */
@@ -163,27 +180,32 @@ public Graph parse (Reader reader) throws IOException
         this.unread(c); return graph; }
     }                           /* return the created graph */
   }  /* parse() */
+
   /*------------------------------------------------------------------*/
   /** Create a string description of a graph.
    *  @param  graph the graph to describe
    *  @return <code>null</code>, since this is not supported
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public String describe (Graph graph)
   { return null; }
+
   /*------------------------------------------------------------------*/
   /** Write a description of an attributed graph.
    *  @param  graph  the graph to write
    *  @param  writer the writer to write to
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void write (Graph graph, Writer writer) throws IOException
   {                             /* --- write a graph description */
     int  i, t;                  /* loop variable, buffer */
     Node n;                     /* to traverse the nodes */
     Edge e;                     /* to traverse the edges */
+
     for (i = 0; i < graph.nodecnt; i++) {
       n = graph.nodes[i];       /* traverse the nodes */
       writer.write("n " +(n.mark = i+1));
@@ -204,6 +226,7 @@ public void write (Graph graph, Writer writer) throws IOException
     for (i = graph.nodecnt; --i >= 0; )
       graph.nodes[i].mark = -1; /* unmark all nodes and edges */
   }  /* write() */
+
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  <p>It is tried to parse the first argument as a list description
@@ -212,6 +235,7 @@ public void write (Graph graph, Writer writer) throws IOException
    *  @param  args the command line arguments
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+  
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -228,4 +252,5 @@ public void write (Graph graph, Writer writer) throws IOException
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
+
 }  /* class NEList */

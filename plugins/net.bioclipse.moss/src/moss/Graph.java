@@ -61,8 +61,10 @@
             2007.11.08 prepareEmbed(), embed() and maskTypes() improved
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.StringReader;
+
 /*--------------------------------------------------------------------*/
 /** Class to represent attributed graphs for substructure mining.
  *  <p>An attributed graph is stored as an array of nodes and an
@@ -72,12 +74,14 @@ import java.io.StringReader;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Graph implements Cloneable {
+
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
   /** a dummy parameter/return value for the containment check
    *  (saves a recursion parameter) */
   private static final Embedding CONTAINED = new Embedding();
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -95,21 +99,26 @@ public class Graph implements Cloneable {
   protected Recoder  coder;
   /** the notation for describing the graph */
   protected Notation ntn;
+
   /*------------------------------------------------------------------*/
   /** Create/Initialize an empty graph.
    *  <p>This constructor is needed internally for turning graphs
    *  into named graphs.</p>
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Graph ()
   { }
+
   /*------------------------------------------------------------------*/
   /** Create a (empty) graph with default array sizes.
    *  @param  ntn the notation of the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Graph (Notation ntn)
   { this(ntn, 16, 16); }
+
   /*------------------------------------------------------------------*/
   /** Create a (empty) graph with the given array sizes.
    *  <p>The graph is created in such a way that it can contain,
@@ -122,6 +131,7 @@ public class Graph implements Cloneable {
    *  @param  edgecnt the expected number of edges
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Graph (Notation ntn, int nodecnt, int edgecnt)
   {                             /* --- create an empty graph */
     this.nodes   = new Node[nodecnt];  /* allocate arrays for nodes */
@@ -130,6 +140,7 @@ public class Graph implements Cloneable {
     this.ntn     = ntn;         /* store the graph notation */
     this.coder   = null;        /* there is no node type recoder yet */
   }  /* Graph() */
+
   /*------------------------------------------------------------------*/
   /** Turn a fragment into a graph.
    *  <p>This function is needed for unembedding/reembedding and the
@@ -138,12 +149,14 @@ public class Graph implements Cloneable {
    *  @param  frag the fragment to turn into a graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Graph (Fragment frag)
   {                             /* --- turn fragment into a graph */
     int       i, k;             /* loop variables, node counter */
     Embedding emb;              /* to access an embbeding */
     Edge      edge;             /* to traverse/access the edges */
     Node      src, dst, x;      /* to traverse/access the nodes */
+
     emb          = frag.list;   /* copy the embedding information */
     this.ntn     = emb.graph.ntn;
     this.coder   = emb.graph.coder;
@@ -204,6 +217,7 @@ public class Graph implements Cloneable {
         edge = emb.edges[i]; edge.src.mark = edge.dst.mark = -1; }
     }                           /* remove the embedding markers */
   }  /* Graph() */
+
   /*------------------------------------------------------------------*/
   /** Create a clone of a graph.
    *  <p>This function creates a clone without changing anything
@@ -212,11 +226,13 @@ public class Graph implements Cloneable {
    *  @param  graph the graph to clone
    *  @since  2003.08.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Graph (Graph graph)
   {                             /* --- clone a graph */
     int  i;                     /* loop variable */
     Node ns, nd;                /* to traverse the nodes */
     Edge es, ed;                /* to traverse the edges */
+
     this.ntn   = graph.ntn;     /* copy the notation and the recoder */
     this.coder = graph.coder;   /* and the graph's nodes */
     this.nodes = new Node[this.nodecnt = graph.nodecnt];
@@ -237,6 +253,7 @@ public class Graph implements Cloneable {
     for (i = graph.nodecnt; --i >= 0; )
       graph.nodes[i].mark = this.nodes[i].mark;
   }  /* Graph() */              /* restore the node markers */
+
   /*------------------------------------------------------------------*/
   /** Create a clone of the attributed graph.
    *  <p>This function simply returns <code>new Graph(this)</code>.
@@ -245,21 +262,26 @@ public class Graph implements Cloneable {
    *  @see    #Graph(Graph)
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public Object clone ()
   { return new Graph(this); }
+
   /*------------------------------------------------------------------*/
   /** Clear a graph (remove all nodes and edges).
    *  @since  2007.06.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void clear ()
   { this.nodecnt = this.edgecnt = 0; this.coder = null; }
+
   /*------------------------------------------------------------------*/
   /** Check whether another graph is equal to this graph.
    *  @param  graph the graph to compare to
    *  @return whether the given graph is equal to this graph
    *  @since  2006.11.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean equals (Object graph)
   {                             /* --- compare two graphs */
@@ -270,6 +292,7 @@ public boolean equals (Object graph)
       return false;             /* compare counters and hash code */
     return this.contains((Graph)graph);
   }  /* equals() */
+
   /*------------------------------------------------------------------*/
   /** Compute the hash code of the attributed graph.
    *  <p>For subgraphs this function should yield the same value as
@@ -279,6 +302,7 @@ public boolean equals (Object graph)
    *  @return the hash code of the graph
    *  @since  2006.11.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public int hashCode ()
   {                             /* --- compute a hash code */
@@ -286,6 +310,7 @@ public int hashCode ()
     int  h, s;                  /* the computed hash code */
     Node src, dst;              /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
+
     h = s = 0;                  /* initialize the hash values */
     for (i = this.nodecnt; --i >= 0; ) {
       src = this.nodes[i];      /* traverse the nodes */
@@ -315,45 +340,56 @@ public int hashCode ()
     if (h < 0) h ^= -1;         /* ensure a positive hash value */
     return h;                   /* return the computed hash code */
   }  /* hashCode() */
+
   /*------------------------------------------------------------------*/
   /** Get the notation of the graph.
    *  @return the notation of the graph
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Notation getNotation ()
   { return this.ntn; }
+
   /*------------------------------------------------------------------*/
   /** Get the node type manager of the graph.
    *  @return the node type manager of the graph
    *  @since  2007.06.30 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public TypeMgr getNodeMgr ()
   { return this.ntn.getNodeMgr(); }
+
   /*------------------------------------------------------------------*/
   /** Get the edge type manager of the graph.
    *  @return the edge type manager of the graph
    *  @since  2007.06.30 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public TypeMgr getEdgeMgr ()
   { return this.ntn.getEdgeMgr(); }
+
   /*------------------------------------------------------------------*/
   /** Get the recoder for the node types.
    *  @return the recoder currently used for the node types,
    *          or <code>null</code> if no recoder is used
    *  @since  2006.06.28 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Recoder getRecoder ()
   { return this.coder; }
+
   /*------------------------------------------------------------------*/
   /** Add a node to the graph.
    *  @param  type the type of the node to add
    *  @return the index of the node in the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int addNode (int type)
   {                             /* --- add a node to a graph */
     Node[] old = this.nodes;    /* buffer for the old node array */
     int    max = old.length;    /* (new) array size */
+
     if (this.nodecnt >= max) {  /* if the node array is full */
       this.nodes = new Node[max +(max >> 1)];
       System.arraycopy(old, 0, this.nodes, 0, this.nodecnt);
@@ -361,21 +397,26 @@ public int hashCode ()
     this.nodes[this.nodecnt] = new Node(type);
     return this.nodecnt++;      /* add a new node to the array and */
   }  /* addNode() */            /* return the index of the new node */
+
   /*------------------------------------------------------------------*/
   /** Get the number of nodes of the graph.
    *  @return the number of nodes of the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getNodeCount ()
   { return this.nodecnt; }
+
   /*------------------------------------------------------------------*/
   /** Get a node by its index.
    *  @param  index the index of the node to retrieve
    *  @return the <code>index</code>-th node of the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Node getNode (int index)
   { return this.nodes[index]; }
+
   /*------------------------------------------------------------------*/
   /** Get the type of a node.
    *  <p>If the graph contains a recoder for the node types,
@@ -384,6 +425,7 @@ public int hashCode ()
    *  @return the type of the <code>index</code>-th node of the graph
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getNodeType (int index)
   {                             /* --- get the type of a node */
     Node node = this.nodes[index];
@@ -391,6 +433,7 @@ public int hashCode ()
     return (this.coder == null) /* decode the type if necessary */
          ? node.type : this.coder.decode(node.type);
   }  /* getNodeType() */
+
   /*------------------------------------------------------------------*/
   /** Add an edge to the graph.
    *  @param  src  the index of the source      node of the edge
@@ -399,10 +442,12 @@ public int hashCode ()
    *  @return the index of the edge in the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int addEdge (int src, int dst, int type)
   {                             /* --- add an edge to a graph */
     Edge[] old = this.edges;    /* buffer for the old edge array */
     int    max = old.length;    /* (new) array size */
+
     if (this.edgecnt >= max) {  /* if the edge array is full */
       this.edges = new Edge[max +(max >> 1)];
       System.arraycopy(old, 0, this.edges, 0, this.edgecnt);
@@ -411,29 +456,36 @@ public int hashCode ()
       new Edge(this.nodes[src], this.nodes[dst], type);
     return this.edgecnt++;      /* return the index of the new edge */
   }  /* addEdge() */
+
   /*------------------------------------------------------------------*/
   /** Get the number of edges of the graph.
    *  @return the number of edges of the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getEdgeCount ()
   { return this.edgecnt; }
+
   /*------------------------------------------------------------------*/
   /** Get an edge by its index.
    *  @param  index the index of the edge to retrieve
    *  @return the <code>index</code>-th edge of the graph
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Edge getEdge (int index)
   { return this.edges[index]; }
+
   /*------------------------------------------------------------------*/
   /** Get the type of an edge.
    *  @param  index the index of the edge
    *  @return the type of the <code>index</code>-th edge of the graph
    *  @since  2007.06.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getEdgeType (int index)
   { return this.edges[index].type; }
+
   /*------------------------------------------------------------------*/
   /** Optimize memory usage.
    *  <p>This function shrinks the node array and the edge array to the
@@ -441,6 +493,7 @@ public int hashCode ()
    *  and edges and thus tries to reduce the memory consumption.</p>
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void opt ()
   {                             /* --- optimize memory usage */
     for (int i = this.nodecnt; --i >= 0; )
@@ -456,11 +509,13 @@ public int hashCode ()
       System.arraycopy(old, 0, this.edges, 0, this.edgecnt);
     }                           /* copy the existing edges */
   }  /* opt() */
+
   /*------------------------------------------------------------------*/
   /** Mark all nodes and edges with a given value.
    *  @param  mark the value with which to mark nodes and edges.
    *  @since  2002.04.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void mark (int mark)
   {                             /* --- set all markers */
     for (int i = this.nodecnt; --i >= 0; )
@@ -470,10 +525,12 @@ public int hashCode ()
       if (this.edges[i].mark >= -1) /* mark the edges of the graph */
         this.edges[i].mark = mark;  /* that have not been trimmed */
   }  /* mark() */
+
   /*------------------------------------------------------------------*/
   /** Mark all nodes and edges with their index.
    *  @since  2002.04.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void index ()
   {                             /* --- index nodes and edges */
     for (int i = this.nodecnt; --i >= 0; )
@@ -483,6 +540,7 @@ public int hashCode ()
       if (this.edges[i].mark >= -1) /* number the edges of the graph */
        this.edges[i].mark = i;      /* that have not been trimmed */
   }  /* index() */
+
   /*------------------------------------------------------------------*/
   /** Encode the node types with the given type recoder.
    *  <p>The given type recoder is stored in the graph and may be
@@ -490,12 +548,14 @@ public int hashCode ()
    *  @param  coder the type recoder to use
    *  @since  2005.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void encode (Recoder coder)
   {                             /* --- encode node types */
     for (int i = this.nodecnt; --i >= 0; )
       this.nodes[i].encode(coder);
     this.coder = coder;         /* store the type recoder */
   }  /* encode() */
+
   /*------------------------------------------------------------------*/
   /** Decode the node types.
    *  <p>Calling this function has no effect if the nodes have not been
@@ -504,6 +564,7 @@ public int hashCode ()
    *  is removed.</p>
    *  @since  2005.06.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void decode ()
   {                             /* --- decode node types */
     if (this.coder == null)     /* if the graph is not encoded, */
@@ -512,6 +573,7 @@ public int hashCode ()
       this.nodes[i].decode(this.coder);
     this.coder = null;          /* delete the type recoder */
   }  /* decode() */
+
   /*------------------------------------------------------------------*/
   /** Mask the node and edge types.
    *  <p>The types of all nodes and edges of the graph are logically
@@ -523,11 +585,13 @@ public int hashCode ()
    *                3: edges in rings
    *  @since  2005.07.20 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void maskTypes (int masks[])
   {                             /* --- mask node and edge types */
     int  i, k;                  /* loop variables */
     Node node;                  /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
+
     for (i = this.edgecnt; --i >= 0; ) {
       edge = this.edges[i];     /* traverse the edges */
       edge.maskType(masks[edge.isInRing() ? 3 : 1]);
@@ -539,6 +603,7 @@ public int hashCode ()
       node.maskType(masks[(k >= 0) ? 2 : 0]);
     }                           /* mask the node type */
   }  /* maskTypes() */
+
   /*------------------------------------------------------------------*/
   /** Trim a graph based on its encoding recoder.
    *  <p>All nodes with types that are marked as excluded (in the
@@ -552,11 +617,13 @@ public int hashCode ()
    *                 (<code>false</code>)
    *  @since  2005.07.22 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected boolean trim (boolean remove)
   {                             /* --- trim graphs */
     int  i, k, n = 0;           /* loop variables */
     Node node;                  /* to traverse the nodes */
     Edge edge;                  /* to traverse the edges */
+
     if (this.coder == null)     /* if there is no type recoder, */
       return false;             /* there cannot be excluded nodes */
     for (i = this.nodecnt; --i >= 0; ) {
@@ -590,16 +657,19 @@ public int hashCode ()
     this.edgecnt = n;           /* set the new edge counter */
     return true;                /* return 'nodes removed' */
   }  /* trim() */  
+
   /*------------------------------------------------------------------*/
   /** Check whether the graph is connected.
    *  @return whether the graph is connected.
    *  @since  2007.03.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isConnected ()
   {                             /* --- check whether connected */
     int     i;                  /* loop variable */
     Node    node;               /* to traverse the nodes */
     boolean c;                  /* flag for a connected graph */
+
     if (this.nodecnt <= 1)      /* if there is at most one node, */
       return true;              /* the graph is connected */
     for (i = this.nodecnt; --i >= 0; )
@@ -613,6 +683,7 @@ public int hashCode ()
     }                           /* (ensure an unmarked graph) */
     return c;                   /* return whether graph is connected */
   }  /* isConnected() */
+
   /*------------------------------------------------------------------*/
   /** Internal recursive function for bridge finding and marking.
    *  @param  cur the current node in the depth-first search
@@ -622,12 +693,14 @@ public int hashCode ()
    *          that is reachable
    *  @since  2005.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int bridges (Node cur, Edge in, int lvl)
   {                             /* --- recursively find bridges */
     int  i;                     /* loop variable */
     int  low, l;                /* lowest level of reachable node */
     Edge out;                   /* to traverse the outgoing edges */
     Node dst;                   /* destination of outgoing edge */
+
     low = cur.mark = lvl++;     /* mark node with current level */
     for (i = cur.deg; --i >= 0; ) {
       out = cur.edges[i];       /* traverse all outgoing edges */
@@ -642,6 +715,7 @@ public int hashCode ()
     }                           /* if necessary */
     return low;                 /* return lowest reachable level */
   }  /* bridges() */
+
   /*------------------------------------------------------------------*/
   /** Mark all edges that are bridges.
    *  <p>This function marks all edges, the removal of which increases
@@ -655,9 +729,11 @@ public int hashCode ()
    *  @return the number of edges that have been marked
    *  @since  2005.06.07 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int markBridges ()
   {                             /* --- mark edges that are bridges */
     int i, n = 0;               /* loop variable, number of bridges */
+
     for (i = this.nodecnt; --i >= 0; )
       this.nodes[i].mark = -1;  /* unmark all nodes */
     for (i = this.nodecnt; --i >= 0; ) {
@@ -668,6 +744,7 @@ public int hashCode ()
       if (this.edges[i].isBridge()) n++;
     return n;                   /* count the marked bridges */
   }  /* markBridges() */        /* and return their number */
+
   /*------------------------------------------------------------------*/
   /** Internal function to remove a branch from a graph.
    *  <p>This function removes a branch from a graph by unmarking
@@ -678,10 +755,12 @@ public int hashCode ()
    *  @param  node a node at the end of a branch
    *  @since  2003.07.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void prune (Node node)
   {                             /* --- prune a possible branch */
     int  i;                     /* loop variable */
     Edge edge;                  /* to traverse the edges */
+
     while (node.mark == 1) {    /* while at the end of a branch */
       node.mark = 0;            /* unmark (remove) the node */
       for (i = node.deg; --i >= 0; )
@@ -692,6 +771,7 @@ public int hashCode ()
       node.mark--;              /* get the node on the other side */
     }                           /* and decrement the edge counter */
   }  /* prune() */
+
   /*------------------------------------------------------------------*/
   /** Internal function to recursively find and mark rings.
    *  <p>This function does a depth first search to find rings in a
@@ -708,6 +788,7 @@ public int hashCode ()
    *  @return the new ring flags set in the recursion
    *  @since  2003.07.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private long rings (Node node, Edge edge, Node term,
                       long rings, int min, int max)
   {                             /* --- recursive ring search */
@@ -715,6 +796,7 @@ public int hashCode ()
     long r;                     /* new ring flags */
     Edge out;                   /* to traverse the edges */
     Node dst;                   /* to traverse the nodes */
+
     for (i = node.deg; --i >= 0; ) /* collect used ring flags */
       rings |= node.edges[i].flags & Edge.RINGMASK;
     --min; --max;               /* decrement the ring edge counters */
@@ -740,6 +822,7 @@ public int hashCode ()
     edge.flags |= r;            /* add the rings flags to the edge */
     return r;                   /* return the new ring flags */
   }  /* rings() */
+
   /*------------------------------------------------------------------*/
   /** Mark rings in a given size range.
    *  <p>This function marks all edges and nodes that are part of a
@@ -754,8 +837,10 @@ public int hashCode ()
    *          (negative if not all rings could be marked)
    *  @since  2003.07.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int markRings (int min, int max)
   { return this.markRings(min, max, Edge.RING); }
+
   /*------------------------------------------------------------------*/
   /** Mark rings in a given size range with a given type flag.
    *  <p>This function marks all edges and nodes that are part of a
@@ -770,11 +855,13 @@ public int hashCode ()
    *  @return the number of rings that have been marked
    *  @since  2003.07.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected int markRings (int min, int max, int typeflag)
   {                             /* --- mark rings of size [min,max] */
     int  i, cnt = 0;            /* loop variable, counter */
     long r, x   = 0;            /* buffers for ring edge flags */
     Edge edge;                  /* to traverse the edges */
+
     for (i = this.edgecnt; --i >= 0; ) {
       edge = this.edges[i];     /* traverse the edges and */
       edge.mark  = 1;           /* mark them for pruning */
@@ -808,6 +895,7 @@ public int hashCode ()
     }                           /* set a ring edge flag in the type */
     return cnt;                 /* return the number of rings */
   }  /* markRings() */
+
   /*------------------------------------------------------------------*/
   /** Mark pseudo-rings up to a given size.
    *  <p>Pseudo-rings are rings that are smaller than the rings marked
@@ -819,12 +907,14 @@ public int hashCode ()
    *  @return the number of marked pseudo-rings
    *  @since  2006.06.04 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected int markPseudo (int max)
   {                             /* --- mark pseudo-rings up to max */
     int  i, k, cnt = 0;         /* loop variable, buffer, counter */
     long r;                     /* buffer for ring edge flags */
     Edge edge;                  /* to traverse the edges */
     Node node;                  /* to traverse the nodes */
+
     if (max <= 0) return 0;     /* if nothing to mark, abort */
     for (i = this.edgecnt; --i >= 0; ) {
       edge = this.edges[i];     /* traverse the edges */
@@ -855,6 +945,7 @@ public int hashCode ()
     }                           /* set a ring edge flag in the type */
     return cnt;                 /* return the number of rings */
   }  /* markPseudo() */
+
   /*------------------------------------------------------------------*/
   /** Check whether this subgraph has open rings.
    *  <p>This function checks whether there are edges in this subgraph
@@ -866,10 +957,12 @@ public int hashCode ()
    *  @return whether the subgraph contains an open ring
    *  @since  2006.05.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean hasOpenRings (int min, int max)
   {                             /* --- check for open rings */
     int  i;                     /* loop variable */
     Edge edge;                  /* to traverse the edges */
+
     this.markRings(min, max, 0);/* mark rings, but keep type flag */
     for (i = this.edgecnt; --i >= 0; ) {
       edge = this.edges[i];     /* traverse all edges */
@@ -878,6 +971,7 @@ public int hashCode ()
     }                           /* but without individual rings */
     return false;               /* if there is, there is an open ring */
   }  /* hasOpenRings() */       /* otherwise all rings are closed */
+
   /*------------------------------------------------------------------*/
   /** Prepare a graph for frequent substructure mining.
    *  <p>This function sorts the edges for each node w.r.t. their type
@@ -887,12 +981,14 @@ public int hashCode ()
    *  (search tree pruning, leaving loops early).</p>
    *  @since  2002.03.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void prepare ()
   {                             /* --- sort the edges of all nodes */
     this.mark(-1);              /* clear all node and edge markers */
     for (int i = this.nodecnt; --i >= 0; )
       this.nodes[i].sortEdges();/* sort incident edges of all nodes */
   }  /* prepare() */
+
   /*------------------------------------------------------------------*/
   /** Prepare a graph for embedding it into another.
    *  <p>For this function to work properly, the graph must be
@@ -907,11 +1003,13 @@ public int hashCode ()
    *          (and thus preparation succeeded)
    *  @since  2002.03.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean prepareEmbed ()
   {                             /* --- sort edges and nodes */
     int  i, k, n, e;            /* loop variables, counters */
     Node src, dst, x;           /* to traverse the nodes, buffer */
     Edge edge, y;               /* to traverse the edges, buffer */
+
     this.prepare();             /* sort incident edges of all nodes */
     this.index();               /* mark nodes and edges with indices */
     for (x = this.nodes[i = 0]; ++i < this.nodecnt; ) {
@@ -940,16 +1038,19 @@ public int hashCode ()
     }                           /* search order for embedding */
     return true;                /* return "connected graph" */
   }  /* prepareEmbed() */
+
   /*------------------------------------------------------------------*/
   /** Embed a single node into the graph.
    *  @param  type the type of the node to embed
    *  @return a list of embeddings of the node
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Embedding embed (int type)
   {                             /* --- find embeddings of a node */
     int       i;                /* loop variable */
     Embedding emb, list = null; /* created (list of) embedding(s) */
+
     for (i = this.nodecnt; --i >= 0; ) {
       if ((type != Node.ANY) && (this.nodes[i].type != type))
         continue;               /* traverse nodes of the given type */
@@ -959,6 +1060,7 @@ public int hashCode ()
     }                           /* of the embedding list */
     return list;                /* return the created embeddings */
   }  /* embed() */
+
   /*------------------------------------------------------------------*/
   /** Internal recursive function for embedding a graph.
    *  @param  graph the graph to embed
@@ -973,6 +1075,7 @@ public int hashCode ()
    *          constant and the graph was found)
    *  @since  2005.08.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private Embedding embed (Graph graph, Node[] ens, int nid,
                            Edge[] ees, int eid, Embedding list)
   {                             /* --- embed a graph recursively */
@@ -982,6 +1085,7 @@ public int hashCode ()
     Node      end;              /* end of a chain (if embedded) */
     boolean   chain;            /* flag for a chain to embed/match */
     Embedding emb;              /* created embedding */
+
     if (eid >= graph.edgecnt) { /* if all edges have been matched */
       if (list == CONTAINED)    /* if only to check containment, */
         return CONTAINED;       /* return a special dummy embedding */
@@ -1038,6 +1142,7 @@ public int hashCode ()
     }
     return list;                /* return the list of embeddings */
   }  /* embed() */
+
   /*------------------------------------------------------------------*/
   /** Internal function for embedding a graph.
    *  @param  graph the graph to embed
@@ -1049,12 +1154,14 @@ public int hashCode ()
    *          constant and the graph was found)
    *  @since  2005.08.16 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private Embedding embed (Graph graph, Embedding list)
   {                             /* --- find embeddings of a graph */
     int  i, n, t, d;            /* loop variables, buffers */
     Node node;                  /* to traverse the nodes */
     Node ens[];                 /* nodes of the embedding */
     Edge ees[];                 /* edges of the embedding */
+
     node = graph.nodes[0];      /* get the first node of the graph */
     t    = node.type;           /* and note its type for comparisons */
     if (graph.nodecnt <= 1) {   /* if there is only one node */
@@ -1091,6 +1198,7 @@ public int hashCode ()
     graph.nodes[0].mark = -1;   /* unmark the first node */
     return list;                /* return the recursion result */
   }  /* embed() */
+
   /*------------------------------------------------------------------*/
   /** Embed a graph structure (find all its embeddings).
    *  <p>This function embeds a given graph in all possible ways
@@ -1107,8 +1215,10 @@ public int hashCode ()
    *  @return a list of all embeddings of the graph
    *  @since  2002.03.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Embedding embed (Graph graph)
   { return this.embed(graph, null); }
+
   /*------------------------------------------------------------------*/
   /** Check whether a graph is contained in this graph.
    *  <p>This function tries to embed a given graph and returns
@@ -1127,8 +1237,10 @@ public int hashCode ()
    *  @see    #embed(Graph)
    *  @since  2002.03.21 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean contains (Graph graph)
   { return this.embed(graph, CONTAINED) != null; }
+
   /*------------------------------------------------------------------*/
   /** Check whether a graph is canonic w.r.t. a given canonical form.
    *  <p>This function checks whether the current order of the nodes and
@@ -1138,8 +1250,10 @@ public int hashCode ()
    *  @return whether the graph is canonical
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isCanonic (Extension ext)
   { return ext.isCanonic(this, this.edgecnt) > 0; }
+
   /*------------------------------------------------------------------*/
   /** Check whether a graph is canonic w.r.t. a given canonical form.
    *  @param  ext   the extension object defining the canonical form
@@ -1157,8 +1271,10 @@ public int hashCode ()
    *          </table></p>
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected int isCanonic (Extension ext, int fixed)
   { return ext.isCanonic(this, fixed); }
+
   /*------------------------------------------------------------------*/
   /** Make a graph canonic w.r.t. a given canonical form.
    *  <p>This function brings the nodes and edges of the graph
@@ -1168,8 +1284,10 @@ public int hashCode ()
    *  @return whether the graph was modified
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean makeCanonic (Extension ext)
   { return this.makeCanonic(ext, -1); }
+
   /*------------------------------------------------------------------*/
   /** Make a graph canonic w.r.t. a given canonical form.
    *  <p>This function brings the nodes and edges of the graph
@@ -1185,12 +1303,14 @@ public int hashCode ()
    *  @return whether the graph was modified
    *  @since  2006.05.03 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected boolean makeCanonic (Extension ext, int keep)
   {                             /* --- make a graph canonic */
     if (!ext.makeCanonic(this, keep)) return false;
     this.map(ext);              /* copy the reordered arrays */
     return true;                /* return 'graph was modified' */
   }  /* makeCanonic() */
+
   /*------------------------------------------------------------------*/
   /** Normalize a graph w.r.t. a given canonical form.
    *  <p>This function brings the nodes and edges of the graph
@@ -1201,6 +1321,7 @@ public int hashCode ()
    *  @param  ext the extension object defining the canonical form
    *  @since  2007.03.19 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void normalize (Extension ext)
   {                             /* --- normalize a graph */
     this.makeCanonic(ext, -1);  /* make the graph canonic */
@@ -1210,6 +1331,7 @@ public int hashCode ()
       this.nodes[i].sortEdges();/* sort the incident edges */
     this.mark(-1);              /* clear all node and edge markers */
   }  /* normalize() */
+
   /*------------------------------------------------------------------*/
   /** Reorganize a graph with a map from an extension.
    *  <p>This function carries out the reordering that was determined
@@ -1219,26 +1341,32 @@ public int hashCode ()
    *  @param  ext the extension providing the map
    *  @since  2006.10.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected void map (Extension ext)
   {                             /* --- reorder edges and nodes */
     System.arraycopy(ext.nodes, 0, this.nodes, 0, this.nodecnt);
     System.arraycopy(ext.edges, 0, this.edges, 0, this.edgecnt);
   }  /* map() */
+
   /*------------------------------------------------------------------*/
   /** Create a string description of the graph.
    *  @return a string description of the graph
    *  @since  2006.10.24 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public String toString ()
   { return this.ntn.describe(this); }
+
   /*------------------------------------------------------------------*/
   /** Create a string description in the given notation.
    *  @return a string description of the graph
    *  @since  2007.06.29 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public String toString (Notation ntn)
   { return ntn.describe(this); }
+
   /*------------------------------------------------------------------*/
   /** Create a code word for a given canonical form.
    *  <p>The code word is created in the form prescribed by the given
@@ -1251,15 +1379,19 @@ public String toString ()
    *  @return a code word for the given canonical form
    *  @since  2006.05.08 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public String toString (Extension ext)
   { return ext.describe(this); }
+
   /*------------------------------------------------------------------*/
   /** Auxiliary function for testing basic functionality.
    *  @since  2007.10.25 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void show ()
   {                             /* --- show graph and its code words */
     Extension ext;              /* extension for code words */
+
     this.makeCanonic(ext = new MaxSrcExt(0, 0));
     System.out.println(this.ntn.describe(this));
     System.out.println("breadth-first code word:");
@@ -1269,6 +1401,7 @@ public String toString ()
     System.out.println("depth-first   code word:");
     System.out.println(ext.describe(this));
   }  /* show() */
+
   /*------------------------------------------------------------------*/
   /** Main function for testing some basic functionality.
    *  <p>It is tried to parse the first command line argument as a
@@ -1279,17 +1412,21 @@ public String toString ()
    *  @param  args the command line arguments
    *  @since  2006.01.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public static void main (String args[])
   {                             /* --- main function for testing */
     Graph graph;                /* created graph */
     int[] masks;                /* masks for node and edge types */
+
     if (args.length != 1) {     /* if wrong number of arguments */
       System.err.println("usage: java moss.Graph <string>");
       return;                   /* print a usage message */
     }                           /* and abort the program */
+
     masks    = new int[4];      /* create node and edge masks */
     masks[0] = masks[2] = Atoms.ELEMMASK;
     masks[1] = masks[3] = Bonds.BONDMASK;
+
     try {                       /* try SMILES */
       System.out.println("SMILES:");
       graph = new SMILES().parse(new StringReader(args[0]));
@@ -1297,6 +1434,7 @@ public String toString ()
       graph.show(); return; }   /* show the parsed graph */
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
+
     try {                       /* try SYBYL line notation (SLN) */
       System.out.println("SLN   :");
       graph = new SLN().parse(new StringReader(args[0]));
@@ -1304,6 +1442,7 @@ public String toString ()
       graph.show(); return; }   /* show the parsed graph */
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
+
     try {                       /* try general line notation */
       System.out.println("LiNoG :");
       graph = new LiNoG().parse(new StringReader(args[0]));
@@ -1312,4 +1451,5 @@ public String toString ()
     catch (IOException e) {     /* catch parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
+
 }  /* class Graph */

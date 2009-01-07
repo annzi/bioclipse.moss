@@ -1,5 +1,7 @@
 package net.bioclipse.moss.wizards;
+
 import moss.Extension;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -13,7 +15,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.ui.PlatformUI;
+
 public class ParametersPage3 extends WizardPage {
+
     /***************************************************************************
      * Copyright (c) 2008 The Bioclipse Project and others. All rights reserved.
      * This program and the accompanying materials are made available under the
@@ -50,6 +54,7 @@ public class ParametersPage3 extends WizardPage {
      *  canonical form and full perfect extension pruning */
     public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
             | PR_PERFECT;
+
     /**
      * Create the wizard
      */
@@ -58,6 +63,7 @@ public class ParametersPage3 extends WizardPage {
         setTitle("Moss Parameters");
         setDescription("Please enter parameters for Moss");
     }
+
     /**
      * Methods of the wizard
      */
@@ -66,6 +72,7 @@ public class ParametersPage3 extends WizardPage {
     public void performHelp() {
         PlatformUI.getWorkbench().getHelpSystem().displayHelp();
     }
+
     /**
      * Create contents of the wizard
      * 
@@ -77,31 +84,39 @@ public class ParametersPage3 extends WizardPage {
         GridLayout gl = new GridLayout();
         gl.numColumns = 2;
         container.setLayout(gl);
+
         // Label for pruning first of three parts on this page
         labelPruning = new Label(container, SWT.NONE);
         labelPruning.setText("Prunings");
         Font font1 = new Font(container.getDisplay(), "Helvetica", 8, SWT.BOLD);
         labelPruning.setFont(font1);
+
         GridData labelPruningData = new GridData();
         labelPruningData.verticalIndent = 10;
         labelPruningData.horizontalSpan = 2;
         labelPruning.setLayoutData(labelPruningData);
+
         // Parameter to select what kind of perfect extension pruning one would lika to use
         LabelPerfExtPruning = new Label(container, SWT.NONE);
         LabelPerfExtPruning.setText("Perfect extension pruning");
+
         final Combo extPruning = new Combo(container, SWT.BORDER
                 | SWT.READ_ONLY);
         String[] extPruningItems = { "full", "partial", "none" };
         extPruning.setItems(extPruningItems);
         extPruning.setText("full");
+
         ((MossWizard) getWizard()).getModeTable().put("extPruning1",
                 new Integer(PR_PERFECT));
         ((MossWizard) getWizard()).getModeTable().put("extPruning2",
                 new Integer(~PR_PARTIAL));
+
         extPruning.addSelectionListener(new SelectionAdapter() {
+
             public void widgetSelected(SelectionEvent e) {
                 String selected = extPruning.getItem(extPruning
                         .getSelectionIndex());
+
                 if (selected.equals(extPruning.getItem(0))) {
                     ((MossWizard) getWizard()).getModeTable().put(
                             "extPruning1", new Integer(PR_PERFECT));
@@ -115,21 +130,28 @@ public class ParametersPage3 extends WizardPage {
                             "extPruning2", new Integer(~PR_PERFECT));
                 }
                 if (selected.equals(extPruning.getItem(2))) {
+
                 }
+
             }
         });
         // Parameter for deciding if to use canonical form pruning or not
         final Button canonical = new Button(container, SWT.CHECK);
         canonical.setText("Canonical form pruning");
         canonical.setSelection(true);
+
         GridData canonicalLData = new GridData();
         canonicalLData.horizontalSpan = 2;
         canonical.setLayoutData(canonicalLData);
+
         ((MossWizard) getWizard()).getModeTable().put("canonPruning",
                 new Integer(DEFAULT));
+
         canonical.addSelectionListener(new SelectionAdapter() {
+
             public void widgetSelected(SelectionEvent e) {
                 boolean selected = canonical.getSelection();
+
                 if (selected == true) {
                     ((MossWizard) getWizard()).getModeTable().put(
                             "canonPruning", new Integer(DEFAULT));
@@ -139,18 +161,24 @@ public class ParametersPage3 extends WizardPage {
                 }
             }
         });
+
         // Button for adding equivalent sibling pruning
         final Button sibling = new Button(container, SWT.CHECK);
         sibling.setText("Equivalent sibling pruning");
+
         GridData siblingLData = new GridData();
         siblingLData.horizontalSpan = 2;
         sibling.setLayoutData(siblingLData);
+
         // Sets default value for equivalent sibling pruning
         ((MossWizard) getWizard()).getModeTable().put("eqPruning",
                 new Integer(DEFAULT));
+
         sibling.addSelectionListener(new SelectionAdapter() {
+
             public void widgetSelected(SelectionEvent e) {
                 boolean selected = sibling.getSelection();
+
                 if (selected == true) {
                     ((MossWizard) getWizard()).getModeTable().put("eqPruning",
                             new Integer(PR_EQUIV));
@@ -158,6 +186,7 @@ public class ParametersPage3 extends WizardPage {
                     ((MossWizard) getWizard()).getModeTable().put("eqPruning",
                             new Integer(DEFAULT));
                 }
+
             }
         });
         // Divide in to one of the three parts on this page
@@ -165,23 +194,30 @@ public class ParametersPage3 extends WizardPage {
         labelMemory.setText("Memory adjustments");
         Font font2 = new Font(container.getDisplay(), "Helvetica", 8, SWT.BOLD);
         labelMemory.setFont(font2);
+
         GridData labelMemoryData = new GridData();
         labelMemoryData.verticalIndent = 10;
         labelMemoryData.horizontalSpan = 2;
         labelMemory.setLayoutData(labelMemoryData);
+
         // Restrict number of embeddings to save memory
         labelMaxEmbs = new Label(container, SWT.NONE);
         labelMaxEmbs.setText("Maximal embedding:");
         GridData labelMaxEmbsData = new GridData();
+
         labelMaxEmbs.setLayoutData(labelMaxEmbsData);
+
         final Spinner maxembs = new Spinner(container, SWT.BORDER | SWT.RIGHT);
         maxembs.setSelection(0);
+
         GridData maxembsData = new GridData();
         maxembsData.widthHint = 50;
         maxembsData.heightHint = 13;
         maxembs.setLayoutData(maxembsData);
+
         maxembs.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
+
                 int selected = maxembs.getSelection();
                 ((MossWizard) getWizard()).getMossModel().setMaxEmbMemory(
                         selected);
@@ -190,21 +226,27 @@ public class ParametersPage3 extends WizardPage {
         // Unembed sibling nodes to save space in memory
         final Button unembSibling = new Button(container, SWT.CHECK);
         unembSibling.setText("Unembed sibling nodes");
+
         GridData unembSiblingData = new GridData();
         unembSiblingData.verticalIndent = 5;
         unembSiblingData.horizontalSpan = 2;
         unembSibling.setLayoutData(unembSiblingData);
+
         ((MossWizard) getWizard()).getModeTable().put("unembSibling",
                 new Integer(DEFAULT));
+
         unembSibling.addSelectionListener(new SelectionAdapter() {
+
             public void widgetSelected(SelectionEvent e) {
                 boolean selected = unembSibling.getSelection();
+
                 if (selected == true) {
                     ((MossWizard) getWizard()).getModeTable().put(
                             "unembedSibling", new Integer(UNEMBED));
                 }
             }
         });
+
         // Divide in to one of the three parts on this page
         labelMiscell = new Label(container, SWT.NONE);
         labelMiscell.setText("Miscellaneous");
@@ -214,18 +256,23 @@ public class ParametersPage3 extends WizardPage {
         labelMiscellData.verticalIndent = 5;
         labelMiscellData.horizontalSpan = 2;
         labelMiscell.setLayoutData(labelMiscellData);
+
         // If statistics is to be shown or not
         final Button stats = new Button(container, SWT.CHECK);
         stats.setText("Do not show statistics ");
+
         GridData statsData = new GridData();
         statsData.horizontalSpan = 2;
         stats.setLayoutData(statsData);
         // Default value
         ((MossWizard) getWizard()).getModeTable().put("stats",
                 new Integer(DEFAULT));
+
         stats.addSelectionListener(new SelectionAdapter() {
+
             public void widgetSelected(SelectionEvent e) {
                 boolean selected = stats.getSelection();
+
                 if (selected == true) {
                     ((MossWizard) getWizard()).getModeTable().put("stats",
                             new Integer(NOSTATS));
@@ -235,8 +282,10 @@ public class ParametersPage3 extends WizardPage {
                 }
             }
         });
+
     }
             // Removed since it seems unnecessary with verbose output
+    
     //        // If verbose output is to be displayed
     //        final Button verbose = new Button(container, SWT.CHECK);
     //        verbose.setText("Verbose output");
@@ -264,4 +313,5 @@ public class ParametersPage3 extends WizardPage {
     //                }
     //            }
     //        });
+
 }

@@ -24,6 +24,7 @@
             2007.06.14 function compareTo() added (node markers)
 ----------------------------------------------------------------------*/
 package moss;
+
 /*--------------------------------------------------------------------*/
 /** Class for edges of an attributed (labeled/typed) graph.
  *  <p>An edge carries information about the nodes it connects, its
@@ -38,6 +39,7 @@ package moss;
  *  @since  2002.03.11 */
 /*--------------------------------------------------------------------*/
 public class Edge implements Comparable {
+
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -50,6 +52,7 @@ public class Edge implements Comparable {
   public static final long RINGMASK = ~Long.MIN_VALUE;
   /** the mask to extract the bridge flag from the flag field */
   public static final long BRIDGE   =  Long.MIN_VALUE;
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -63,6 +66,7 @@ public class Edge implements Comparable {
   protected Node dst;
   /** the flags for rings and bridges */
   protected long flags;
+
   /*------------------------------------------------------------------*/
   /** Create an edge of a given type between two nodes.
    *  <p>The created edge is automatically added to the two nodes
@@ -72,6 +76,7 @@ public class Edge implements Comparable {
    *  @param  type the type of the edge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected Edge (Node src, Node dst, int type)
   {                             /* --- create an edge */
     this.src   = src;           /* note the source node */
@@ -81,20 +86,25 @@ public class Edge implements Comparable {
     src.addEdge(this);          /* store the new edge */
     dst.addEdge(this);          /* in the connected nodes */
   }  /* Edge() */
+
   /*------------------------------------------------------------------*/
   /** Get the type of the edge.
    *  @return the type of the edge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getType ()
   { return this.type; }
+
   /*------------------------------------------------------------------*/
   /** Mask the edge type with the given mask.
    *  @param  mask the mask for the edge typ
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void maskType (int mask)
   { this.type &= mask | RING; }
+
   /*------------------------------------------------------------------*/
   /** Check whether the edge is part of a ring.
    *  <p>This function only extracts the ring flag from the edge type.
@@ -102,30 +112,38 @@ public class Edge implements Comparable {
    *  @return whether the edge is part of a ring
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isInRing ()
   { return (this.type & RING) != 0; }
+
   /*------------------------------------------------------------------*/
   /** Set or clear the ring type flag of the edge.
    *  @param  ring whether the edge is in a ring
    *  @since  2007.06.30 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void markRing (boolean ring)
   { if (ring) this.type |=  RING;
     else      this.type &= ~RING; }
+
   /*------------------------------------------------------------------*/
   /** Get the source node of the edge.
    *  @return the source node of the edge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Node getSource ()
   { return this.src; }
+
   /*------------------------------------------------------------------*/
   /** Get the destination node of the edge.
    *  @return the destination node of the edge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public Node getDest ()
   { return this.dst; }
+
   /*------------------------------------------------------------------*/
   /** Get the ring flags of the edge.
    *  <p>This function only extracts the ring flags from the flags
@@ -133,14 +151,18 @@ public class Edge implements Comparable {
    *  @return the ring flags of the edge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public long getRings ()
   { return this.flags & RINGMASK; }
+
   /*------------------------------------------------------------------*/
   /** Clear the ring flags of the edge.
    *  @since  2007.06.30 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void clearRings ()
   { this.flags &= ~RINGMASK; }
+
   /*------------------------------------------------------------------*/
   /** Check whether the edge is a bridge.
    *  <p>This function only extracts the bridge flag from the flags
@@ -148,16 +170,20 @@ public class Edge implements Comparable {
    *  @return whether the edge is a bridge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public boolean isBridge ()
   { return (this.flags & BRIDGE) != 0; }
+
   /*------------------------------------------------------------------*/
   /** Set or clear the bridge flag of the edge.
    *  @param  bridge whether the edge is a bridge
    *  @since  2002.03.11 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void markBridge (boolean bridge)
   { if (bridge) this.flags |=  BRIDGE;
     else        this.flags &= ~BRIDGE; }
+
   /*------------------------------------------------------------------*/
   /** Compare two edges (w.r.t. their marker values).
    *  <p>This function is needed in <code>NamedGraph.split()</code>
@@ -169,10 +195,12 @@ public class Edge implements Comparable {
    *          greater than the marker of the edge given as an argument
    *  @since  2007.06.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int compareTo (Object obj)
   {                             /* --- compare two edges */
     if (this.mark < ((Edge)obj).mark) return -1;
     if (this.mark > ((Edge)obj).mark) return +1;
     return 0;                   /* return the sign of the difference */
   }  /* compareTo() */          /* of the edge markers */
+
 }  /* class Edge */

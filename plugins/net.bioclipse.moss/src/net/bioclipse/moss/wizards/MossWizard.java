@@ -10,22 +10,29 @@
  *     Ola Spjuth
  *     
  ******************************************************************************/
+
 package net.bioclipse.moss.wizards;
+
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.StringReader;
+
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+
 import moss.Atoms;
 import moss.Bonds;
 import moss.Extension;
 import moss.Notation;
 import moss.SMILES;
+
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.moss.InputMolecule;
 import net.bioclipse.moss.MossModel;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -35,18 +42,22 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+
 /** Class for creating wizard and performFinish()
  * 
  * @author Annsofie Andersson
  * 
  */
 public class MossWizard extends Wizard implements IAdaptable {
+
     ISelection selection;
     InputPage page1;
     ParametersPage page2;
     ParametersPage2 page3;
     ParametersPage3 page4;
+
     MossModel mossModel;
+
     // Taken directly from the original MoSS nothing is modified not even
     // comments
     /** flag for extensions by single edges */
@@ -97,6 +108,7 @@ public class MossWizard extends Wizard implements IAdaptable {
      */
     public static final int DEFAULT = EDGEEXT | CLOSED | PR_CANONIC
             | PR_PERFECT;
+
     // These tables are for storing temporary data that gets collected and set
     // to mossModel
     Hashtable<String, Integer> bondsTable = new Hashtable<String, Integer>();
@@ -104,52 +116,65 @@ public class MossWizard extends Wizard implements IAdaptable {
     Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
     Hashtable<String, Integer> typeTable = new Hashtable<String, Integer>();
     Hashtable<String, String> fileTable = new Hashtable<String, String>();
+
     // Constructor that stores the selection in navigator
     public MossWizard(ISelection selection) {
         this.selection = selection;
         mossModel = new MossModel();
         initFromSelection(mossModel);
     }
+
     @Override
     public void addPages() {
         // Add a page for molecules as input
         page1 = new InputPage();
         addPage(page1);
+
         // Adds a page for Moss parameters
         page2 = new ParametersPage();
         addPage(page2);
+
         // Adds a new page for Moss parameters
         page3 = new ParametersPage2();
         addPage(page3);
+
         // Adds a new page for Moss parameters
         page4 = new ParametersPage3();
         addPage((IWizardPage) page4);
     }
+
     // Help button will be shown on all pages
     public boolean isHelpAvailable() {
         return true;
     }
+
     // To be able to show error if MoSS does not support the input file
     public void showMessage(String title, String message) {
         MessageDialog.openWarning(getShell(), title, message);
     }
+
     public boolean performFinish() {
+
         /*
          * Wrap up everything and finalize choices in MossModel Get values from
          * has tables and perform setMbond, setMrgbd, setMatom, setMrgat and
          * setMode
          */
+
         /*
          * Get the values for bond and mrgbd from bondsTable and collect the
          * parameters to one variable each and then set its value to mossModel
          */
+
         Integer b1 = (Integer) bondsTable.get("mbond1");
         Integer b2 = (Integer) bondsTable.get("mbond2");
         Integer mb1 = (Integer) bondsTable.get("mrgbd1");
         Integer mb2 = (Integer) bondsTable.get("mrgbd2");
+
         // Initialize B and Mb with default values
         int B = Bonds.BONDMASK;
         int Mb = Bonds.BONDMASK;
+
         // Select whether to upgrade or down grade, if b1=Bonds.BONMASK nothing
         // needs to be done
         if (b1 == Bonds.UPGRADE) {
@@ -171,18 +196,22 @@ public class MossWizard extends Wizard implements IAdaptable {
         // unmark
         // System.out.println("the table for bonds " + bondsTable);
         // System.out.println("the table for atoms " + atomsTable);
+
         /*
          * Get the values for bond and mrgat from atomsTable and collect the
          * parameters to one variable each and then set its value to mossModel
          */
+
         // Get values from hash table
         Integer a1 = (Integer) atomsTable.get("matom1");
         Integer a2 = (Integer) atomsTable.get("matom2");
         Integer a3 = (Integer) atomsTable.get("matom3");
         Integer ma = (Integer) atomsTable.get("mrgat1");
+
         // Initialize with default settings
         int A = Atoms.ELEMMASK;
         int Ma = Atoms.ELEMMASK;
+
         // Case: if to always ignore atom types
         if (a1 == ~Atoms.ELEMMASK && ma == ~Atoms.ELEMMASK) {
             A &= a1;
@@ -192,6 +221,7 @@ public class MossWizard extends Wizard implements IAdaptable {
         else {
             Ma &= ma;
         }
+
         // Case: if to match charge of atoms, by default one ignore matching
         if (a2 != Atoms.ELEMMASK) {
             A |= a2;
@@ -200,12 +230,15 @@ public class MossWizard extends Wizard implements IAdaptable {
         if (a3 != Atoms.ELEMMASK) {
             A |= a3;
         }
+
         // Íf you like to check the initiail value of modesTable unmark
         // System.out.println("the table for mode " + modeTable);
+
         /*
          * Get the values for mode from modeTable and collect the parameters to
          * one variable and then set its value to mossModel
          */
+
         // Get all the current values in mode hash table, done in alphabetic
         // order
         Integer canonic = (Integer) modeTable.get("canonPruning");
@@ -221,9 +254,11 @@ public class MossWizard extends Wizard implements IAdaptable {
         Integer kekule = (Integer) modeTable.get("kekule");
         Integer stats = (Integer) modeTable.get("stats");
         Integer unembedSibling = (Integer) modeTable.get("unembSibling");
+
         // To be able to collect current values, if a default value is set that
         // value won't be necessary to count
         int totMode = DEFAULT;
+
         if (canonic != DEFAULT) {
             totMode &= canonic;
         }
@@ -245,6 +280,7 @@ public class MossWizard extends Wizard implements IAdaptable {
         // if (verbose != DEFAULT) {
         // totMode |= verbose;
         // }
+
         // Pruning parameters
         if (equiv == PR_EQUIV) {
             totMode |= equiv;
@@ -275,6 +311,7 @@ public class MossWizard extends Wizard implements IAdaptable {
         String nameFile = fileTable.get("outputName");
         String fileId = fileTable.get("outputId");
         String nameFileId = fileTable.get("outputNameId");
+
         /* Adding values of variables to mossModel */
         mossModel.setMbond(B);
         mossModel.setMrgbd(Mb);
@@ -285,28 +322,38 @@ public class MossWizard extends Wizard implements IAdaptable {
         mossModel.setNamefile(nameFile);
         mossModel.setPathId(fileId);
         mossModel.setNamefileId(nameFileId);
+
         // Action continues
+
         return true;
     }
+
     /**
      * Read selection, create InputMolecules and add to MossModel
      * 
      * @throws BioclipseException
      */
     private void initFromSelection(MossModel mossModel) {
+
         if (!(selection instanceof IStructuredSelection)) {
             System.out.println("Strange selection. Should not happen.");
             return;
         }
+
         IStructuredSelection structSel = (IStructuredSelection) selection;
+
         for (Iterator it = structSel.iterator(); it.hasNext();) {
             Object obj = it.next();
+
             // Case: selection is a File
             if (obj instanceof IFile) {
                 IFile file = (IFile) obj;
+
                 IPath path = file.getLocation();
+
                 // If you like to check path of input file
                 // System.out.println("Reading file: " + path.toOSString());
+
                 // Read file line by line as
                 // Typical line: a,0,CCCO
                 String line;
@@ -317,18 +364,22 @@ public class MossWizard extends Wizard implements IAdaptable {
                     while ((line = bufferedReader.readLine()) != null) {
                         // Split each line by comma to look like
                         String[] parts = line.split(",");
+
                         // We require the following form: ID, VALUE, DESCRIPTION
                         // (SMILES)
                         String id = parts[0];
                         float value = Float.parseFloat(parts[1]);
                         String description = parts[2];
+
                         // Checks the molecules if they are written in SMILES
                         // and if they are correctly written
                         Notation ntn = new SMILES();
                         ntn.parse(new StringReader(description));
+
                         // Add molecules to mossModel
                         InputMolecule imol = new InputMolecule(id, value,
                                 description);
+
                         mossModel.addMolecule(imol);
                     }
                 } catch (Exception e) {
@@ -338,52 +389,69 @@ public class MossWizard extends Wizard implements IAdaptable {
                                     + " will display correct lines till the wrong input occurred. \n \n "
                                     + e);
                 }
+
             }
             if (obj instanceof IMolecule) {
                 // TODO: implement this in the future maybe
                 return;
             }
+
         }
+
     }
+
     /** Create generators for getters and setters */
+
     public MossModel getMossModel() {
         return mossModel;
     }
+
     public void setMossModel(MossModel mossModel) {
         this.mossModel = mossModel;
     }
+
     public Hashtable<String, Integer> getBondsTable() {
         return bondsTable;
     }
+
     public void setBondsTable(Hashtable<String, Integer> bondsTable) {
         this.bondsTable = bondsTable;
     }
+
     public Hashtable<String, Integer> getAtomsTable() {
         return atomsTable;
     }
+
     public void setAtomsTable(Hashtable<String, Integer> atomsTable) {
         this.atomsTable = atomsTable;
     }
+
     public Hashtable<String, Integer> getModeTable() {
         return modeTable;
     }
+
     public void setModeTable(Hashtable<String, Integer> modeTable) {
         this.modeTable = modeTable;
     }
+
     public HashMap<String, String> getTyTable() {
         // TODO Auto-generated method stub
         return null;
     }
+
     public Hashtable<String, String> getFileTable() {
         return fileTable;
     }
+
     public void setFileTable(Hashtable<String, String> fileTable) {
         this.fileTable = fileTable;
     }
+
     public Object getAdapter(Class adapter) {
         if (adapter.equals(IContextProvider.class)) {
             return new MossContextProvider();
         }
         return null;
     }
+
 }

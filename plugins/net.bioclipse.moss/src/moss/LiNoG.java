@@ -14,16 +14,19 @@
             2007.07.05 first version completed
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+
 /*--------------------------------------------------------------------*/
 /** Class for a simple line notation for (attributed) graphs
  *  @author Christian Borgelt
  *  @since  2007.07.02 */
 /*--------------------------------------------------------------------*/
 public class LiNoG extends FreeNtn {
+  
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -37,18 +40,22 @@ public class LiNoG extends FreeNtn {
   private StringBuffer desc;
   /** the buffer for reading and creating node descriptions */
   private StringBuffer buf;
+
   /*------------------------------------------------------------------*/
   /** Create an attributed graph line notation object.
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public LiNoG ()
   { this(new TypeMap(), new TypeMap()); }
+
   /*------------------------------------------------------------------*/
   /** Create an attributed graph line notation object.
    *  @param  nodemgr the manager for the node types
    *  @param  edgemgr the manager for the edge types
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public LiNoG (TypeMgr nodemgr, TypeMgr edgemgr)
   {                             /* --- create an LiNoG object */ 
     this.nodemgr = nodemgr;     /* store the given */
@@ -56,14 +63,17 @@ public class LiNoG extends FreeNtn {
     this.labels  = new int[64]; /* create a label to node index map */
     this.desc = this.buf = null;/* clear the description buffer */
   }  /* LiNoG() */
+
   /*------------------------------------------------------------------*/
   /** Whether this is a line notation (single line description).
    *  @return <code>true</code>, since LiNoG is a line notation
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public boolean isLine ()
   { return true; }
+
   /*------------------------------------------------------------------*/
   /** Read a node.
    *  @param  bracket whether a bracket '[' is required
@@ -71,12 +81,14 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int readNode (boolean bracket) throws IOException
   {                             /* --- read a node description */
     int    c, i;                /* current character, loop variable */
     int    t, n;                /* node type, label buffer */
     String name;                /* node type name */
     char   e1, e2;              /* end characters */
+
     /* --- get the node type --- */
     if (this.buf == null)       /* create a read buffer */
       this.buf = new StringBuffer();
@@ -102,6 +114,7 @@ public boolean isLine ()
       if (c != ']') throw new IOException("missing ']'");
       return t;                 /* check for a closing bracket */
     }                           /* and return the node type */
+
     /* --- get the node label --- */
     for (i = n = 0; true; i++){ /* digit read loop */
       c = this.read();          /* read the next character */
@@ -122,17 +135,20 @@ public boolean isLine ()
     if (c != ']') throw new IOException("missing ']'");
     return this.labels[n] = t;  /* store and return the node index */
   }  /* readNode() */
+
   /*------------------------------------------------------------------*/
   /** Read an edge type (and a possibly following reference).
    *  @return the type of the edge
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.07.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private int readEdge () throws IOException
   {                             /* --- read an edge description */
     int    c, i;                /* current character, loop variable */
     int    t, n;                /* edge type, label buffer */
     String name;                /* edge type name */
+
     /* --- get the edge type --- */
     this.labels[0] = -1;        /* clear the label buffer */
     c = this.read();            /* read the first character */
@@ -146,6 +162,7 @@ public boolean isLine ()
     if (t < 0) throw new IOException("unknown edge type '" +name +"'");
     if (c != '@') {             /* if no ref., return edge type */
       this.unread(c); return t; }
+
     /* --- get the node label --- */
     for (i = n = 0; true; i++){ /* digit read loop */
       c = this.read();          /* read the next character */
@@ -162,6 +179,7 @@ public boolean isLine ()
     this.labels[0] = n;         /* store the label value */
     return t;                   /* return the edge type */
   }  /* readEdge() */
+
   /*------------------------------------------------------------------*/
   /** Recursive function to parse (a branch of) an attributed graph.
    *  @param  src the source node for the next edge
@@ -170,10 +188,12 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private boolean parse (int src) throws IOException
   {                             /* --- parse a graph description */
     int c, t;                   /* next character, edge type */
     int dst;                    /* index of destination node */
+
     if (src < 0)                /* if there is no source node, */
       src = this.readNode(false);       /* read the first node */
     while (true) {              /* parse loop for a branch */
@@ -199,6 +219,7 @@ public boolean isLine ()
       if (c < 0) src = dst;     /* if edge was not a backward ref., */
     }                           /* go to the destination node */
   }  /* parse() */
+  
   /*------------------------------------------------------------------*/
   /** Parse a description of an attributed graph.
    *  @param  reader the reader to read from
@@ -206,6 +227,7 @@ public boolean isLine ()
    *  @throws IOException if a parse error or an i/o error occurs
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public Graph parse (Reader reader) throws IOException
   {                             /* --- parse a molecule description */
@@ -218,6 +240,7 @@ public Graph parse (Reader reader) throws IOException
     this.graph.opt();           /* optimize memory usage and */
     return this.graph;          /* return the created graph */
   }  /* parse() */
+
   /*------------------------------------------------------------------*/
   /** Create a description of a node.
    *  @param  type  the type  of the node
@@ -225,6 +248,7 @@ public Graph parse (Reader reader) throws IOException
    *  @return the description of the node
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private String describe (int type, int label)
   {                             /* --- describe a node */
     if ((type & Node.CHAIN) != 0) return "[*]";
@@ -239,27 +263,32 @@ public Graph parse (Reader reader) throws IOException
     this.buf.append(']');       /* terminate the node description */
     return this.buf.toString(); /* return the created description */
   }  /* describe() */
+
   /*------------------------------------------------------------------*/
   /** Trim an unnecessary ';' from the description
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void trim ()
   {                             /* --- trim an unnecessary ';' */
     int n = this.desc.length()-1;
     if ((n > 0) && (this.desc.charAt(n) == ';'))
       this.desc.setLength(n);   /* remove a trailing ';' */
   }  /* trim() */
+
   /*------------------------------------------------------------------*/
   /** Recursive function to create a description.
    *  @param  node the current node
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   private void out (Node node)
   {                             /* --- recursive part of output */
     int    i, k, n;             /* loop variables, number of branches */
     Edge   e;                   /* to traverse the edges */
     Node   d;                   /* destination of an edge */
     String name;                /* edge type name */
+
     k = node.type;              /* get and decode the node type */
     if (this.coder != null) k = this.coder.decode(k);
     n = node.mark;              /* if the node needs a label, */
@@ -301,17 +330,20 @@ public Graph parse (Reader reader) throws IOException
       }                         /* terminate the branch */
     }                           /* (last branch needs no parantheses) */
   }  /* out() */
+
   /*------------------------------------------------------------------*/
   /** Create a description of a given attributed graph.
    *  @param  graph the graph to describe
    *  @return a description of the given graph
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public String describe (Graph graph)
   {                             /* --- create a string description */
     int  i, n;                  /* loop variable, component counter */
     Node a;                     /* to traverse the nodes */
+
     if (this.desc == null)      /* create a description buffer */
       this.desc = new StringBuffer();
     this.desc.setLength(0);     /* clear the description buffer */
@@ -333,15 +365,18 @@ public String describe (Graph graph)
     this.trim();                /* trim a possible ';' */
     return this.desc.toString();/* return the created description */
   }  /* describe() */
+
   /*------------------------------------------------------------------*/
   /** Write a description of a graph.
    *  @param  graph  the graph to write
    *  @param  writer the writer to write to
    *  @since  2007.07.05 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public void write (Graph graph, Writer writer) throws IOException
   { writer.write(this.describe(graph)); }
+
   /*------------------------------------------------------------------*/
   /** Main function for testing basic functionality.
    *  <p>It is tried to parse the first argument as an LiNoG
@@ -350,6 +385,7 @@ public void write (Graph graph, Writer writer) throws IOException
    *  @param  args the command line arguments
    *  @since  2007.07.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+  
   public static void main (String args[])
   {                             /* --- main function for testing */
     if (args.length != 1) {     /* if wrong number of arguments */
@@ -363,4 +399,5 @@ public void write (Graph graph, Writer writer) throws IOException
     catch (IOException e) {     /* catch and report parse errors */
       System.err.println(e.getMessage()); }
   }  /* main() */
+  
 }  /* class LiNoG */

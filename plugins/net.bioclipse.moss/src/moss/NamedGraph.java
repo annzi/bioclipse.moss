@@ -26,9 +26,11 @@
             2007.11.07 function toLogic() adapted to type managers
 ----------------------------------------------------------------------*/
 package moss;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+
 /*--------------------------------------------------------------------*/
 /** Class for attributed graphs with a name and a group.
  *  <p>Named graphs also have a name and a group by which they can
@@ -40,6 +42,7 @@ import java.util.Arrays;
  *  @since  2002.03.11/2006.10.23 */
 /*--------------------------------------------------------------------*/
 public class NamedGraph extends Graph implements Cloneable {
+
   /*------------------------------------------------------------------*/
   /*  constants                                                       */
   /*------------------------------------------------------------------*/
@@ -47,6 +50,7 @@ public class NamedGraph extends Graph implements Cloneable {
   public static final int FOCUS = 0;
   /** group identifier: complement */
   public static final int COMPL = 1;
+
   /*------------------------------------------------------------------*/
   /*  instance variables                                              */
   /*------------------------------------------------------------------*/
@@ -58,21 +62,26 @@ public class NamedGraph extends Graph implements Cloneable {
   protected float      value; 
   /** the marker for grouping (either 0 or 1, used as an array index) */
   protected int        group;
+
   /*------------------------------------------------------------------*/
   /** Create a graph with an empty name and value and group 0.
    *  @param  ntn the notation of the graph
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Notation ntn)
   { this(ntn, null, 0.0F, 0); }
+
   /*------------------------------------------------------------------*/
   /** Create a graph with value and group 0.
    *  @param  ntn  the notation of the graph
    *  @param  name the name of the graph
    *  @since  2007.02.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Notation ntn, String name)
   { this(ntn, name, 0.0F, 0); }
+
   /*------------------------------------------------------------------*/
   /** Create a graph of default size with a given name and group.
    *  @param  ntn   the notation of the graph
@@ -81,8 +90,10 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  group the group of the graph
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Notation ntn, String name, float value, int group)
   { this(ntn, 16, 16, name, value, group); }
+
   /*------------------------------------------------------------------*/
   /** Create a graph with a given name, group and size.
    *  @param  ntn     the notation of the graph
@@ -93,6 +104,7 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  group   the group of the graph
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Notation ntn, int nodecnt, int edgecnt,
                      String name, float value, int group)
   {                             /* --- create an empty graph */
@@ -102,6 +114,7 @@ public class NamedGraph extends Graph implements Cloneable {
     this.group = group;         /* and the group flag */
     this.succ  = null;          /* there is no list */
   }  /* NamedGraph() */
+
   /*------------------------------------------------------------------*/
   /** Turn a graph into a named graph.
    *  <p>Note that the constituents of the graph are not copied, so
@@ -109,8 +122,10 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  graph the graph to turn into a named graph
    *  @since  2007.06.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Graph graph)
   { this(graph, null, 0.0F, 0); }
+
   /*------------------------------------------------------------------*/
   /** Turn a graph into a named graph.
    *  <p>Note that the constituents of the graph are not copied, so
@@ -119,8 +134,10 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  name  the identifier/name of the graph
    *  @since  2007.06.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Graph graph, String name)
   { this(graph, name, 0.0F, 0); }
+
   /*------------------------------------------------------------------*/
   /** Turn a graph into a named graph.
    *  <p>Note that the constituents of the graph are not copied, so
@@ -131,6 +148,7 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  group the group of the graph
    *  @since  2007.06.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph (Graph graph, String name, float value, int group)
   {                             /* --- create a named graph */
     this.nodecnt = graph.nodecnt;
@@ -144,6 +162,7 @@ public class NamedGraph extends Graph implements Cloneable {
     this.group   = group;       /* and the group flag */
     this.succ    = null;        /* there is no list */
   }  /* NamedGraph() */
+
   /*------------------------------------------------------------------*/
   /** Clone a named graph.
    *  <p>This function returns a deep copy of a named graph
@@ -152,6 +171,7 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @param  graph the named graph to duplicate
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   protected NamedGraph (NamedGraph graph)
   {                             /* --- create a named graph */
     super(graph);               /* copy the underlying graph */
@@ -159,6 +179,7 @@ public class NamedGraph extends Graph implements Cloneable {
     this.value = graph.value;   /* the associated value, */
     this.group = graph.group;   /* and the group flag */
   }  /* NamedGraph() */
+
   /*------------------------------------------------------------------*/
   /** Create a clone of this named graph.
    *  <p>This function simply returns <code>new NamedGraph(this)</code>.
@@ -167,57 +188,72 @@ public class NamedGraph extends Graph implements Cloneable {
    *  @see    #NamedGraph(NamedGraph)
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   @Override
 public Object clone ()
   { return new NamedGraph(this); }
+
   /*------------------------------------------------------------------*/
   /** Set the name of this graph.
    *  @param  name the name to set
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setName (String name)
   { this.name = name; }
+
   /*------------------------------------------------------------------*/
   /** Get the name of this graph.
    *  @return the name of this graph
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public String getName ()
   { return this.name; }
+
   /*------------------------------------------------------------------*/
   /** Set the value of this graph.
    *  @param  value the value to set
    *  @since  2007.02.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setValue (float value)
   { this.value = value; }
+
   /*------------------------------------------------------------------*/
   /** Get the value of this graph.
    *  @return the value of this graph
    *  @since  2007.02.15 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public float getValue ()
   { return this.value; }
+
   /*------------------------------------------------------------------*/
   /** Set the group of this graph.
    *  @param  group the group to set
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public void setGroup (int group)
   { this.group = group; }
+
   /*------------------------------------------------------------------*/
   /** Get the group of this graph.
    *  @return the group of this graph
    *  @since  2006.10.23 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public int getGroup ()
   { return this.group; }
+
   /*------------------------------------------------------------------*/
   /** Split a graph into its connected components.
    *  @return a list of graphs representing the connected components
    *          or the graph itself if there is only one component
    *  @since  2007.06.14 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public NamedGraph split ()
   {                             /* --- split into connected comps. */
     int        i, k, n, m;      /* loop variables */
@@ -225,6 +261,7 @@ public Object clone ()
     Node       r;               /* to traverse the nodes */
     Edge       e;               /* to traverse the edges */
     NamedGraph list, g;         /* (list of) created graph(s) */
+
     if (this.nodecnt <= 1)      /* if there is at most one node, */
       return this;              /* there is only one component */
     for (i = n = this.nodecnt; --i >= 0; )
@@ -257,6 +294,7 @@ public Object clone ()
     this.mark(-1);              /* unmark all nodes and edges */
     return list;                /* return the connected components */
   }  /* split() */
+
   /*------------------------------------------------------------------*/
   /** Create a Prolog description of this graph.
    *  <p>The graph is described by a set of predicates, one per node
@@ -265,6 +303,7 @@ public Object clone ()
    *  @return a Prolog description of this graph
    *  @since  2003.03.31 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public String toLogic ()
   {                             /* --- produce a Prolog description */
     int          i, type;       /* loop variable, type buffer */
@@ -273,6 +312,7 @@ public Object clone ()
     TypeMgr      ntmgr;         /* type manager for nodes */
     TypeMgr      etmgr;         /* type manager for edges */
     StringBuffer s;             /* buffer for Prolog string */
+
     ntmgr = this.ntn.getNodeMgr();
     etmgr = this.ntn.getEdgeMgr();
     s = new StringBuffer();     /* create buffer for description */
@@ -302,22 +342,26 @@ public Object clone ()
     s.append("\").\n");         /* as the argument) */
     return s.toString();        /* return the created description */
   }  /* toLogic() */
+
   /*------------------------------------------------------------------*/
   /** Main function for testing some basic functionality.
    *  @param  args the command line arguments
    *  @since  2006.01.02 (Christian Borgelt) */
   /*------------------------------------------------------------------*/
+
   public static void main (String args[])
   {                             /* --- main function for testing */
     Notation   ntn;             /* graph notation */
     NamedGraph graph;           /* created graph */
     int[]      masks;           /* masks for node and edge types */
+
     if ((args.length < 1)       /* if no arguments given */
     ||  (args.length > 2)) {    /* or wrong number of arguments */
       System.err.println("usage: java moss.NamedGraph"
                         +" [<name> <string>|<string>]");
       return;                   /* print a usage message */
     }                           /* and abort the program */
+
     if (args.length < 2) {      /* if only one argument is given, */
       try {                     /* try to parse it as SMILES */
         ntn   = new SMILES();   /* create a SMILES object */
@@ -328,9 +372,11 @@ public Object clone ()
         System.out.println(graph);
       return;                   /* split the graph into components */
     }                           /* and print these components */
+
     masks = new int[4];         /* create node and edge masks */
     masks[0] = masks[2] = Atoms.ELEMMASK;
     masks[1] = masks[3] = Bonds.BONDMASK;
+
     try {                       /* try SMILES */
       System.out.print("SMILES: ");
       ntn   = new SMILES();     /* create a SMILES object */
@@ -339,6 +385,7 @@ public Object clone ()
       System.out.print(graph.toLogic()); return; }
     catch (IOException e) {     /* describe graph in logic */
       System.out.println(e.getMessage()); }
+
     try {                       /* try SYBYL line notation (SLN) */
       System.out.print("SLN   : ");
       ntn   = new SLN();        /* create an SLN object */
@@ -347,6 +394,7 @@ public Object clone ()
       System.out.print(graph.toLogic()); return; }
     catch (IOException e) {     /* describe graph in logic */
       System.err.println(e.getMessage()); }
+
     try {                       /* try general line notation */
       System.out.print("SLN   : ");
       ntn   = new LiNoG();      /* create a LiNoG object */
@@ -356,4 +404,5 @@ public Object clone ()
     catch (IOException e) {     /* describe graph in logic */
       System.err.println(e.getMessage()); }
   }  /* main() */
+
 }  /* class NamedGraph */
