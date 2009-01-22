@@ -154,7 +154,7 @@ public class MossRunner {
         miner.run();
         miner.stats();
 
-        net.bioclipse.ui.Activator.getDefault().CONSOLE.echo(bo.toString());
+        net.bioclipse.scripting.ui.Activator.getDefault().getJsConsoleManager().say(bo.toString());
 
         try {
             bo.close();
