@@ -7,12 +7,14 @@
       plugin="net.bioclipse.moss.business">
 
    <description>
-      MOSS Substructure Mining Feature.
+      MoSS Substructure Mining Feature.
    </description>
 
    <copyright>
       Copyright (c) 2009 The Bioclipse Project Team and others.
 All rights reserved.
+
+The MoSS library is licensed LGPL.
    </copyright>
 
    <license url="http://www.eclipse.org/org/documents/epl-v10.php">
@@ -24,6 +26,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <url>
       <update label="Bioclipse Update Site" url="http://update2.bioclipse.net"/>
+      <discovery label="MoSS Homepage" url="http://www.borgelt.net/doc/moss/moss.html"/>
    </url>
 
    <requires>
