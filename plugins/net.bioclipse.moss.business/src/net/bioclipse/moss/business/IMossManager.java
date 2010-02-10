@@ -14,7 +14,8 @@ import net.bioclipse.core.PublishedClass;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass(
-    value="TODO: Describe the manager here."
+    value="Manager to provide MoSS substructure mining functionality.",
+    doi="10.1145/1133905.1133908"
 )
 public interface IMossManager extends IBioclipseManager {
 
