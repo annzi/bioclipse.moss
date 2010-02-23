@@ -110,7 +110,7 @@ public class MossWizard extends Wizard implements IAdaptable {
             | PR_PERFECT;
 
     // These tables are for storing temporary data that gets collected and set
-    // to mossModel
+    // to mossModel. The data is flags
     Hashtable<String, Integer> bondsTable = new Hashtable<String, Integer>();
     Hashtable<String, Integer> atomsTable = new Hashtable<String, Integer>();
     Hashtable<String, Integer> modeTable = new Hashtable<String, Integer>();
@@ -212,7 +212,7 @@ public class MossWizard extends Wizard implements IAdaptable {
         int A = Atoms.ELEMMASK;
         int Ma = Atoms.ELEMMASK;
 
-        // Case: if to always ignore atom types
+        // Case: always ignore atom types
         if (a1 == ~Atoms.ELEMMASK && ma == ~Atoms.ELEMMASK) {
             A &= a1;
             Ma &= ma;

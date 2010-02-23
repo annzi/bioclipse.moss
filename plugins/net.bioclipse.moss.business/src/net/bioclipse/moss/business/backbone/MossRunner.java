@@ -6,7 +6,7 @@
  *http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package net.bioclipse.moss.business;
+package net.bioclipse.moss.business.backbone;
 
 /**
  * Base class that runs MoSS
@@ -18,28 +18,22 @@ package net.bioclipse.moss.business;
 import java.io.*;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
+
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.util.LogUtils;
 
 import moss.Fragment;
 import moss.Graph;
 import moss.Miner;
 import moss.NamedGraph;
+import moss.Notation;
 import moss.SMILES;
 
 public class MossRunner {
     
     private static final Logger logger = Logger.getLogger(MossRunner.class);
-    
-    public static void main(String[] args) {
-
-        // print logging output to the console since we're not running
-        // in Bioclipse environment
-        org.apache.log4j.BasicConfigurator.configure();
-        
-        // Model to store our data
-        MossModel mossModel = new MossModel();
-        runMoss(mossModel, "", "");
-    }
 
     /**
      * This method runs MoSS on a MossModel
@@ -50,11 +44,45 @@ public class MossRunner {
      * @return
      * @throws
      */
-
-    public static MossModel runMoss(MossModel mossModel, String outputFileName,
+    public static MossModel initFromSelection(String inputfile, MossModel mossmodel) {
+    	IFile filename = ResourcePathTransformer.getInstance().transform(inputfile);
+    	InputMolecule imol= null;
+		IPath path = filename.getLocation();
+		// Read file line by line as. Typical line: a,0,CCCO
+		String line;
+		try {
+			BufferedReader bufferedReader = new BufferedReader(
+					new FileReader(path.toOSString()));
+			// Read line by line
+			while ((line = bufferedReader.readLine()) != null) {
+				// Split each line by comma to look like
+				String[] parts = line.split(",");
+				// We require the following form: ID, VALUE, DESCRIPTION(SMILES).
+				String id = parts[0];	 
+				float value = Float.parseFloat(parts[1]);
+				String description = parts[2];
+				// Checks the molecules if they are correctly written in SMILES.
+				Notation ntn = new SMILES();
+				ntn.parse(new StringReader(description));
+				// Adds molecules to mossmodel.
+				imol = new InputMolecule(id, value,
+						description);
+				mossmodel.addMolecule(imol);
+			}
+		} catch (Exception e) {
+			System.out.println(e); 
+		}
+		return mossmodel;	
+	}
+    
+    public static MossModel runMoss(MossModel mossModel, String in, String outputFileName,
             String outputFileNameId) {
         // Integer that decides group since MoSS made their group accessibility
         // private
+    	
+    	//Adds molecules to the model
+    	mossModel = initFromSelection(in, mossModel);
+    	
         int g;
         // This is the class (in original MoSS)that does the mining
         Miner miner = new Miner();
@@ -77,17 +105,16 @@ public class MossRunner {
             g = 1;
 
         miner.setGrouping(mossModel.getThreshold(), invert);
-        miner.setLimits(mossModel.getMinimalSupport(), mossModel
-                .getMaximalsupport());
-      //  miner.setMode(mossModel.getMode());
+        miner.setLimits(mossModel.getMinimalSupport(), mossModel.getMaximalSupport());
+        miner.setMode(mossModel.getMode());
         miner.setSizes(mossModel.getMinEmbed(), mossModel.getMaxEmbed());
         miner.setRingSizes(mossModel.getMinRing(), mossModel.getMaxRing());
-       // miner.setMasks(mossModel.getMatom(), mossModel.getMbond(), mossModel
-        //        .getMrgat(), mossModel.getMrgbd());
-        //miner.setMaxEmbs(mossModel.getMaxEmbMemory());
+        miner.setMasks(mossModel.getMatom(), mossModel.getMbond(), mossModel
+                .getMrgat(), mossModel.getMrgbd());
+        miner.setMaxEmbs(mossModel.getMaxEmbMemory());
 
         // TODO: Let type be a changeable parameter
-  /*      int type = Fragment.GRAPHS | Fragment.GREEDY;
+        int type = Fragment.GRAPHS | Fragment.GREEDY;
         miner.setType(type);
 
         try {
@@ -101,7 +128,7 @@ public class MossRunner {
                     "smiles");
         } catch (IOException e) {
             LogUtils.debugTrace(logger, e);
-        }*/
+        }
         
         
 
@@ -111,10 +138,6 @@ public class MossRunner {
 //            InputMolecule mol = mossModel.getInputMolecules().get(i);
 //            if (mol.isChecked()) {
 
-                // If you like to check which molecules that has been
-                // encountered use this print
-                // System.out.println(">> Molecule. id: " + mol.getId() + " ) "
-                // + mol.getDescription());
                 SMILES smiles = new SMILES();
                 StringReader reader = new StringReader(mol.getDescription());
 
@@ -132,12 +155,6 @@ public class MossRunner {
                 NamedGraph ngraph = new NamedGraph(graph, mol.getId(), mol
                         .getValue(), grp);
                 miner.addGraph(ngraph);
-                // If you like to check which molecules that has been
-                // encountered use this print
-                // System.out.println("group" + grp + " false=0,true=1 " + g);
-                // System.out.println(" Added " + mol.getId() + " with graph: "
-                // + ngraph.toString() + "\n");
-            //}
 
         }
         // Set logging
@@ -156,7 +173,7 @@ public class MossRunner {
         miner.run();
         miner.stats();
 
-      //  net.bioclipse.scripting.ui.Activator.getDefault().getJsConsoleManager().say(bo.toString());
+       net.bioclipse.scripting.ui.Activator.getDefault().getJavaJsConsoleManager().say(bo.toString());
 
         try {
             bo.close();

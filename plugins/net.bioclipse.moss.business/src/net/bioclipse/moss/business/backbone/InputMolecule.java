@@ -6,7 +6,7 @@
  *http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package net.bioclipse.moss.business;
+package net.bioclipse.moss.business.backbone;
 
 /**
  * Base class describing a molecule/entry in MOSS

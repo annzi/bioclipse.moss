@@ -13,7 +13,15 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.scripting,
  org.springframework.bundle.spring.aop,
  net.sf.cglib,
- org.springframework.osgi.aopalliance.osgi
+ org.springframework.osgi.aopalliance.osgi,
+ net.bioclipse.scripting.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.log4j
+Import-Package: net.bioclipse,
+ net.bioclipse.moss,
+ net.bioclipse.scripting.ui.views,
+ org.apache.log4j,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.openscience.cdk,
+ org.openscience.cdk.smiles
 Bundle-ActivationPolicy: lazy

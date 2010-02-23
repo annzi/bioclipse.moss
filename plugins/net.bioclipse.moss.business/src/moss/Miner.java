@@ -481,7 +481,7 @@ public class Miner implements Runnable {
     if ((extype == null) || extype.equals(""))
       this.extype = null;       /* if no excluded node types given, */
     else {                      /* clear the graph, otherwise */
-      this.log.print("parsing excluded " +s +" types ... ");
+  //    this.log.print("parsing excluded " +s +" types ... ");
       this.extype = ntn.parse(new StringReader(extype));
       this.log.println("[" +this.extype.getNodeCount()
                            +" " +s +"(s)] done.");

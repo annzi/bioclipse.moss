@@ -327,7 +327,7 @@ public class ParametersPage2 extends WizardPage {
         clickData.horizontalSpan = 7;
         clickData.verticalAlignment = GridData.END;
         click.setLayoutData(clickData);
-        click.setText("If to dinstingush between bonds in rings:");
+        click.setText("If to distingush between bonds in rings:");
 
         // Set minimum size in rings
         labelminRSize = new Label(container, SWT.NONE);

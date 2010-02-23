@@ -6,7 +6,7 @@
  *http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package net.bioclipse.moss.business;
+package net.bioclipse.moss.business.backbone;
 
 import java.util.ArrayList;
 
@@ -44,6 +44,7 @@ public class MossModel {
         closed = true;
         exNode = "H";
         exSeed = "";
+        seed="";
         maxEmbed = 0;
         minEmbed = 1;
         maxRing = 0;
@@ -51,13 +52,18 @@ public class MossModel {
         maxEmbMemory = 0;
     }
 
+  
     // Method for adding molecules to array list InputMolecule
     public void addMolecule(InputMolecule mol) {
         if (inputMolecules == null)
             inputMolecules = new ArrayList<InputMolecule>();
         inputMolecules.add(mol);
     }
-
+   public void emptyList(){
+	   if (inputMolecules != null)
+		   inputMolecules.clear();
+          
+   }
     /* Generating getters and setters for all parameters*/
 
     public ArrayList<InputMolecule> getInputMolecules() {
@@ -76,7 +82,7 @@ public class MossModel {
         this.minimalSupport = minimalSupport;
     }
 
-    public double getMaximalsupport() {
+    public double getMaximalSupport() {
         return maximalsupport;
     }
 
