@@ -27,8 +27,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-public class MossManager implements IBioclipseManager {
+import net.bioclipse.rdf.Activator;
+import net.bioclipse.rdf.model.IStringMatrix;
+import net.bioclipse.rdf.business.IJavaRDFManager;
+import net.bioclipse.rdf.business.IRDFManager;
 
+public class MossManager implements IBioclipseManager {
+	
+	private IJavaRDFManager rdf = Activator.getDefault().getJavaManager();
 	private static final Logger logger = Logger.getLogger(MossManager.class);
 	
 	/**A bean that sets the parameters
