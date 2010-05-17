@@ -27,6 +27,7 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.rdf.model.IStringMatrix;
 
 @PublishedClass(
     value="Manager to provide MoSS substructure mining functionality.",
