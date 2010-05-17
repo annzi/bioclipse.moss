@@ -65,9 +65,9 @@ public interface IMossManager extends IBioclipseManager {
 	
 	@Recorded
 	@PublishedMethod(
-			params = "String fam, int limit",
+			params = "String fam,String activity, int limit",
 			methodSummary = "Create query" )
-			public String query(String fam, String act, int limit) 
+			public IStringMatrix query(String fam, String act, int limit) 
 	throws BioclipseException, IOException, ScriptException;
 
 	@Recorded
