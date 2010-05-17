@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 <?eclipse version="3.4"?>
 <plugin>
 
@@ -9,5 +9,20 @@
             id="net.bioclipse.moss.bussines.business.MossManager">
       </scriptContribution>
    </extension>
-
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            id="net.bioclipse.moss.business.chemblMoss.ui.contribution1">
+         <action
+               label="ChEMBL-moss"
+               icon="icons/logo_chembl.png"
+               class="net.bioclipse.moss.business.chemblMoss.ui.ChemblMossAction"
+               menubarPath="additions"
+               id="net.bioclipse.chembl.business.ChEMBLManager">
+         </action>
+      </objectContribution>
+   </extension>
+   
 </plugin>
