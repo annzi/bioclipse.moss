@@ -78,14 +78,27 @@ public class MossManager implements IBioclipseManager {
 		}
 		return info;
 	}
-	public String query(String fam, String type, int limit){
-		return "PREFIX onto: <http://rdf.farmbio.uu.se/chembl/onto/#>  PREFIX blueobelisk: <http://www.blueobelisk.org/chemistryblogs/>"
-		+"select ?smiles where{ ?target a onto:Target. ?target onto:classL5"+ " \"" + fam + "\"."
-		+"?assay onto:hasTarget ?target . ?activity onto:onAssay ?assay . ?activity onto:standardValue ?st .?activity onto:type"+ " \"" + type + "\"."
-		+"?activity onto:forMolecule ?mol . ?mol blueobelisk:smiles ?smiles.  "
-	    + "}LIMIT "+ limit; 
+	//Collects compounds from a protein family
+	public IStringMatrix query(String fam, String actType, int limit) throws BioclipseException{
+		
+		String sparql =
+		"PREFIX onto: <http://rdf.farmbio.uu.se/chembl/onto/#> " +
+		"PREFIX bo: <http://www.blueobelisk.org/chemistryblogs/>"+
+		"SELECT ?smiles where{ " +
+		"	?target a onto:Target." +
+		"   ?target onto:classL5 ?fam. " + //+ " \"" + fam + "\"." +
+		"	?assay onto:hasTarget ?target . ?activity onto:onAssay ?assay ." +
+		" ?activity onto:standardValue ?st ." +
+		"	?activity onto:type ?actType . " + //" \"" + actType + "\"."+ 
+		"	?activity onto:forMolecule ?mol ."+
+		"	?mol bo:smiles ?smiles.  " +
+		"FILTER regex(?fam, " + "\"" + fam + "\"" + ", \"i\")."+
+		"FILTER regex(?actType, " + "\"" + actType + "\"" + ", \"i\")."+
+	    "}LIMIT "+ limit; 
+		
+		IStringMatrix matrix = rdf.sparqlRemote("http://rdf.farmbio.uu.se/chembl/sparql",sparql);
+		return matrix;
 	}
-//"FILTER(?st > \"" +  act + "\")"
 
 	public void run(String inputfile, String outfile,String outidfile) 
 	throws BioclipseException, IOException,ScriptException{
